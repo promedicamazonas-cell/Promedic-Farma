@@ -281,6 +281,38 @@
 
         .loading { text-align: center; padding: 40px; color: #6b7280; }
 
+        .doctorita-banner {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+        }
+        .doctorita-banner h3 {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .doctorita-banner p {
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+        .doctorita-btn {
+            background: white;
+            color: #db2777;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .doctorita-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+
         footer {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             color: white;
@@ -409,6 +441,30 @@
             <div class="modal-buttons">
                 <button class="btn btn-danger" onclick="vaciarCarrito()">🗑️ Vaciar</button>
                 <button class="btn" onclick="closeCart()" style="background: #d1d5db; color: #374151; box-shadow: none;">Cerrar</button>
+            </div>
+        </div>
+
+        <div class="doctorita-banner">
+            <h3>💊 ¿Tienes una pregunta de salud?</h3>
+            <p>Consulta con la Doctorita Key y recibe asesoramiento profesional</p>
+            <button class="doctorita-btn" onclick="openConsultaModal()">Hacer una pregunta</button>
+        </div>
+    </div>
+
+    <div id="consulta-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #1f2937;">💊 Consulta a la Doctorita Key</h2>
+
+            <div class="form-section" id="consulta-form" style="display: block; background: #f9fafb; border: 1px solid #e5e7eb;">
+                <p style="font-size: 12px; font-weight: 600; margin-bottom: 12px; color: #1f2937;">Cuéntanos tu pregunta:</p>
+                <input type="text" id="consulta-name" placeholder="Tu nombre *" />
+                <input type="tel" id="consulta-phone" placeholder="Tu teléfono/WhatsApp *" />
+                <textarea id="consulta-pregunta" placeholder="Tu pregunta o consulta *" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 12px; min-height: 100px; margin-bottom: 12px; resize: vertical;"></textarea>
+                <button class="btn" onclick="enviarConsulta()" style="width: 100%; margin-bottom: 8px;">📱 Enviar Pregunta</button>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeConsultaModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
@@ -618,6 +674,37 @@
 
         document.getElementById('search').addEventListener('input', renderProducts);
         cargarProductos();
+
+        // Funciones para Consulta con Doctorita Key
+        function openConsultaModal() {
+            document.getElementById('consulta-modal').classList.add('active');
+        }
+
+        function closeConsultaModal() {
+            document.getElementById('consulta-modal').classList.remove('active');
+            document.getElementById('consulta-name').value = '';
+            document.getElementById('consulta-phone').value = '';
+            document.getElementById('consulta-pregunta').value = '';
+        }
+
+        function enviarConsulta() {
+            const name = document.getElementById('consulta-name').value;
+            const phone = document.getElementById('consulta-phone').value;
+            const pregunta = document.getElementById('consulta-pregunta').value;
+
+            if (!name || !phone || !pregunta) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const mensaje = `💊 CONSULTA CON LA DOCTORITA KEY\n\n👤 Paciente: ${name}\n📱 Teléfono: ${phone}\n\n❓ Pregunta:\n${pregunta}\n\n---\nPor favor, la Doctorita Key responderá tu consulta en breve.\nGuarda este chat para recibir la respuesta.`;
+
+            const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+
+            closeConsultaModal();
+            alert('✓ Tu consulta ha sido enviada. La Doctorita Key te responderá en breve.');
+        }
     </script>
 </body>
 </html>
