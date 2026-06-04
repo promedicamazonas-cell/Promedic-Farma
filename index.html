@@ -33,6 +33,48 @@
 
         .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
+        .promo-banner {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+        .promo-logo { font-size: 28px; font-weight: 700; color: #0284c7; }
+        .promo-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+        .promo-badges {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .promo-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #0284c7;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .promo-banner {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 12px;
+            }
+            .promo-badges { gap: 8px; font-size: 11px; }
+            .promo-content h3 { font-size: 14px; margin-bottom: 6px; }
+        }
+
         .info-banner {
             background: linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 100%);
             border-left: 4px solid #0284c7;
@@ -276,6 +318,18 @@
     </header>
 
     <div class="container">
+        <div class="promo-banner">
+            <div class="promo-logo">🚚</div>
+            <div class="promo-content">
+                <h3>Haz tu pedido, nosotros lo llevamos.</h3>
+                <div class="promo-badges">
+                    <div class="promo-badge">⏱️ Rápido</div>
+                    <div class="promo-badge">✓ Seguro</div>
+                    <div class="promo-badge">📍 A donde estés</div>
+                </div>
+            </div>
+        </div>
+
         <div class="info-banner">
             <h3>📖 Cómo usar esta app:</h3>
             <div class="info-steps">
