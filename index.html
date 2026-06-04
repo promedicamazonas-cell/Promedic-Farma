@@ -87,10 +87,8 @@
 
             <div class="search-section">
                 <input type="text" id="search" placeholder="Buscar por nombre, concentración..." />
-                <div class="categories">
-                    <button class="active" onclick="filterCat('Todas')">Todas</button>
-                    <button onclick="filterCat('Medicamentos')">Medicamentos</button>
-                    <button onclick="filterCat('Dermatológicos')">Dermatológicos</button>
+                <div class="categories" id="categories-container">
+                    <button class="active" onclick="filterCat(event)">Todas</button>
                 </div>
             </div>
 
@@ -181,6 +179,7 @@
 
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
+                        generarBotonesCategorias();
                         renderProducts();
                     },
                     error: (error) => {
@@ -223,6 +222,16 @@
             `).join('');
 
             document.getElementById('products-table').innerHTML = html;
+        }
+
+        function generarBotonesCategorias() {
+            const categorias = ['Todas', ...new Set(productos.map(p => p.categoria).filter(c => c))];
+            const container = document.getElementById('categories-container');
+            container.innerHTML = categorias.map((cat, idx) => `
+                <button class="${idx === 0 ? 'active' : ''}" onclick="filterCat('${cat}')">
+                    ${cat}
+                </button>
+            `).join('');
         }
 
         function filterCat(cat) {
