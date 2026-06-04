@@ -33,6 +33,72 @@
 
         .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
+        .hero-banner {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            padding: 32px 16px;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        .hero-content { color: white; z-index: 2; }
+        .hero-content h2 {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+        .hero-content p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .hero-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hero-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner {
+                grid-template-columns: 1fr;
+                padding: 24px 16px;
+                gap: 16px;
+            }
+            .hero-content h2 { font-size: 20px; }
+            .hero-image { min-height: 250px; }
+        }
+
         .info-banner {
             background: linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 100%);
             border-left: 4px solid #0284c7;
@@ -274,6 +340,23 @@
         </div>
         <button id="cart-btn">🛒 (0)</button>
     </header>
+
+    <div class="container">
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h2>Haz tu pedido y te lo llevamos hasta tu casa</h2>
+                <p>Medicamentos, dermatológicos y suplementos de calidad. Entrega rápida y segura a domicilio.</p>
+                <div class="hero-badges">
+                    <div class="hero-badge">⚡ Entrega Rápida</div>
+                    <div class="hero-badge">🔒 Pago Seguro</div>
+                    <div class="hero-badge">✓ Garantizado</div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1563637619-e0db3814e5be?w=400&h=400&fit=crop" alt="Delivery" />
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="info-banner">
