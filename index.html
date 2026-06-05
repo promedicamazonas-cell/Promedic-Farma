@@ -402,6 +402,7 @@
                     <thead>
                         <tr>
                             <th>Producto</th>
+                            <th>Marca</th>
                             <th>Concentración</th>
                             <th style="text-align: center;">Precio/Un.</th>
                             <th style="text-align: center;">Stock</th>
@@ -543,6 +544,7 @@
             const html = filtrados.map((p) => `
                 <tr>
                     <td><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></td>
+                    <td><span style="font-weight: 600; color: #1e40af;">${p.fabricante}</span></td>
                     <td>${p.concentracion}</td>
                     <td style="text-align: center;">
                         <div class="price-unit">S/. ${p.precio_por_unidad.toFixed(2)}</div>
