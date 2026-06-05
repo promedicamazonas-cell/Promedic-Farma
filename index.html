@@ -32,6 +32,30 @@
         .header-logo img { height: 40px; width: auto; }
         .header-text { display: flex; flex-direction: column; }
 
+        .header-doctora {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 30px;
+            transition: background 0.2s;
+        }
+        .header-doctora:hover { background: #f0fdfa; }
+        .header-doctora-photo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 22%;
+            border: 2px solid #14b8a6;
+            flex-shrink: 0;
+        }
+        .header-doctora-fallback { background: #ccfbf1; display: flex; align-items: center; justify-content: center; }
+        .header-doctora-text { display: flex; flex-direction: column; line-height: 1.2; }
+        .header-doctora-text strong { font-size: 13px; color: #0d9488; font-weight: 700; }
+        .header-doctora-text span { font-size: 10px; color: #6b7280; font-style: italic; }
+
         .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
         .promo-banner-img {
@@ -298,6 +322,9 @@
             header p { font-size: 9px; }
             .header-logo img { height: 35px; }
             .header-logo { gap: 8px; }
+            .header-doctora-text { display: none; }
+            .header-doctora { padding: 2px; }
+            .header-doctora-photo { width: 38px; height: 38px; }
             .promo-banner-img { border-radius: 8px; margin-bottom: 12px; }
             .modal-content { margin: 20px 10px; max-width: 100%; }
             .table-container { max-height: 400px; }
@@ -316,6 +343,28 @@
                 <p>Profesionales de la salud a su servicio</p>
             </div>
         </div>
+
+        <div class="header-doctora" onclick="openConsultaModal()" title="Consulta a la Dra. Key Aguilar">
+            <img class="header-doctora-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('dra-key-fallback').style.display='flex';" />
+            <div id="dra-key-fallback" class="header-doctora-photo header-doctora-fallback" style="display:none;">
+                <svg viewBox="0 0 120 120" width="44" height="44" xmlns="http://www.w3.org/2000/svg" aria-label="Dra. Key">
+                    <path d="M34 70 Q33 36 60 36 Q87 36 86 70 L86 82 Q86 73 79 73 L41 73 Q34 73 34 82 Z" fill="#4b3a2f"/>
+                    <circle cx="60" cy="60" r="22" fill="#f7d3b0"/>
+                    <path d="M38 60 Q35 37 60 37 Q85 37 82 60 Q75 47 60 47 Q45 47 38 60 Z" fill="#4b3a2f"/>
+                    <circle cx="52" cy="59" r="2.4" fill="#3f3f46"/>
+                    <circle cx="68" cy="59" r="2.4" fill="#3f3f46"/>
+                    <path d="M53 68 Q60 73 67 68" stroke="#c2703b" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path d="M30 118 Q30 88 46 81 L60 95 L74 81 Q90 88 90 118 Z" fill="#ffffff"/>
+                    <path d="M53 83 L60 95 L53 100 Z" fill="#0d9488"/>
+                    <path d="M67 83 L60 95 L67 100 Z" fill="#0d9488"/>
+                </svg>
+            </div>
+            <div class="header-doctora-text">
+                <strong>Dra. Key Aguilar</strong>
+                <span>En quien puedes confiar</span>
+            </div>
+        </div>
+
         <button id="cart-btn">🛒 (0)</button>
     </header>
 
