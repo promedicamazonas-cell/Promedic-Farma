@@ -249,36 +249,37 @@
         .loading { text-align: center; padding: 40px; color: #6b7280; }
 
         .doctorita-banner {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-            border-radius: 10px;
-            padding: 18px;
+            background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
+            border-radius: 14px;
+            padding: 22px 28px;
             margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .doctorita-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 148, 136, 0.38);
         }
         .doctorita-banner h3 {
             color: white;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0;
+            letter-spacing: -0.3px;
         }
-        .doctorita-banner p {
-            color: rgba(255,255,255,0.9);
-            font-size: 12px;
-            margin-bottom: 12px;
+        .doctorita-img { width: 110px; height: 110px; flex-shrink: 0; }
+
+        @media (max-width: 768px) {
+            .doctorita-banner { flex-direction: column; text-align: center; padding: 22px 18px; gap: 14px; }
+            .doctorita-banner h3 { font-size: 21px; }
+            .doctorita-img { width: 88px; height: 88px; }
         }
-        .doctorita-btn {
-            background: white;
-            color: #db2777;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-        .doctorita-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 
         footer {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
@@ -319,7 +320,7 @@
     </header>
 
     <div class="container">
-        <img src="banner-pedidos.png" alt="Haz tu pedido, nosotros lo llevamos. Fácil, rápido, seguro." class="promo-banner-img" />
+        <img src="banner-pedidos.png.png" alt="Haz tu pedido, nosotros lo llevamos. Fácil, rápido, seguro." class="promo-banner-img" />
 
         <div class="info-banner">
             <h3>📖 Cómo usar esta app:</h3>
@@ -372,10 +373,23 @@
             </div>
         </div>
 
-        <div class="doctorita-banner">
-            <h3>💊 ¿Tienes una pregunta de salud?</h3>
-            <p>Consulta con la Doctorita Key y recibe asesoramiento profesional</p>
-            <button class="doctorita-btn" onclick="openConsultaModal()">Hacer una pregunta</button>
+        <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
+            <h3>Consulta a la Doctorita Key</h3>
+            <svg class="doctorita-img" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Doctora">
+                <circle cx="60" cy="60" r="58" fill="#ffffff" opacity="0.18"/>
+                <circle cx="60" cy="60" r="47" fill="#ffffff"/>
+                <path d="M34 66 Q33 32 60 32 Q87 32 86 66 L86 80 Q86 71 79 71 L41 71 Q34 71 34 80 Z" fill="#4b3a2f"/>
+                <circle cx="60" cy="58" r="22" fill="#f7d3b0"/>
+                <path d="M38 58 Q35 33 60 33 Q85 33 82 58 Q75 45 60 45 Q45 45 38 58 Z" fill="#4b3a2f"/>
+                <circle cx="52" cy="57" r="2.6" fill="#3f3f46"/>
+                <circle cx="68" cy="57" r="2.6" fill="#3f3f46"/>
+                <path d="M53 66 Q60 72 67 66" stroke="#c2703b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <path d="M28 112 Q28 84 44 77 L60 93 L76 77 Q92 84 92 112 Z" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+                <path d="M52 80 L60 93 L52 98 Z" fill="#0d9488"/>
+                <path d="M68 80 L60 93 L68 98 Z" fill="#0d9488"/>
+                <path d="M49 81 Q46 102 60 102 Q74 102 71 85" stroke="#0d9488" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                <circle cx="71" cy="84" r="4.2" fill="#0d9488"/>
+            </svg>
         </div>
     </div>
 
