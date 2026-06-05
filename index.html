@@ -32,30 +32,6 @@
         .header-logo img { height: 40px; width: auto; }
         .header-text { display: flex; flex-direction: column; }
 
-        .header-doctora {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 4px 12px;
-            border-radius: 30px;
-            transition: background 0.2s;
-        }
-        .header-doctora:hover { background: #f0fdfa; }
-        .header-doctora-photo {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: center 22%;
-            border: 2px solid #14b8a6;
-            flex-shrink: 0;
-        }
-        .header-doctora-fallback { background: #ccfbf1; display: flex; align-items: center; justify-content: center; }
-        .header-doctora-text { display: flex; flex-direction: column; line-height: 1.2; }
-        .header-doctora-text strong { font-size: 13px; color: #0d9488; font-weight: 700; }
-        .header-doctora-text span { font-size: 10px; color: #6b7280; font-style: italic; }
-
         .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
         .promo-banner-img {
@@ -298,11 +274,22 @@
             letter-spacing: -0.3px;
         }
         .doctorita-img { width: 110px; height: 110px; flex-shrink: 0; }
+        .doctorita-photo {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 22%;
+            border: 4px solid rgba(255,255,255,0.9);
+            flex-shrink: 0;
+        }
+        .doctorita-fallback { background: #ffffff; display: flex; align-items: center; justify-content: center; }
 
         @media (max-width: 768px) {
             .doctorita-banner { flex-direction: column; text-align: center; padding: 22px 18px; gap: 14px; }
             .doctorita-banner h3 { font-size: 21px; }
             .doctorita-img { width: 88px; height: 88px; }
+            .doctorita-photo { width: 88px; height: 88px; }
         }
 
         footer {
@@ -322,9 +309,6 @@
             header p { font-size: 9px; }
             .header-logo img { height: 35px; }
             .header-logo { gap: 8px; }
-            .header-doctora-text { display: none; }
-            .header-doctora { padding: 2px; }
-            .header-doctora-photo { width: 38px; height: 38px; }
             .promo-banner-img { border-radius: 8px; margin-bottom: 12px; }
             .modal-content { margin: 20px 10px; max-width: 100%; }
             .table-container { max-height: 400px; }
@@ -343,28 +327,6 @@
                 <p>Profesionales de la salud a su servicio</p>
             </div>
         </div>
-
-        <div class="header-doctora" onclick="openConsultaModal()" title="Consulta a la Dra. Key Aguilar">
-            <img class="header-doctora-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('dra-key-fallback').style.display='flex';" />
-            <div id="dra-key-fallback" class="header-doctora-photo header-doctora-fallback" style="display:none;">
-                <svg viewBox="0 0 120 120" width="44" height="44" xmlns="http://www.w3.org/2000/svg" aria-label="Dra. Key">
-                    <path d="M34 70 Q33 36 60 36 Q87 36 86 70 L86 82 Q86 73 79 73 L41 73 Q34 73 34 82 Z" fill="#4b3a2f"/>
-                    <circle cx="60" cy="60" r="22" fill="#f7d3b0"/>
-                    <path d="M38 60 Q35 37 60 37 Q85 37 82 60 Q75 47 60 47 Q45 47 38 60 Z" fill="#4b3a2f"/>
-                    <circle cx="52" cy="59" r="2.4" fill="#3f3f46"/>
-                    <circle cx="68" cy="59" r="2.4" fill="#3f3f46"/>
-                    <path d="M53 68 Q60 73 67 68" stroke="#c2703b" stroke-width="2" fill="none" stroke-linecap="round"/>
-                    <path d="M30 118 Q30 88 46 81 L60 95 L74 81 Q90 88 90 118 Z" fill="#ffffff"/>
-                    <path d="M53 83 L60 95 L53 100 Z" fill="#0d9488"/>
-                    <path d="M67 83 L60 95 L67 100 Z" fill="#0d9488"/>
-                </svg>
-            </div>
-            <div class="header-doctora-text">
-                <strong>Dra. Key Aguilar</strong>
-                <span>En quien puedes confiar</span>
-            </div>
-        </div>
-
         <button id="cart-btn">🛒 (0)</button>
     </header>
 
@@ -423,22 +385,21 @@
         </div>
 
         <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
-            <h3>Consulta a la Doctorita Key</h3>
-            <svg class="doctorita-img" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Doctora">
-                <circle cx="60" cy="60" r="58" fill="#ffffff" opacity="0.18"/>
-                <circle cx="60" cy="60" r="47" fill="#ffffff"/>
-                <path d="M34 66 Q33 32 60 32 Q87 32 86 66 L86 80 Q86 71 79 71 L41 71 Q34 71 34 80 Z" fill="#4b3a2f"/>
-                <circle cx="60" cy="58" r="22" fill="#f7d3b0"/>
-                <path d="M38 58 Q35 33 60 33 Q85 33 82 58 Q75 45 60 45 Q45 45 38 58 Z" fill="#4b3a2f"/>
-                <circle cx="52" cy="57" r="2.6" fill="#3f3f46"/>
-                <circle cx="68" cy="57" r="2.6" fill="#3f3f46"/>
-                <path d="M53 66 Q60 72 67 66" stroke="#c2703b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-                <path d="M28 112 Q28 84 44 77 L60 93 L76 77 Q92 84 92 112 Z" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
-                <path d="M52 80 L60 93 L52 98 Z" fill="#0d9488"/>
-                <path d="M68 80 L60 93 L68 98 Z" fill="#0d9488"/>
-                <path d="M49 81 Q46 102 60 102 Q74 102 71 85" stroke="#0d9488" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-                <circle cx="71" cy="84" r="4.2" fill="#0d9488"/>
-            </svg>
+            <h3>Consulta a la Dra. Key Aguilar</h3>
+            <img class="doctorita-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('doctorita-fallback').style.display='flex';" />
+            <div id="doctorita-fallback" class="doctorita-photo doctorita-fallback" style="display:none;">
+                <svg width="80" height="80" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Doctora">
+                    <path d="M34 66 Q33 32 60 32 Q87 32 86 66 L86 80 Q86 71 79 71 L41 71 Q34 71 34 80 Z" fill="#4b3a2f"/>
+                    <circle cx="60" cy="58" r="22" fill="#f7d3b0"/>
+                    <path d="M38 58 Q35 33 60 33 Q85 33 82 58 Q75 45 60 45 Q45 45 38 58 Z" fill="#4b3a2f"/>
+                    <circle cx="52" cy="57" r="2.6" fill="#3f3f46"/>
+                    <circle cx="68" cy="57" r="2.6" fill="#3f3f46"/>
+                    <path d="M53 66 Q60 72 67 66" stroke="#c2703b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                    <path d="M30 118 Q30 86 46 79 L60 95 L74 79 Q90 86 90 118 Z" fill="#0d9488"/>
+                    <path d="M52 82 L60 95 L52 100 Z" fill="#ffffff"/>
+                    <path d="M68 82 L60 95 L68 100 Z" fill="#ffffff"/>
+                </svg>
+            </div>
         </div>
     </div>
 
