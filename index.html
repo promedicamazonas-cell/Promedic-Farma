@@ -292,6 +292,37 @@
             .doctorita-photo { width: 88px; height: 88px; }
         }
 
+        .newsletter-banner {
+            background: linear-gradient(135deg, #1e40af 0%, #0284c7 100%);
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(30, 64, 175, 0.25);
+        }
+        .newsletter-banner h3 { color: white; font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+        .newsletter-banner p { color: rgba(255,255,255,0.92); font-size: 13px; margin-bottom: 14px; }
+        .newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; }
+        .newsletter-form input { flex: 1; min-width: 150px; margin-bottom: 0; }
+        .newsletter-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(37, 211, 102, 0.3);
+        }
+        .newsletter-btn:hover { transform: translateY(-2px); background: #1ebe5d; }
+        @media (max-width: 768px) {
+            .newsletter-form input { flex-basis: 100%; min-width: 0; }
+            .newsletter-btn { width: 100%; }
+            .newsletter-banner h3 { font-size: 17px; }
+        }
+
         footer {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             color: white;
@@ -399,6 +430,16 @@
                     <path d="M52 82 L60 95 L52 100 Z" fill="#ffffff"/>
                     <path d="M68 82 L60 95 L68 100 Z" fill="#ffffff"/>
                 </svg>
+            </div>
+        </div>
+
+        <div class="newsletter-banner">
+            <h3>📩 Tips de salud de la Dra. Key</h3>
+            <p>Suscríbete y recibe información de medicina y tratamientos directo a tu WhatsApp.</p>
+            <div class="newsletter-form">
+                <input type="text" id="news-name" placeholder="Tu nombre *" />
+                <input type="tel" id="news-phone" placeholder="Tu WhatsApp *" />
+                <button class="newsletter-btn" onclick="suscribirNewsletter()">📲 Suscribirme</button>
             </div>
         </div>
     </div>
@@ -688,6 +729,26 @@
 
             closeConsultaModal();
             alert('✓ Tu consulta ha sido enviada. La Doctorita Key te responderá en breve.');
+        }
+
+        // Suscripción al newsletter por WhatsApp
+        function suscribirNewsletter() {
+            const name = document.getElementById('news-name').value.trim();
+            const phone = document.getElementById('news-phone').value.trim();
+
+            if (!name || !phone) {
+                alert('Por favor completa tu nombre y tu WhatsApp');
+                return;
+            }
+
+            const mensaje = `🔔 NUEVA SUSCRIPCIÓN - PROMEDIC\n\n👤 Nombre: ${name}\n📱 WhatsApp: ${phone}\n\nQuiero recibir tips de salud y novedades sobre medicina y tratamientos de la Dra. Key.\n\n---\nPor favor agrégame a la lista de difusión.`;
+
+            const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+
+            document.getElementById('news-name').value = '';
+            document.getElementById('news-phone').value = '';
+            alert('✓ ¡Gracias por suscribirte! Te agregaremos a la lista de difusión de la Dra. Key.');
         }
     </script>
 </body>
