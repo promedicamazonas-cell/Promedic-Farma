@@ -135,6 +135,24 @@
         }
         tbody tr:hover { background: #f9fafb; }
 
+        .prod-cell { display: flex; align-items: center; gap: 10px; }
+        .prod-thumb {
+            width: 46px;
+            height: 46px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+            flex-shrink: 0;
+            background: #f9fafb;
+        }
+        .prod-thumb-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #9ca3af;
+        }
+
         .btn {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: white;
@@ -528,6 +546,7 @@
                                 formaFarmaceutica: p.formaFarmaceutica || '',
                                 fabricante: p.fabricante || '',
                                 categoria: p.categoria || '',
+                                imagen: (p.imagen || '').trim(),
                                 precio_por_unidad: parseFloat(p.precio_por_unidad) || 0,
                                 stock_unidades: parseInt(p.stock_unidades) || 0
                             }))
@@ -568,9 +587,14 @@
                 return matchSearch && matchCat;
             });
 
-            const html = filtrados.map((p) => `
+            const html = filtrados.map((p) => {
+                const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? p.imagen : 'fotos/' + p.imagen) : '';
+                const thumb = imgSrc
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onerror="this.outerHTML='<div class=\\'prod-thumb prod-thumb-empty\\'>💊</div>'" />`
+                    : `<div class="prod-thumb prod-thumb-empty">💊</div>`;
+                return `
                 <tr>
-                    <td><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></td>
+                    <td><div class="prod-cell">${thumb}<div><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></div></div></td>
                     <td><span style="font-weight: 600; color: #1e40af;">${p.fabricante}</span></td>
                     <td>${p.concentracion}</td>
                     <td style="text-align: center;">
@@ -586,7 +610,8 @@
                         <button class="btn" onclick="addCart('${p.nombre.replace(/'/g, "\\'")}')">Agregar</button>
                     </td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
 
             document.getElementById('products-table').innerHTML = html;
         }
@@ -732,28 +757,3 @@
             window.open(url, '_blank');
 
             closeConsultaModal();
-            alert('✓ Tu consulta ha sido enviada. La Doctorita Key te responderá en breve.');
-        }
-
-        // Suscripción al newsletter por WhatsApp
-        function suscribirNewsletter() {
-            const name = document.getElementById('news-name').value.trim();
-            const phone = document.getElementById('news-phone').value.trim();
-
-            if (!name || !phone) {
-                alert('Por favor completa tu nombre y tu WhatsApp');
-                return;
-            }
-
-            const mensaje = `🔔 NUEVA SUSCRIPCIÓN - PROMEDIC\n\n👤 Nombre: ${name}\n📱 WhatsApp: ${phone}\n\nQuiero recibir tips de salud y novedades sobre medicina y tratamientos de la Dra. Key.\n\n---\nPor favor agrégame a la lista de difusión.`;
-
-            const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-
-            document.getElementById('news-name').value = '';
-            document.getElementById('news-phone').value = '';
-            alert('✓ ¡Gracias por suscribirte! Te agregaremos a la lista de difusión de la Dra. Key.');
-        }
-    </script>
-</body>
-</html>
