@@ -365,6 +365,49 @@
             th, td { padding: 8px; }
             .info-steps { grid-template-columns: 1fr; }
         }
+
+        @media (max-width: 768px) {
+            .table-container { max-height: none; border: none; box-shadow: none; overflow: visible; }
+            table, tbody, tr, td { display: block; width: 100%; }
+            thead { display: none; }
+            tbody tr {
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                padding: 12px 14px;
+                margin-bottom: 12px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
+            tbody tr:hover { background: white; }
+            td {
+                border: none;
+                padding: 5px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                text-align: right;
+                font-size: 13px;
+            }
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #6b7280;
+                text-align: left;
+                white-space: nowrap;
+            }
+            td.cell-producto {
+                display: block;
+                text-align: left;
+                padding-bottom: 8px;
+                margin-bottom: 6px;
+                border-bottom: 1px solid #f3f4f6;
+            }
+            td.cell-producto::before { content: none; }
+            td.cell-accion { display: block; padding-top: 10px; }
+            td.cell-accion::before { content: none; }
+            td.cell-accion .btn { width: 100%; padding: 12px; font-size: 14px; }
+        }
     </style>
 </head>
 <body>
@@ -617,19 +660,21 @@
                     : `<div class="prod-thumb prod-thumb-empty">${iconHtml}</div>`;
                 return `
                 <tr>
-                    <td><div class="prod-cell">${thumb}<div><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></div></div></td>
-                    <td><span style="font-weight: 600; color: #1e40af;">${p.fabricante}</span></td>
-                    <td>${p.concentracion}</td>
-                    <td style="text-align: center;">
-                        <div class="price-unit">S/. ${p.precio_por_unidad.toFixed(2)}</div>
-                        <div class="price-note">por unidad</div>
+                    <td class="cell-producto"><div class="prod-cell">${thumb}<div><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></div></div></td>
+                    <td data-label="Marca"><span style="font-weight: 600; color: #1e40af;">${p.fabricante}</span></td>
+                    <td data-label="Concentración">${p.concentracion}</td>
+                    <td data-label="Precio" style="text-align: center;">
+                        <div>
+                            <div class="price-unit">S/. ${p.precio_por_unidad.toFixed(2)}</div>
+                            <div class="price-note">por unidad</div>
+                        </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td data-label="Stock" style="text-align: center;">
                         <span class="badge ${p.stock_unidades > 20 ? 'badge-green' : 'badge-yellow'}">
                             ${p.stock_unidades} un.
                         </span>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="cell-accion" style="text-align: center;">
                         <button class="btn" onclick="addCart('${p.nombre.replace(/'/g, "\\'")}')">Agregar</button>
                     </td>
                 </tr>
