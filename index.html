@@ -529,7 +529,7 @@
 
         async function cargarProductos() {
             try {
-                const csvUrl = 'https://docs.google.com/spreadsheets/d/182UZKEzDkVuph-woSp-ZjA6adIU1HTisEatJpxRCFvM/export?format=csv';
+                const csvUrl = 'https://docs.google.com/spreadsheets/d/182UZKEzDkVuph-woSp-ZjA6adIU1HTisEatJpxRCFvM/gviz/tq?tqx=out:csv';
                 const response = await fetch(csvUrl);
                 const csv = await response.text();
 
