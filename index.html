@@ -578,6 +578,28 @@
             `).join('');
         }
 
+        function formIcon(forma) {
+            const f = (forma || '').toLowerCase();
+            const ic = (paths) => `<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0369a1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+            if (/(inyect|ampoll|vial|jeringa)/.test(f))
+                return ic('<path d="M13 5l-8 8-2 5 5-2 8-8"/><path d="M9 11l4 4"/><path d="M15 3l6 6"/><path d="M13 7l4 4"/>');
+            if (/(jarabe|suspensi|soluci|elixir|loci|frasco|liquido|líquido|gotas|emulsi)/.test(f))
+                return ic('<path d="M9 3h6v2l1 2v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7l1-2z"/><path d="M8 12h8"/>');
+            if (/(crema|pomada|\bgel\b|unguento|ungüento|pasta dental)/.test(f))
+                return ic('<path d="M9 4h6l-1 4H10z"/><path d="M8 8h8v9a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3z"/>');
+            if (/(capsula|cápsula|blanda)/.test(f))
+                return ic('<rect x="3" y="8.5" width="18" height="7" rx="3.5"/><path d="M12 8.5v7"/>');
+            if (/(tableta|comprimido|pastilla|gragea|masticable|recubiert)/.test(f))
+                return ic('<circle cx="12" cy="12" r="8"/><path d="M6.5 12h11"/>');
+            if (/(spray|aerosol|inhalad|nebuliz)/.test(f))
+                return ic('<rect x="8" y="8" width="7" height="12" rx="1"/><path d="M9 8V5h5v3"/><path d="M17 5h2M17 8h3M18 11h2"/>');
+            if (/(polvo|sobre|granulad|sache|efervescente)/.test(f))
+                return ic('<path d="M5 4h14l-1 16H6z"/><path d="M5 4l3 3h8l3-3"/>');
+            if (/(ovulo|óvulo|supositorio)/.test(f))
+                return ic('<path d="M12 3c3 4 4 7 4 10a4 4 0 0 1-8 0c0-3 1-6 4-10z"/>');
+            return ic('<circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/>');
+        }
+
         function renderProducts() {
             const search = document.getElementById('search').value.toLowerCase();
             const filtrados = productos.filter(p => {
@@ -589,9 +611,10 @@
 
             const html = filtrados.map((p) => {
                 const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? p.imagen : 'fotos/' + p.imagen) : '';
+                const iconHtml = formIcon(p.formaFarmaceutica);
                 const thumb = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onerror="this.outerHTML='<div class=\\'prod-thumb prod-thumb-empty\\'>💊</div>'" />`
-                    : `<div class="prod-thumb prod-thumb-empty">💊</div>`;
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="prod-thumb prod-thumb-empty" style="display:none;">${iconHtml}</div>`
+                    : `<div class="prod-thumb prod-thumb-empty">${iconHtml}</div>`;
                 return `
                 <tr>
                     <td><div class="prod-cell">${thumb}<div><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></div></div></td>
@@ -760,7 +783,6 @@
             alert('✓ Tu consulta ha sido enviada. La Doctorita Key te responderá en breve.');
         }
 
-        // Suscripción al newsletter por WhatsApp
         function suscribirNewsletter() {
             const name = document.getElementById('news-name').value.trim();
             const phone = document.getElementById('news-phone').value.trim();
