@@ -757,3 +757,28 @@
             window.open(url, '_blank');
 
             closeConsultaModal();
+            alert('✓ Tu consulta ha sido enviada. La Doctorita Key te responderá en breve.');
+        }
+
+        // Suscripción al newsletter por WhatsApp
+        function suscribirNewsletter() {
+            const name = document.getElementById('news-name').value.trim();
+            const phone = document.getElementById('news-phone').value.trim();
+
+            if (!name || !phone) {
+                alert('Por favor completa tu nombre y tu WhatsApp');
+                return;
+            }
+
+            const mensaje = `🔔 NUEVA SUSCRIPCIÓN - PROMEDIC\n\n👤 Nombre: ${name}\n📱 WhatsApp: ${phone}\n\nQuiero recibir tips de salud y novedades sobre medicina y tratamientos de la Dra. Key.\n\n---\nPor favor agrégame a la lista de difusión.`;
+
+            const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+
+            document.getElementById('news-name').value = '';
+            document.getElementById('news-phone').value = '';
+            alert('✓ ¡Gracias por suscribirte! Te agregaremos a la lista de difusión de la Dra. Key.');
+        }
+    </script>
+</body>
+</html>
