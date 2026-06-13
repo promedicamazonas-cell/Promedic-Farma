@@ -190,6 +190,22 @@
             box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35);
         }
 
+        .letras { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f5f9; }
+        .letras button {
+            min-width: 32px;
+            padding: 5px 9px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .letras button:hover { border-color: #0284c7; color: #0284c7; }
+        .letras button.active { background: #0284c7; color: #fff; border-color: #0284c7; }
+
         .table-container {
             border: 1px solid #e5e7eb;
             border-radius: 10px;
@@ -620,6 +636,7 @@
                 <div class="categories" id="categories-container">
                     <button class="active" onclick="filterCat('Todas')">Todas</button>
                 </div>
+                <div class="letras" id="letras-container"></div>
             </div>
 
             <div id="loading" class="loading">⏳ Cargando productos...</div>
@@ -744,6 +761,14 @@
         let productos = [];
         let carrito = [];
         let categoriaActual = 'Todas';
+        let letraActual = '';
+
+        function inicial(nombre) {
+            let c = ((nombre || '').trim().charAt(0) || '').toUpperCase();
+            const map = { 'Á':'A','À':'A','Ä':'A','Â':'A','É':'E','È':'E','Ë':'E','Ê':'E','Í':'I','Ì':'I','Ï':'I','Î':'I','Ó':'O','Ò':'O','Ö':'O','Ô':'O','Ú':'U','Ù':'U','Ü':'U','Û':'U','Ñ':'N' };
+            if (map[c]) c = map[c];
+            return /[A-Z]/.test(c) ? c : '#';
+        }
 
         async function cargarProductos() {
             try {
@@ -773,6 +798,7 @@
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
                         generarBotonesCategorias();
+                        generarLetras();
                         renderProducts();
                     },
                     error: (error) => {
@@ -794,6 +820,20 @@
                     ${cat}
                 </button>
             `).join('');
+        }
+
+        function generarLetras() {
+            const letras = [...new Set(productos.map(p => inicial(p.nombre)))].sort();
+            const container = document.getElementById('letras-container');
+            container.innerHTML =
+                `<button class="${letraActual === '' ? 'active' : ''}" onclick="filterLetra('')">Todos</button>` +
+                letras.map(l => `<button class="${letraActual === l ? 'active' : ''}" onclick="filterLetra('${l}')">${l}</button>`).join('');
+        }
+
+        function filterLetra(l) {
+            letraActual = l;
+            generarLetras();
+            renderProducts();
         }
 
         function normalizeImg(u) {
@@ -833,7 +873,8 @@
                 const matchSearch = p.nombre.toLowerCase().includes(search) ||
                                    p.concentracion.toLowerCase().includes(search);
                 const matchCat = categoriaActual === 'Todas' || p.categoria === categoriaActual;
-                return matchSearch && matchCat;
+                const matchLetra = letraActual === '' || inicial(p.nombre) === letraActual;
+                return matchSearch && matchCat && matchLetra;
             });
 
             const html = filtrados.map((p) => {
