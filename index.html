@@ -215,8 +215,8 @@
 
         .prod-cell { display: flex; align-items: center; gap: 10px; }
         .prod-thumb {
-            width: 46px;
-            height: 46px;
+            width: 54px;
+            height: 54px;
             border-radius: 8px;
             object-fit: cover;
             border: 1px solid #e5e7eb;
@@ -485,6 +485,9 @@
             td.cell-accion { display: block; padding-top: 10px; }
             td.cell-accion::before { content: none; }
             td.cell-accion .btn { width: 100%; padding: 12px; font-size: 14px; }
+            .prod-cell { gap: 14px; }
+            .prod-thumb { width: 76px; height: 76px; border-radius: 10px; }
+            .prod-thumb-empty svg { width: 38px; height: 38px; }
         }
 
         @media (max-width: 768px) {
