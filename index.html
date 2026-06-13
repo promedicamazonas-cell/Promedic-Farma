@@ -668,7 +668,7 @@
 
         async function cargarProductos() {
             try {
-                const csvUrl = 'https://docs.google.com/spreadsheets/d/182UZKEzDkVuph-woSp-ZjA6adIU1HTisEatJpxRCFvM/gviz/tq?tqx=out:csv';
+                const csvUrl = 'https://docs.google.com/spreadsheets/d/182UZKEzDkVuph-woSp-ZjA6adIU1HTisEatJpxRCFvM/gviz/tq?tqx=out:csv&gid=2093510093';
                 const response = await fetch(csvUrl);
                 const csv = await response.text();
 
@@ -717,6 +717,15 @@
             `).join('');
         }
 
+        function normalizeImg(u) {
+            u = (u || '').trim();
+            const m = u.match(/^https?:\/\/(?:www\.)?imgur\.com\/([A-Za-z0-9]+)$/);
+            if (m) return 'https://i.imgur.com/' + m[1] + '.png';
+            const m2 = u.match(/^https?:\/\/i\.imgur\.com\/([A-Za-z0-9]+)$/);
+            if (m2) return 'https://i.imgur.com/' + m2[1] + '.png';
+            return u;
+        }
+
         function formIcon(forma) {
             const f = (forma || '').toLowerCase();
             const ic = (paths) => `<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0369a1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
@@ -749,7 +758,7 @@
             });
 
             const html = filtrados.map((p) => {
-                const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? p.imagen : 'fotos/' + p.imagen) : '';
+                const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
                 const iconHtml = formIcon(p.formaFarmaceutica);
                 const thumb = imgSrc
                     ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="prod-thumb prod-thumb-empty" style="display:none;">${iconHtml}</div>`
