@@ -230,6 +230,50 @@
             font-size: 22px;
             color: #9ca3af;
         }
+        img.prod-thumb { cursor: zoom-in; transition: transform 0.15s; }
+        img.prod-thumb:hover { transform: scale(1.05); }
+
+        .img-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 60;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+        .img-modal.active { display: flex; }
+        .img-modal img {
+            max-width: 92%;
+            max-height: 86%;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            object-fit: contain;
+            background: #fff;
+        }
+        .img-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 22px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: 300;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .img-modal-caption {
+            position: absolute;
+            bottom: 22px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 0 20px;
+        }
 
         .btn {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
@@ -655,6 +699,12 @@
         </div>
     </div>
 
+    <div id="img-modal" class="img-modal" onclick="closeImg()">
+        <span class="img-modal-close" onclick="closeImg()">&times;</span>
+        <img id="img-modal-img" src="" alt="" />
+        <div id="img-modal-caption" class="img-modal-caption"></div>
+    </div>
+
     <footer>
         <p>ProMedic - Amazonas</p>
         <p>¡Profesionales de la salud a su servicio!</p>
@@ -764,7 +814,7 @@
                 const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
                 const iconHtml = formIcon(p.formaFarmaceutica);
                 const thumb = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="prod-thumb prod-thumb-empty" style="display:none;">${iconHtml}</div>`
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="prod-thumb prod-thumb-empty" style="display:none;">${iconHtml}</div>`
                     : `<div class="prod-thumb prod-thumb-empty">${iconHtml}</div>`;
                 return `
                 <tr>
@@ -904,6 +954,17 @@
 
         document.getElementById('search').addEventListener('input', renderProducts);
         cargarProductos();
+
+        // Ampliar imagen del producto
+        function openImg(src, alt) {
+            document.getElementById('img-modal-img').src = src;
+            document.getElementById('img-modal-img').alt = alt || '';
+            document.getElementById('img-modal-caption').textContent = alt || '';
+            document.getElementById('img-modal').classList.add('active');
+        }
+        function closeImg() {
+            document.getElementById('img-modal').classList.remove('active');
+        }
 
         // Funciones para Consulta con Doctorita Key
         function openConsultaModal() {
