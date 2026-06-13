@@ -275,6 +275,28 @@
             padding: 0 20px;
         }
 
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(2,132,199,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 45;
+            opacity: 0;
+            transition: opacity 0.25s, transform 0.2s;
+        }
+        .scroll-top.show { display: flex; opacity: 1; }
+        .scroll-top:hover { transform: translateY(-3px); }
+
         .btn {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: white;
@@ -705,6 +727,10 @@
         <div id="img-modal-caption" class="img-modal-caption"></div>
     </div>
 
+    <button id="scroll-top" class="scroll-top" onclick="scrollToTop()" aria-label="Subir al inicio" title="Subir al inicio">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+
     <footer>
         <p>ProMedic - Amazonas</p>
         <p>¡Profesionales de la salud a su servicio!</p>
@@ -965,6 +991,14 @@
         function closeImg() {
             document.getElementById('img-modal').classList.remove('active');
         }
+
+        // Botón subir al inicio
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.addEventListener('scroll', () => {
+            document.getElementById('scroll-top').classList.toggle('show', window.scrollY > 300);
+        });
 
         // Funciones para Consulta con Doctorita Key
         function openConsultaModal() {
