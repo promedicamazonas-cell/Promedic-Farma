@@ -60,6 +60,37 @@
         .header-logo img { height: 40px; width: auto; }
         .header-text { display: flex; flex-direction: column; }
 
+        .cat-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .cat-nav::-webkit-scrollbar { height: 0; }
+        .cat-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .cat-nav a:hover { background: #f0f9ff; color: #0284c7; }
+        .cat-nav a.active { background: #e0f2fe; color: #0369a1; }
+        .cat-nav .cat-ico { font-size: 16px; }
+
         .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
         .promo-banner-img {
@@ -690,6 +721,8 @@
         <button id="cart-btn">🛒 (0)</button>
     </header>
 
+    <nav class="cat-nav" id="cat-nav"></nav>
+
     <div class="container">
         <img src="banner-pedidos.png.png" alt="Haz tu pedido, nosotros lo llevamos. Fácil, rápido, seguro." class="promo-banner-img" />
 
@@ -723,7 +756,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="catalogo">
             <h2 class="catalog-title">Catálogo de Productos</h2>
 
             <div class="search-section">
@@ -884,6 +917,7 @@
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
                         generarBotonesCategorias();
+                        generarNav();
                         generarLetras();
                         renderProducts();
                     },
@@ -898,14 +932,47 @@
             }
         }
 
+        function categoriasLista() {
+            return ['Todas', ...new Set(productos.map(p => p.categoria).filter(c => c))];
+        }
+
         function generarBotonesCategorias() {
-            const categorias = ['Todas', ...new Set(productos.map(p => p.categoria).filter(c => c))];
             const container = document.getElementById('categories-container');
-            container.innerHTML = categorias.map((cat, idx) => `
-                <button class="${idx === 0 ? 'active' : ''}" onclick="filterCat('${cat}')">
+            container.innerHTML = categoriasLista().map(cat => `
+                <button class="${categoriaActual === cat ? 'active' : ''}" onclick="filterCat('${cat.replace(/'/g, "\\'")}')">
                     ${cat}
                 </button>
             `).join('');
+        }
+
+        function catIcon(cat) {
+            const c = (cat || '').toLowerCase();
+            if (/medicament|farmac/.test(c)) return '💊';
+            if (/dermat|piel|cuida/.test(c)) return '🧴';
+            if (/vitamin|suplement/.test(c)) return '💪';
+            if (/bebe|beb|mam|niñ|infant/.test(c)) return '🍼';
+            if (/dispositiv|equipo/.test(c)) return '🩺';
+            if (/higien|aseo/.test(c)) return '🧼';
+            if (/belleza|cosm|maquil/.test(c)) return '💄';
+            return '🏷️';
+        }
+
+        function generarNav() {
+            const nav = document.getElementById('cat-nav');
+            nav.innerHTML = categoriasLista().map(cat => `
+                <a class="${categoriaActual === cat ? 'active' : ''}" onclick="navCat('${cat.replace(/'/g, "\\'")}')">
+                    <span class="cat-ico">${cat === 'Todas' ? '🏠' : catIcon(cat)}</span>${cat}
+                </a>
+            `).join('');
+        }
+
+        function navCat(cat) {
+            categoriaActual = cat;
+            generarBotonesCategorias();
+            generarNav();
+            renderProducts();
+            const dest = document.getElementById('catalogo');
+            if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function generarLetras() {
@@ -992,8 +1059,8 @@
 
         function filterCat(cat) {
             categoriaActual = cat;
-            document.querySelectorAll('.categories button').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            generarBotonesCategorias();
+            generarNav();
             renderProducts();
         }
 
