@@ -153,19 +153,19 @@
         }
         .promo10-text strong { display: block; color: #fff; font-size: 17px; font-weight: 800; line-height: 1.2; }
         .promo10-text span { color: rgba(255,255,255,0.95); font-size: 12.5px; }
-        .promo10-cond {
+        .banner-cond {
             background: none;
             border: none;
-            padding: 5px 0 0;
-            margin: 0;
-            color: rgba(255,255,255,0.92);
+            padding: 0;
+            margin: 14px 0 0;
+            color: rgba(255,255,255,0.9);
             font-size: 11px;
             font-weight: 600;
             text-decoration: underline;
             cursor: pointer;
-            display: block;
+            display: inline-block;
         }
-        .promo10-cond:hover { color: #fff; }
+        .banner-cond:hover { color: #fff; }
         .promo10-timer { position: relative; z-index: 1; text-align: center; }
         .promo10-timer .t-label { color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; opacity: 0.95; }
         .t-clock { display: flex; align-items: flex-start; justify-content: center; gap: 5px; }
@@ -943,6 +943,7 @@
                     <span>✓ Seguro</span>
                     <span>📍 A donde estés</span>
                 </div>
+                <button class="banner-cond" onclick="openCond()">* Ciertas condiciones aplican</button>
             </div>
         </div>
 
@@ -952,7 +953,6 @@
                 <div class="promo10-text">
                     <strong>¡Descuento solo por la App!</strong>
                     <span>En todo tu pedido de hoy</span>
-                    <button class="promo10-cond" onclick="openCond()">* Ciertas condiciones aplican</button>
                 </div>
             </div>
             <div class="promo10-timer">
@@ -1080,6 +1080,10 @@
             <div class="ficha-sec">
                 <h4>🚚 Envío</h4>
                 <p>Envío gratis por compras mayores a S/ 99.00, dentro del casco urbano de San Nicolás (desde Carapungo hasta Chacapata) y hasta el casco urbano de Mariscal Benavides. Para zonas alejadas o de difícil acceso, consulta el costo de envío por WhatsApp.</p>
+            </div>
+            <div class="ficha-sec">
+                <h4>⏱️ Tiempos de entrega</h4>
+                <p>Los horarios y tiempos de entrega son referenciales y pueden variar según nuestro horario de atención, la disponibilidad de movilidad y transporte, y las condiciones de clima o de acceso a la zona. Hacemos todo lo posible por entregar a tiempo; sin embargo, algunos factores son ajenos a nuestro control y agradecemos tu comprensión.</p>
             </div>
             <div class="ficha-sec">
                 <h4>🎁 Descuento 10%</h4>
