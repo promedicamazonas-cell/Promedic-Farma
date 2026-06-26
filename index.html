@@ -770,6 +770,21 @@
         }
         footer p { margin: 6px 0; }
         footer p:first-child { font-weight: 700; font-size: 13px; }
+        .footer-review {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fbbf24;
+            color: #1f2937;
+            font-weight: 800;
+            font-size: 12.5px;
+            padding: 9px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(251,191,36,0.3);
+        }
+        .footer-review:hover { background: #f59e0b; transform: translateY(-2px); }
 
         @media (max-width: 768px) {
             header { padding: 10px 12px; }
@@ -1005,6 +1020,17 @@
         </div>
     </div>
 
+    <div id="review-modal" class="modal">
+        <div class="modal-content" style="max-width: 420px; text-align: center;">
+            <div style="font-size: 42px; margin-bottom: 4px;">🎉</div>
+            <h2 style="font-size: 18px; font-weight: 800; color: #1f2937; margin-bottom: 8px;">¡Gracias por tu pedido!</h2>
+            <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">Tu opinión nos ayuda muchísimo. ¿Nos dejas una reseña en Google?</p>
+            <div style="font-size: 26px; letter-spacing: 4px; margin-bottom: 18px;">⭐⭐⭐⭐⭐</div>
+            <button class="btn" onclick="goReview()" style="width: 100%; margin-bottom: 8px; background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);">⭐ Califícanos en Google</button>
+            <button class="btn" onclick="closeReview()" style="width: 100%; background: #e5e7eb; color: #374151; box-shadow: none;">Ahora no</button>
+        </div>
+    </div>
+
     <div id="img-modal" class="img-modal" onclick="closeImg()">
         <span class="img-modal-close" onclick="closeImg()">&times;</span>
         <img id="img-modal-img" src="" alt="" />
@@ -1018,7 +1044,10 @@
     <footer>
         <p>ProMedic - Amazonas</p>
         <p>¡Profesionales de la salud a su servicio!</p>
-        <p style="margin-top: 10px;">📞 +51 935 896 961 | 📍 Av. Juan Pardo de Miguel cuadra 4</p>
+        <p style="margin-top: 14px;">
+            <a href="https://g.page/r/CVcJ0bzQOSU9EBM/review" target="_blank" rel="noopener" class="footer-review">⭐ Califícanos en Google</a>
+        </p>
+        <p style="margin-top: 14px;">📞 +51 935 896 961 | 📍 Av. Juan Pardo de Miguel cuadra 4</p>
         <p style="margin-top: 4px;">Ref.: al costado de la Capilla Señor de Ánimas</p>
         <p style="margin-top: 10px; font-size: 11px; opacity: 0.8;">© 2026 ProMedic - Todos los derechos reservados</p>
         <p style="margin-top: 4px; font-size: 11px; opacity: 0.75;">Desarrollado por Ing. Ángel Ybarra Rivas</p>
@@ -1303,8 +1332,13 @@
             document.getElementById('client-name').value = '';
             document.getElementById('client-phone').value = '';
             document.getElementById('client-email').value = '';
-            alert('✓ Pedido enviado a WhatsApp');
+            openReview();
         }
+
+        const REVIEW_URL = 'https://g.page/r/CVcJ0bzQOSU9EBM/review';
+        function openReview() { document.getElementById('review-modal').classList.add('active'); }
+        function closeReview() { document.getElementById('review-modal').classList.remove('active'); }
+        function goReview() { window.open(REVIEW_URL, '_blank'); closeReview(); }
 
         function closeCart() {
             document.getElementById('cart-modal').classList.remove('active');
