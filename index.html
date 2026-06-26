@@ -153,6 +153,19 @@
         }
         .promo10-text strong { display: block; color: #fff; font-size: 17px; font-weight: 800; line-height: 1.2; }
         .promo10-text span { color: rgba(255,255,255,0.95); font-size: 12.5px; }
+        .promo10-cond {
+            background: none;
+            border: none;
+            padding: 5px 0 0;
+            margin: 0;
+            color: rgba(255,255,255,0.92);
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+            display: block;
+        }
+        .promo10-cond:hover { color: #fff; }
         .promo10-timer { position: relative; z-index: 1; text-align: center; }
         .promo10-timer .t-label { color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; opacity: 0.95; }
         .t-clock { display: flex; align-items: flex-start; justify-content: center; gap: 5px; }
@@ -939,6 +952,7 @@
                 <div class="promo10-text">
                     <strong>¡Descuento solo por la App!</strong>
                     <span>En todo tu pedido de hoy</span>
+                    <button class="promo10-cond" onclick="openCond()">* Ciertas condiciones aplican</button>
                 </div>
             </div>
             <div class="promo10-timer">
@@ -1058,6 +1072,25 @@
 
     <div id="ficha-modal" class="modal">
         <div class="modal-content" id="ficha-content"></div>
+    </div>
+
+    <div id="cond-modal" class="modal">
+        <div class="modal-content" style="max-width: 520px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: #1f2937; margin-bottom: 14px;">📋 Condiciones</h2>
+            <div class="ficha-sec">
+                <h4>🚚 Envío</h4>
+                <p>Envío gratis por compras mayores a S/ 99.00, dentro del casco urbano de San Nicolás (desde Carapungo hasta Chacapata) y hasta el casco urbano de Mariscal Benavides. Para zonas alejadas o de difícil acceso, consulta el costo de envío por WhatsApp.</p>
+            </div>
+            <div class="ficha-sec">
+                <h4>🎁 Descuento 10%</h4>
+                <p>Aplica a los pedidos realizados a través de esta app. No acumulable con otras promociones. ProMedic puede modificar o finalizar la promoción en cualquier momento.</p>
+            </div>
+            <div class="ficha-sec">
+                <h4>ℹ️ General</h4>
+                <p>Precios y stock sujetos a disponibilidad y pueden variar sin previo aviso. Algunos productos requieren receta médica para su venta.</p>
+            </div>
+            <button class="btn" onclick="closeCond()" style="width: 100%; margin-top: 6px; background: #d1d5db; color: #374151; box-shadow: none;">Cerrar</button>
+        </div>
     </div>
 
     <div id="review-modal" class="modal">
@@ -1400,6 +1433,10 @@
         function openReview() { document.getElementById('review-modal').classList.add('active'); }
         function closeReview() { document.getElementById('review-modal').classList.remove('active'); }
         function goReview() { window.open(REVIEW_URL, '_blank'); closeReview(); }
+
+        // Condiciones
+        function openCond() { document.getElementById('cond-modal').classList.add('active'); }
+        function closeCond() { document.getElementById('cond-modal').classList.remove('active'); }
 
         function closeCart() {
             document.getElementById('cart-modal').classList.remove('active');
