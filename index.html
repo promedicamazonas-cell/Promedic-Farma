@@ -14,6 +14,34 @@
             color: #1f2937;
         }
 
+        .wa-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #ffe600;
+            color: #075e54;
+            padding: 9px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .wa-topbar strong { font-weight: 800; }
+        .wa-num {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #25D366;
+            color: #ffffff;
+            padding: 4px 13px;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+        @media (max-width: 768px) {
+            .wa-topbar { font-size: 12px; gap: 7px; padding: 8px 12px; }
+        }
+
         header {
             background: white;
             border-bottom: 1px solid #e5e7eb;
@@ -228,6 +256,69 @@
             background: white;
         }
         tbody tr:hover { background: #f9fafb; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            gap: 14px;
+        }
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .product-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .product-card-img {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: zoom-in;
+        }
+        .product-card-img-empty {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .product-card-img-empty svg { width: 56px; height: 56px; }
+        .pc-pres { font-size: 10px; color: #6b7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+        .pc-name { font-size: 13px; font-weight: 700; color: #1f2937; line-height: 1.3; margin-bottom: 6px; }
+        .pc-brand { font-size: 11px; font-weight: 700; color: #1e40af; margin-bottom: 6px; }
+        .pc-conc { font-size: 11px; color: #6b7280; margin-bottom: 6px; }
+        .pc-foot { margin-top: auto; }
+        .pc-price { font-size: 19px; font-weight: 800; color: #0284c7; margin-bottom: 6px; }
+        .pc-stock { margin-bottom: 10px; }
+        .pc-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(2,132,199,0.25);
+        }
+        .pc-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(2,132,199,0.35); }
+        @media (max-width: 768px) {
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .product-card-img, .product-card-img-empty { height: 125px; }
+            .pc-name { font-size: 12px; }
+            .pc-price { font-size: 17px; }
+        }
 
         .prod-cell { display: flex; align-items: center; gap: 10px; }
         .prod-thumb {
@@ -581,6 +672,13 @@
     </style>
 </head>
 <body>
+    <a class="wa-topbar" href="https://wa.me/51935896961" target="_blank" rel="noopener">
+        <span>📲 Pide <strong>rápido y fácil</strong> por nuestro WhatsApp</span>
+        <span class="wa-num">935 896 961
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
+        </span>
+    </a>
+
     <header>
         <div class="header-logo">
             <img src="https://i.imgur.com/ak9mWSq.png" alt="ProMedic Logo" />
@@ -641,20 +739,8 @@
 
             <div id="loading" class="loading">⏳ Cargando productos...</div>
 
-            <div class="table-container" id="table-container" style="display: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Marca</th>
-                            <th>Concentración</th>
-                            <th style="text-align: center;">Precio/Un.</th>
-                            <th style="text-align: center;">Stock</th>
-                            <th style="text-align: center;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="products-table"></tbody>
-                </table>
+            <div id="table-container" style="display: none;">
+                <div class="products-grid" id="products-grid"></div>
             </div>
         </div>
 
@@ -880,33 +966,28 @@
             const html = filtrados.map((p) => {
                 const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
                 const iconHtml = formIcon(p.formaFarmaceutica);
-                const thumb = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="prod-thumb prod-thumb-empty" style="display:none;">${iconHtml}</div>`
-                    : `<div class="prod-thumb prod-thumb-empty">${iconHtml}</div>`;
+                const imgBlock = imgSrc
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="product-card-img" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="product-card-img-empty" style="display:none;">${iconHtml}</div>`
+                    : `<div class="product-card-img-empty">${iconHtml}</div>`;
+                const conc = (p.concentracion || '').trim();
+                const concLine = (conc && conc.toUpperCase() !== 'N/A') ? `<div class="pc-conc">${conc}</div>` : '';
                 return `
-                <tr>
-                    <td class="cell-producto"><div class="prod-cell">${thumb}<div><strong>${p.nombre}</strong><br/><span style="font-size: 11px; color: #6b7280;">${p.formaFarmaceutica}</span></div></div></td>
-                    <td data-label="Marca"><span style="font-weight: 600; color: #1e40af;">${p.fabricante}</span></td>
-                    <td data-label="Concentración">${p.concentracion}</td>
-                    <td data-label="Precio" style="text-align: center;">
-                        <div>
-                            <div class="price-unit">S/. ${p.precio_por_unidad.toFixed(2)}</div>
-                            <div class="price-note">por unidad</div>
-                        </div>
-                    </td>
-                    <td data-label="Stock" style="text-align: center;">
-                        <span class="badge ${p.stock_unidades > 20 ? 'badge-green' : 'badge-yellow'}">
-                            ${p.stock_unidades} un.
-                        </span>
-                    </td>
-                    <td class="cell-accion" style="text-align: center;">
-                        <button class="btn" onclick="addCart('${p.nombre.replace(/'/g, "\\'")}')">Agregar</button>
-                    </td>
-                </tr>
+                <div class="product-card">
+                    ${imgBlock}
+                    ${p.formaFarmaceutica ? `<div class="pc-pres">${p.formaFarmaceutica}</div>` : ''}
+                    <div class="pc-name">${p.nombre}</div>
+                    ${p.fabricante ? `<div class="pc-brand">${p.fabricante}</div>` : ''}
+                    ${concLine}
+                    <div class="pc-foot">
+                        <div class="pc-price">S/. ${p.precio_por_unidad.toFixed(2)}</div>
+                        <div class="pc-stock"><span class="badge ${p.stock_unidades > 20 ? 'badge-green' : 'badge-yellow'}">${p.stock_unidades} un.</span></div>
+                        <button class="pc-btn" onclick="addCart('${p.nombre.replace(/'/g, "\\'")}')">Agregar al carrito</button>
+                    </div>
+                </div>
             `;
             }).join('');
 
-            document.getElementById('products-table').innerHTML = html;
+            document.getElementById('products-grid').innerHTML = html;
         }
 
         function filterCat(cat) {
