@@ -710,6 +710,9 @@
             font-size: 16px;
             color: #1f2937;
         }
+        .total-sub, .total-desc { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 7px; }
+        .total-sub { color: #6b7280; }
+        .total-desc { color: #16a34a; font-weight: 700; }
 
         .modal-buttons { display: flex; gap: 8px; }
         .modal-buttons .btn { flex: 1; }
@@ -1011,6 +1014,8 @@
             </div>
 
             <div class="total" id="total-section">
+                <div class="total-sub"><span>Subtotal</span><span id="subtotal-amount">S/. 0.00</span></div>
+                <div class="total-desc"><span>Descuento 10% (App)</span><span id="desc-amount">- S/. 0.00</span></div>
                 <div class="total-line">
                     <span>Total:</span>
                     <span id="total-amount" style="color: #0284c7;">S/. 0.00</span>
@@ -1312,10 +1317,25 @@
 
             document.getElementById('cart-items').innerHTML = items || '<p style="color: #6b7280; text-align: center;">Carrito vacío</p>';
 
-            const total = carrito.reduce((sum, item) => sum + (item.precio_por_unidad * item.cantidad), 0);
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio_por_unidad * item.cantidad), 0);
+            const descuento = subtotal * 0.10;
+            const total = subtotal - descuento;
+            document.getElementById('subtotal-amount').textContent = `S/. ${subtotal.toFixed(2)}`;
+            document.getElementById('desc-amount').textContent = `- S/. ${descuento.toFixed(2)}`;
             document.getElementById('total-amount').textContent = `S/. ${total.toFixed(2)}`;
             document.getElementById('cart-btn').textContent = `🛒 (${carrito.length})`;
             document.getElementById('total-section').classList.toggle('active', carrito.length > 0);
+            guardarCarrito();
+        }
+
+        function guardarCarrito() {
+            try { localStorage.setItem('promedic_carrito', JSON.stringify(carrito)); } catch (e) {}
+        }
+        function cargarCarrito() {
+            try {
+                const s = localStorage.getItem('promedic_carrito');
+                carrito = s ? (JSON.parse(s) || []) : [];
+            } catch (e) { carrito = []; }
         }
 
         function modCant(idx, change) {
@@ -1358,8 +1378,10 @@
                 return `📌 ${item.nombre}\n├─ Concentración: ${item.concentracion}\n├─ Fabricante: ${item.fabricante}\n├─ Cantidad: ${item.cantidad} ${formaUnidad}\n├─ Precio: S/. ${item.precio_por_unidad.toFixed(2)}/un\n└─ Subtotal: S/. ${subtotal.toFixed(2)}`;
             }).join('\n\n');
 
-            const total = carrito.reduce((sum, item) => sum + (item.precio_por_unidad * item.cantidad), 0);
-            const mensaje = `🛒 NUEVO PEDIDO - PROMEDIC\n\n👤 Cliente: ${name}\n📱 Teléfono: ${phone}\n${document.getElementById('client-email').value ? '📧 Email: ' + document.getElementById('client-email').value + '\n' : ''}\n${items}\n\n💰 TOTAL: S/. ${total.toFixed(2)}\n\n---\nEnviado desde ProMedic App`;
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio_por_unidad * item.cantidad), 0);
+            const descuento = subtotal * 0.10;
+            const total = subtotal - descuento;
+            const mensaje = `🛒 NUEVO PEDIDO - PROMEDIC\n\n👤 Cliente: ${name}\n📱 Teléfono: ${phone}\n${document.getElementById('client-email').value ? '📧 Email: ' + document.getElementById('client-email').value + '\n' : ''}\n${items}\n\n💰 Subtotal: S/. ${subtotal.toFixed(2)}\n🎁 Descuento 10% (App): - S/. ${descuento.toFixed(2)}\n✅ TOTAL: S/. ${total.toFixed(2)}\n\n---\nEnviado desde ProMedic App`;
 
             const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
@@ -1390,6 +1412,8 @@
 
         document.getElementById('search').addEventListener('input', renderProducts);
         cargarProductos();
+        cargarCarrito();
+        updateCart();
 
         // Ficha de producto
         function openFicha(nombre) {
