@@ -1718,24 +1718,37 @@
 
         // PWA: botón "Instalar app"
         let deferredPrompt = null;
+        const installBtn = () => document.getElementById('install-btn');
+        const yaInstalada = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const btn = document.getElementById('install-btn');
-            if (btn) btn.style.display = 'flex';
         });
+
+        window.addEventListener('load', () => {
+            const b = installBtn();
+            if (b && !yaInstalada()) b.style.display = 'flex';
+        });
+
         function instalarApp() {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.finally(() => {
-                deferredPrompt = null;
-                const btn = document.getElementById('install-btn');
-                if (btn) btn.style.display = 'none';
-            });
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.finally(() => { deferredPrompt = null; });
+                return;
+            }
+            const ua = navigator.userAgent || '';
+            const isIOS = /iphone|ipad|ipod/i.test(ua);
+            if (isIOS) {
+                alert('Para instalar en iPhone (Safari):\n\n1) Toca el botón Compartir (el cuadrado con la flecha hacia arriba, abajo en la pantalla).\n2) Elige "Añadir a pantalla de inicio".\n3) Toca "Añadir".');
+            } else {
+                alert('Para instalar la app:\n\n1) Abre el menú del navegador (los 3 puntos ⋮, arriba a la derecha).\n2) Toca "Instalar aplicación" o "Agregar a pantalla principal".\n\nSi no aparece, recarga la página e intenta otra vez.');
+            }
         }
+
         window.addEventListener('appinstalled', () => {
-            const btn = document.getElementById('install-btn');
-            if (btn) btn.style.display = 'none';
+            const b = installBtn();
+            if (b) b.style.display = 'none';
         });
     </script>
 </body>
