@@ -495,6 +495,10 @@
             box-shadow: 0 2px 6px rgba(2,132,199,0.25);
         }
         .pc-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(2,132,199,0.35); }
+        .pc-btn-rx { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); box-shadow: 0 2px 6px rgba(217,119,6,0.3); }
+        .pc-btn-rx:hover { box-shadow: 0 4px 12px rgba(217,119,6,0.4); }
+        .pc-rx { display: inline-block; background: #fef3c7; color: #92400e; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; }
+        .ficha-rx { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); box-shadow: 0 2px 6px rgba(217,119,6,0.3); }
         @media (max-width: 768px) {
             .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
             .product-card-img, .product-card-img-empty { height: 125px; }
@@ -1155,21 +1159,32 @@
                     complete: (results) => {
                         productos = results.data
                             .filter(p => p.nombre && p.nombre.trim())
-                            .map(p => ({
-                                id: p.id || '',
-                                nombre: p.nombre || '',
-                                concentracion: p.concentracion || '',
-                                formaFarmaceutica: p.formaFarmaceutica || '',
-                                fabricante: p.fabricante || '',
-                                categoria: p.categoria || '',
-                                imagen: (p.imagen || '').trim(),
-                                descripcion: (p.descripcion || '').trim(),
-                                uso: (p.uso || '').trim(),
-                                receta: (p.receta || '').trim(),
-                                precio_por_unidad: parseFloat(p.precio_por_unidad) || 0,
-                                stock_unidades: parseInt(p.stock_unidades) || 0
-                            }))
-                            .filter(p => p.stock_unidades > 0);
+                            .map(p => {
+                                const cv = (p.condicion_venta || '').trim().toLowerCase();
+                                const recetaSi = /^(s[ií]|x|1|true|requiere)/i.test((p.receta || '').trim());
+                                let cond;
+                                if (cv.includes('controlad')) cond = 'CONTROLADO';
+                                else if (cv.includes('receta')) cond = 'RECETA';
+                                else if (cv.includes('libre') || cv.includes('otc')) cond = 'LIBRE';
+                                else if (recetaSi) cond = 'RECETA';
+                                else cond = /medicament/i.test(p.categoria || '') ? 'RECETA' : 'LIBRE';
+                                return {
+                                    id: p.id || '',
+                                    nombre: p.nombre || '',
+                                    concentracion: p.concentracion || '',
+                                    formaFarmaceutica: p.formaFarmaceutica || '',
+                                    fabricante: p.fabricante || '',
+                                    categoria: p.categoria || '',
+                                    imagen: (p.imagen || '').trim(),
+                                    descripcion: (p.descripcion || '').trim(),
+                                    uso: (p.uso || '').trim(),
+                                    receta: (p.receta || '').trim(),
+                                    cond: cond,
+                                    precio_por_unidad: parseFloat(p.precio_por_unidad) || 0,
+                                    stock_unidades: parseInt(p.stock_unidades) || 0
+                                };
+                            })
+                            .filter(p => p.stock_unidades > 0 && p.cond !== 'CONTROLADO');
 
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
@@ -1296,6 +1311,10 @@
                 const conc = (p.concentracion || '').trim();
                 const concLine = (conc && conc.toUpperCase() !== 'N/A') ? `<div class="pc-conc">${conc}</div>` : '';
                 const nombreEsc = p.nombre.replace(/'/g, "\\'");
+                const rxTag = p.cond === 'RECETA' ? `<div class="pc-rx">📋 Requiere receta</div>` : '';
+                const accionBtn = p.cond === 'RECETA'
+                    ? `<button class="pc-btn pc-btn-rx" onclick="event.stopPropagation(); solicitarReceta('${nombreEsc}')">📋 Solicitar con receta</button>`
+                    : `<button class="pc-btn" onclick="event.stopPropagation(); addCart('${nombreEsc}')">Agregar al carrito</button>`;
                 return `
                 <div class="product-card" onclick="openFicha('${nombreEsc}')">
                     ${imgBlock}
@@ -1303,10 +1322,11 @@
                     <div class="pc-name">${p.nombre}</div>
                     ${p.fabricante ? `<div class="pc-brand">${p.fabricante}</div>` : ''}
                     ${concLine}
+                    ${rxTag}
                     <div class="pc-foot">
                         <div class="pc-price">S/. ${p.precio_por_unidad.toFixed(2)}</div>
                         <div class="pc-stock"><span class="badge ${p.stock_unidades > 20 ? 'badge-green' : 'badge-yellow'}">${p.stock_unidades} un.</span></div>
-                        <button class="pc-btn" onclick="event.stopPropagation(); addCart('${nombreEsc}')">Agregar al carrito</button>
+                        ${accionBtn}
                     </div>
                 </div>
             `;
@@ -1322,9 +1342,19 @@
             renderProducts();
         }
 
+        function solicitarReceta(nombreProducto) {
+            const p = productos.find(prod => prod.nombre === nombreProducto);
+            if (!p) return;
+            const conc = (p.concentracion || '').trim();
+            const tieneConc = conc && conc.toUpperCase() !== 'N/A';
+            const msg = `📋 SOLICITUD DE PRODUCTO CON RECETA - PROMEDIC\n\nProducto: ${p.nombre}${tieneConc ? ' ' + conc : ''}\n\nEste producto requiere receta médica. Adjunto la foto de mi receta para que el Químico Farmacéutico la valide antes de la entrega.`;
+            window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
         function addCart(nombreProducto) {
             const p = productos.find(prod => prod.nombre === nombreProducto);
             if (!p) return;
+            if (p.cond === 'RECETA' || p.cond === 'CONTROLADO') { solicitarReceta(nombreProducto); return; }
 
             const existe = carrito.find(item => item.nombre === p.nombre);
             if (existe) {
@@ -1466,8 +1496,8 @@
             const imgBlock = imgSrc
                 ? `<img src="${imgSrc}" alt="${p.nombre}" class="ficha-img" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="ficha-img ficha-img-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div>`
                 : `<div class="ficha-img ficha-img-empty">${formIcon(p.formaFarmaceutica)}</div>`;
-            const receta = /^(s[ií]|x|1|true|requiere)/i.test(p.receta || '');
-            const recetaBadge = receta ? `<div class="ficha-receta">⚠️ Requiere receta médica</div>` : '';
+            const esReceta = p.cond === 'RECETA';
+            const recetaBadge = esReceta ? `<div class="ficha-receta">⚠️ Requiere receta médica</div>` : '';
             const descBlock = p.descripcion ? `<div class="ficha-sec"><h4>Descripción</h4><p>${p.descripcion}</p></div>` : '';
             const usoBlock = p.uso ? `<div class="ficha-sec"><h4>Modo de uso</h4><p>${p.uso}</p></div>` : '';
             const nombreEsc = p.nombre.replace(/'/g, "\\'");
@@ -1489,7 +1519,9 @@
                 ${descBlock}
                 ${usoBlock}
                 <div class="ficha-actions">
-                    <button class="btn" onclick="addCart('${nombreEsc}'); closeFicha();">🛒 Agregar al carrito</button>
+                    ${esReceta
+                        ? `<button class="btn ficha-rx" onclick="solicitarReceta('${nombreEsc}'); closeFicha();">📋 Solicitar con receta</button>`
+                        : `<button class="btn" onclick="addCart('${nombreEsc}'); closeFicha();">🛒 Agregar al carrito</button>`}
                     <a class="btn ficha-key" href="${waUrl}" target="_blank" rel="noopener">💬 Preguntar a la Dra. Key</a>
                 </div>
             `;
