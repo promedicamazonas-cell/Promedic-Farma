@@ -1,0 +1,16 @@
+{
+  "name": "ProMedic Amazonas",
+  "short_name": "ProMedic",
+  "description": "Farmacia online de ProMedic Amazonas. Medicamentos, dermatológicos, vitaminas y cuidado personal. Pedidos por WhatsApp.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0284c7",
+  "lang": "es-PE",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
