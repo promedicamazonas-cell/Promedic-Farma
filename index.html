@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProMedic - Farmacia Online</title>
-    <link rel="icon" href="https://imgur.com/QUY0LVM.png" type="image/png">
+    <link rel="icon" href="logo.png" type="image/png">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ProMedic">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -638,6 +645,26 @@
         .scroll-top.show { display: flex; opacity: 1; }
         .scroll-top:hover { transform: translateY(-3px); }
 
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 45;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            color: #fff;
+            border: none;
+            padding: 11px 17px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(2,132,199,0.45);
+        }
+        .install-btn:hover { transform: translateY(-2px); }
+        @media (max-width: 768px) { .install-btn { font-size: 12px; padding: 10px 14px; } }
+
         .btn {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: white;
@@ -947,7 +974,7 @@
 
     <header>
         <div class="header-logo">
-            <img src="https://i.imgur.com/ak9mWSq.png" alt="ProMedic Logo" />
+            <img src="logo.png" alt="ProMedic Farma" />
             <div class="header-text">
                 <h1>ProMedic Amazonas</h1>
                 <p>Profesionales de la salud a su servicio</p>
@@ -1149,6 +1176,8 @@
         <img id="img-modal-img" src="" alt="" />
         <div id="img-modal-caption" class="img-modal-caption"></div>
     </div>
+
+    <button id="install-btn" class="install-btn" onclick="instalarApp()" style="display:none;">📲 Instalar app</button>
 
     <button id="scroll-top" class="scroll-top" onclick="scrollToTop()" aria-label="Subir al inicio" title="Subir al inicio">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -1679,6 +1708,35 @@
             document.getElementById('news-phone').value = '';
             alert('✓ ¡Gracias por suscribirte! Te agregaremos a la lista de difusión de la Dra. Key.');
         }
+
+        // PWA: registrar service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+
+        // PWA: botón "Instalar app"
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('install-btn');
+            if (btn) btn.style.display = 'flex';
+        });
+        function instalarApp() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.finally(() => {
+                deferredPrompt = null;
+                const btn = document.getElementById('install-btn');
+                if (btn) btn.style.display = 'none';
+            });
+        }
+        window.addEventListener('appinstalled', () => {
+            const btn = document.getElementById('install-btn');
+            if (btn) btn.style.display = 'none';
+        });
     </script>
 </body>
 </html>
