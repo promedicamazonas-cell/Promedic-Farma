@@ -499,6 +499,24 @@
         .pc-btn-rx:hover { box-shadow: 0 4px 12px rgba(217,119,6,0.4); }
         .pc-rx { display: inline-block; background: #fef3c7; color: #92400e; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; }
         .ficha-rx { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); box-shadow: 0 2px 6px rgba(217,119,6,0.3); }
+
+        .pc-price-old { font-size: 12px; color: #9ca3af; text-decoration: line-through; line-height: 1.1; }
+        .pc-off { font-size: 9px; font-weight: 800; color: #16a34a; background: #dcfce7; padding: 1px 5px; border-radius: 5px; margin-left: 5px; vertical-align: middle; }
+        .ficha-price-old { font-size: 15px; color: #9ca3af; text-decoration: line-through; font-weight: 600; margin-right: 6px; }
+        .ficha-off { font-size: 12px; font-weight: 800; color: #16a34a; background: #dcfce7; padding: 2px 8px; border-radius: 6px; margin-left: 6px; }
+
+        .ficha-rel { margin-top: 18px; border-top: 1px solid #f1f5f9; padding-top: 14px; }
+        .ficha-rel h4 { font-size: 14px; font-weight: 800; color: #1f2937; margin-bottom: 10px; }
+        .ficha-rel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .ficha-rel-card { cursor: pointer; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; transition: box-shadow 0.2s, transform 0.2s; }
+        .ficha-rel-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .rel-thumb { width: 100%; height: 62px; background: #f8fafc; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+        .rel-thumb img { width: 100%; height: 100%; object-fit: contain; }
+        .rel-thumb-icon { display: flex; align-items: center; justify-content: center; }
+        .rel-thumb-icon svg { width: 30px; height: 30px; }
+        .rel-name { font-size: 10px; font-weight: 600; color: #374151; line-height: 1.2; height: 24px; overflow: hidden; }
+        .rel-price { font-size: 11px; font-weight: 800; color: #0284c7; margin-top: 3px; }
+        @media (max-width: 768px) { .ficha-rel-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) {
             .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
             .product-card-img, .product-card-img-empty { height: 125px; }
@@ -1347,7 +1365,9 @@
                     ${concLine}
                     ${rxTag}
                     <div class="pc-foot">
-                        <div class="pc-price">S/. ${p.precio_por_unidad.toFixed(2)}</div>
+                        ${p.precio_por_unidad > 0
+                            ? `<div class="pc-price-old">S/. ${p.precio_por_unidad.toFixed(2)}</div><div class="pc-price">S/. ${(p.precio_por_unidad * 0.9).toFixed(2)}<span class="pc-off">-10%</span></div>`
+                            : `<div class="pc-price">S/. ${p.precio_por_unidad.toFixed(2)}</div>`}
                         <div class="pc-stock"><span class="badge ${p.stock_unidades > 20 ? 'badge-green' : 'badge-yellow'}">${p.stock_unidades} un.</span></div>
                         ${accionBtn}
                     </div>
@@ -1471,7 +1491,9 @@
             const subtotal = carrito.reduce((sum, item) => sum + (item.precio_por_unidad * item.cantidad), 0);
             const descuento = subtotal * 0.10;
             const total = subtotal - descuento;
-            const mensaje = `🛒 NUEVO PEDIDO - PROMEDIC\n\n👤 Cliente: ${name}\n📱 Teléfono: ${phone}\n${document.getElementById('client-email').value ? '📧 Email: ' + document.getElementById('client-email').value + '\n' : ''}\n${items}\n\n💰 Subtotal: S/. ${subtotal.toFixed(2)}\n🎁 Descuento 10% (App): - S/. ${descuento.toFixed(2)}\n✅ TOTAL: S/. ${total.toFixed(2)}\n\n---\nEnviado desde ProMedic App`;
+            const f = new Date();
+            const ordNum = `PM-${String(f.getFullYear()).slice(2)}${String(f.getMonth() + 1).padStart(2, '0')}${String(f.getDate()).padStart(2, '0')}-${String(f.getHours()).padStart(2, '0')}${String(f.getMinutes()).padStart(2, '0')}`;
+            const mensaje = `🛒 NUEVO PEDIDO - PROMEDIC\n🧾 Pedido N° ${ordNum}\n\n👤 Cliente: ${name}\n📱 Teléfono: ${phone}\n${document.getElementById('client-email').value ? '📧 Email: ' + document.getElementById('client-email').value + '\n' : ''}\n${items}\n\n💰 Subtotal: S/. ${subtotal.toFixed(2)}\n🎁 Descuento 10% (App): - S/. ${descuento.toFixed(2)}\n✅ TOTAL: S/. ${total.toFixed(2)}\n\n---\nEnviado desde ProMedic App`;
 
             const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
@@ -1527,6 +1549,20 @@
             const consultaMsg = `Hola, quiero información sobre el producto: ${p.nombre}${tieneConc ? ' ' + conc : ''}`;
             const waUrl = `https://wa.me/51935896961?text=${encodeURIComponent(consultaMsg)}`;
 
+            const relacionados = productos.filter(x => x.categoria === p.categoria && x.nombre !== p.nombre).sort(() => Math.random() - 0.5).slice(0, 4);
+            let relHtml = '';
+            if (relacionados.length) {
+                relHtml = '<div class="ficha-rel"><h4>También te puede interesar</h4><div class="ficha-rel-grid">' +
+                    relacionados.map(r => {
+                        const rImg = r.imagen ? (r.imagen.startsWith('http') ? normalizeImg(r.imagen) : 'fotos/' + r.imagen) : '';
+                        const rThumb = rImg
+                            ? `<img src="${rImg}" alt="${r.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="rel-thumb-icon" style="display:none;">${formIcon(r.formaFarmaceutica)}</div>`
+                            : `<div class="rel-thumb-icon">${formIcon(r.formaFarmaceutica)}</div>`;
+                        const rPrecio = r.precio_por_unidad > 0 ? 'S/. ' + (r.precio_por_unidad * 0.9).toFixed(2) : '';
+                        return `<div class="ficha-rel-card" onclick="openFicha('${r.nombre.replace(/'/g, "\\'")}')"><div class="rel-thumb">${rThumb}</div><div class="rel-name">${r.nombre}</div><div class="rel-price">${rPrecio}</div></div>`;
+                    }).join('') + '</div></div>';
+            }
+
             document.getElementById('ficha-content').innerHTML = `
                 <button class="ficha-close" onclick="closeFicha()" aria-label="Cerrar">&times;</button>
                 ${imgBlock}
@@ -1534,7 +1570,9 @@
                 <h2 class="ficha-name">${p.nombre}</h2>
                 ${p.fabricante ? `<div class="ficha-brand">${p.fabricante}</div>` : ''}
                 ${recetaBadge}
-                <div class="ficha-price">S/. ${p.precio_por_unidad.toFixed(2)} <span>por unidad</span></div>
+                ${p.precio_por_unidad > 0
+                    ? `<div class="ficha-price"><span class="ficha-price-old">S/. ${p.precio_por_unidad.toFixed(2)}</span>S/. ${(p.precio_por_unidad * 0.9).toFixed(2)} <span class="ficha-off">-10% App</span></div>`
+                    : `<div class="ficha-price">S/. ${p.precio_por_unidad.toFixed(2)} <span>por unidad</span></div>`}
                 <div class="ficha-meta">
                     ${tieneConc ? `<div class="ficha-row"><span>Concentración</span><b>${conc}</b></div>` : ''}
                     <div class="ficha-row"><span>Stock disponible</span><b>${p.stock_unidades} un.</b></div>
@@ -1547,6 +1585,7 @@
                         : `<button class="btn" onclick="addCart('${nombreEsc}'); closeFicha();">🛒 Agregar al carrito</button>`}
                     <a class="btn ficha-key" href="${waUrl}" target="_blank" rel="noopener">💬 Preguntar a la Dra. Key</a>
                 </div>
+                ${relHtml}
             `;
             document.getElementById('ficha-modal').classList.add('active');
         }
