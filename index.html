@@ -1251,6 +1251,7 @@
                                 };
                             })
                             .filter(p => p.stock_unidades > 0 && p.cond !== 'CONTROLADO');
+                        productos.forEach((p, i) => { p._k = i; });
 
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
@@ -1376,13 +1377,12 @@
                     : `<div class="product-card-img-empty">${iconHtml}</div>`;
                 const conc = (p.concentracion || '').trim();
                 const concLine = (conc && conc.toUpperCase() !== 'N/A') ? `<div class="pc-conc">${conc}</div>` : '';
-                const nombreEsc = p.nombre.replace(/'/g, "\\'");
                 const rxTag = p.cond === 'RECETA' ? `<div class="pc-rx">📋 Requiere receta</div>` : '';
                 const accionBtn = p.cond === 'RECETA'
-                    ? `<button class="pc-btn pc-btn-rx" onclick="event.stopPropagation(); solicitarReceta('${nombreEsc}')">📋 Solicitar con receta</button>`
-                    : `<button class="pc-btn" onclick="event.stopPropagation(); addCart('${nombreEsc}')">Agregar al carrito</button>`;
+                    ? `<button class="pc-btn pc-btn-rx" onclick="event.stopPropagation(); solicitarReceta(${p._k})">📋 Solicitar con receta</button>`
+                    : `<button class="pc-btn" onclick="event.stopPropagation(); addCart(${p._k})">Agregar al carrito</button>`;
                 return `
-                <div class="product-card" onclick="openFicha('${nombreEsc}')">
+                <div class="product-card" onclick="openFicha(${p._k})">
                     ${imgBlock}
                     ${p.formaFarmaceutica ? `<div class="pc-pres">${p.formaFarmaceutica}</div>` : ''}
                     <div class="pc-name">${p.nombre}</div>
@@ -1410,8 +1410,8 @@
             renderProducts();
         }
 
-        function solicitarReceta(nombreProducto) {
-            const p = productos.find(prod => prod.nombre === nombreProducto);
+        function solicitarReceta(k) {
+            const p = productos[k];
             if (!p) return;
             const conc = (p.concentracion || '').trim();
             const tieneConc = conc && conc.toUpperCase() !== 'N/A';
@@ -1419,12 +1419,12 @@
             window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        function addCart(nombreProducto) {
-            const p = productos.find(prod => prod.nombre === nombreProducto);
+        function addCart(k) {
+            const p = productos[k];
             if (!p) return;
-            if (p.cond === 'RECETA' || p.cond === 'CONTROLADO') { solicitarReceta(nombreProducto); return; }
+            if (p.cond === 'RECETA' || p.cond === 'CONTROLADO') { solicitarReceta(k); return; }
 
-            const existe = carrito.find(item => item.nombre === p.nombre);
+            const existe = carrito.find(item => item._k === p._k);
             if (existe) {
                 existe.cantidad++;
             } else {
@@ -1557,8 +1557,8 @@
         updateCart();
 
         // Ficha de producto
-        function openFicha(nombre) {
-            const p = productos.find(x => x.nombre === nombre);
+        function openFicha(k) {
+            const p = productos[k];
             if (!p) return;
             const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
             const conc = (p.concentracion || '').trim();
@@ -1570,11 +1570,10 @@
             const recetaBadge = esReceta ? `<div class="ficha-receta">⚠️ Requiere receta médica</div>` : '';
             const descBlock = p.descripcion ? `<div class="ficha-sec"><h4>Descripción</h4><p>${p.descripcion}</p></div>` : '';
             const usoBlock = p.uso ? `<div class="ficha-sec"><h4>Modo de uso</h4><p>${p.uso}</p></div>` : '';
-            const nombreEsc = p.nombre.replace(/'/g, "\\'");
             const consultaMsg = `Hola, quiero información sobre el producto: ${p.nombre}${tieneConc ? ' ' + conc : ''}`;
             const waUrl = `https://wa.me/51935896961?text=${encodeURIComponent(consultaMsg)}`;
 
-            const relacionados = productos.filter(x => x.categoria === p.categoria && x.nombre !== p.nombre).sort(() => Math.random() - 0.5).slice(0, 4);
+            const relacionados = productos.filter(x => x.categoria === p.categoria && x._k !== p._k).sort(() => Math.random() - 0.5).slice(0, 4);
             let relHtml = '';
             if (relacionados.length) {
                 relHtml = '<div class="ficha-rel"><h4>También te puede interesar</h4><div class="ficha-rel-grid">' +
@@ -1584,7 +1583,7 @@
                             ? `<img src="${rImg}" alt="${r.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="rel-thumb-icon" style="display:none;">${formIcon(r.formaFarmaceutica)}</div>`
                             : `<div class="rel-thumb-icon">${formIcon(r.formaFarmaceutica)}</div>`;
                         const rPrecio = r.precio_por_unidad > 0 ? 'S/. ' + (r.precio_por_unidad * 0.9).toFixed(2) : '';
-                        return `<div class="ficha-rel-card" onclick="openFicha('${r.nombre.replace(/'/g, "\\'")}')"><div class="rel-thumb">${rThumb}</div><div class="rel-name">${r.nombre}</div><div class="rel-price">${rPrecio}</div></div>`;
+                        return `<div class="ficha-rel-card" onclick="openFicha(${r._k})"><div class="rel-thumb">${rThumb}</div><div class="rel-name">${r.nombre}</div><div class="rel-price">${rPrecio}</div></div>`;
                     }).join('') + '</div></div>';
             }
 
@@ -1606,8 +1605,8 @@
                 ${usoBlock}
                 <div class="ficha-actions">
                     ${esReceta
-                        ? `<button class="btn ficha-rx" onclick="solicitarReceta('${nombreEsc}'); closeFicha();">📋 Solicitar con receta</button>`
-                        : `<button class="btn" onclick="addCart('${nombreEsc}'); closeFicha();">🛒 Agregar al carrito</button>`}
+                        ? `<button class="btn ficha-rx" onclick="solicitarReceta(${p._k}); closeFicha();">📋 Solicitar con receta</button>`
+                        : `<button class="btn" onclick="addCart(${p._k}); closeFicha();">🛒 Agregar al carrito</button>`}
                     <a class="btn ficha-key" href="${waUrl}" target="_blank" rel="noopener">💬 Preguntar a la Dra. Key</a>
                 </div>
                 ${relHtml}
