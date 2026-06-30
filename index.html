@@ -306,11 +306,11 @@
             border-radius: 999px;
         }
         @media (max-width: 768px) {
-            .hero-banner { min-height: 130px; }
-            .hero-content { padding: 14px 16px; }
-            .hero-title { font-size: 18px; }
-            .hero-eyebrow { font-size: 10px; }
-            .hero-badges span { font-size: 10px; padding: 4px 8px; }
+            .hero-banner { min-height: 105px; }
+            .hero-content { padding: 12px 14px; }
+            .hero-title { font-size: 16px; }
+            .hero-eyebrow { font-size: 9px; }
+            .hero-badges span { font-size: 9px; padding: 3px 7px; }
         }
 
         .card {
@@ -844,11 +844,13 @@
             .doctorita-banner h3 { font-size: 16px; }
             .doctorita-img { width: 58px; height: 58px; }
             .doctorita-photo { width: 58px; height: 58px; border-width: 3px; }
-            /* Promo más grande y legible en móvil */
-            .promo-overlay { width: 62%; padding: 2.5cqw 3cqw 2.5cqw 4.5cqw; }
-            .po-title { font-size: 5.8cqw; }
-            .po-sub { font-size: 3.1cqw; margin-top: 1.4cqw; }
-            .po-cta { font-size: 2.9cqw; padding: 1.4cqw 3.2cqw; margin-top: 2.4cqw; }
+            /* Promo en móvil: imagen completa arriba (todos los productos visibles) + texto debajo */
+            .promo-banner { display: flex; flex-direction: column; }
+            .promo-banner-img { width: 100%; }
+            .promo-overlay { position: static; width: 100%; height: auto; padding: 13px 16px 15px; background: #eef4fc; }
+            .po-title { font-size: 19px; }
+            .po-sub { font-size: 13px; margin-top: 3px; }
+            .po-cta { font-size: 13px; padding: 8px 18px; margin-top: 11px; }
         }
 
         .newsletter-banner {
