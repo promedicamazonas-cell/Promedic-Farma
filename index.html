@@ -795,6 +795,7 @@
         .promo-banner { display: block; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15, 42, 74, 0.18); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
         .promo-banner:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15, 42, 74, 0.28); }
         .promo-banner-img { width: 100%; height: auto; display: block; }
+        .promo-note { text-align: center; font-size: 11.5px; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 12px; margin: -12px 0 18px; font-weight: 600; }
         .doctorita-banner {
             background: linear-gradient(135deg, #1e78d6 0%, #134b8f 55%, #0f2a4a 100%);
             border-radius: 16px;
@@ -1000,6 +1001,7 @@
         <a id="promo-banner" class="promo-banner" style="display:none;" target="_blank" rel="noopener" aria-label="Promoción especial">
             <img id="promo-banner-img" class="promo-banner-img" src="" alt="Promoción especial" />
         </a>
+        <div id="promo-note" class="promo-note" style="display:none;">🏷️ Precio promo — no acumulable con el 10% de la App</div>
 
         <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
             <h3>Consulta a la Dra. Key Aguilar</h3>
@@ -1684,14 +1686,17 @@
             // Banner grande con imagen (clickeable a WhatsApp)
             const banner = document.getElementById('promo-banner');
             const bimg = document.getElementById('promo-banner-img');
+            const note = document.getElementById('promo-note');
             if (banner && bimg) {
                 if (promoImg) {
-                    const msg = `Hola, quiero acceder a la promoción${promoDia ? ': ' + promoDia : ' del día'} 🔥`;
+                    const msg = `Hola, quiero acceder a la promoción${promoDia ? ': ' + promoDia : ' del día'} 🔥 (al precio promo, no acumulable con el 10% de la App).`;
                     banner.href = `https://wa.me/51935896961?text=${encodeURIComponent(msg)}`;
                     bimg.src = promoImg.startsWith('http') ? normalizeImg(promoImg) : promoImg;
                     banner.style.display = 'block';
+                    if (note) note.style.display = 'block';
                 } else {
                     banner.style.display = 'none';
+                    if (note) note.style.display = 'none';
                 }
             }
             // Línea de texto en la franja del 10%
