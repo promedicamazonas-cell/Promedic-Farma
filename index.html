@@ -173,25 +173,17 @@
             display: inline-block;
         }
         .banner-cond:hover { color: #fff; }
-        .promo10-timer { position: relative; z-index: 1; text-align: center; }
-        .promo10-timer .t-label { color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; opacity: 0.95; }
-        .t-clock { display: flex; align-items: flex-start; justify-content: center; gap: 5px; }
-        .t-unit { display: flex; flex-direction: column; align-items: center; }
-        .t-unit > span {
-            background: #1e293b; color: #fff;
-            font-size: 22px; font-weight: 800;
-            padding: 6px 9px; border-radius: 8px;
-            min-width: 44px; font-variant-numeric: tabular-nums;
-        }
-        .t-unit small { color: #fff; font-size: 9px; font-weight: 700; margin-top: 3px; text-transform: uppercase; }
-        .t-sep { color: #fff; font-size: 22px; font-weight: 800; padding-top: 5px; }
+        .promo10-promo { position: relative; z-index: 1; text-align: right; max-width: 48%; }
+        .promo10-promo .pd-tag { display: inline-block; background: #f59e0b; color: #0f2a4a; font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+        .promo10-promo .pd-text { color: #fff; font-size: 14px; font-weight: 700; line-height: 1.3; }
+        .promo10-promo.generic .pd-text { font-weight: 600; font-size: 12.5px; color: rgba(255,255,255,0.95); }
         @media (max-width: 768px) {
-            .promo10 { padding: 14px 16px; gap: 12px; justify-content: center; }
+            .promo10 { padding: 14px 16px; gap: 12px; justify-content: center; flex-wrap: wrap; }
             .promo10-text strong { font-size: 15px; }
             .promo10-big { font-size: 48px; }
             .promo10-big .pct { font-size: 27px; }
             .promo10-big .off { font-size: 13px; }
-            .t-unit > span { font-size: 18px; min-width: 38px; padding: 5px 7px; }
+            .promo10-promo { max-width: 100%; text-align: center; }
         }
 
         .info-banner {
@@ -1048,19 +1040,12 @@
             <div class="promo10-left">
                 <div class="promo10-big">10<span class="pct">%</span><span class="off">OFF</span></div>
                 <div class="promo10-text">
-                    <strong>¡Descuento solo por la App!</strong>
-                    <span>En todo tu pedido de hoy</span>
+                    <strong>Descuento exclusivo por la App</strong>
+                    <span>En todos tus pedidos, siempre</span>
                 </div>
             </div>
-            <div class="promo10-timer">
-                <div class="t-label">⏰ La oferta de hoy termina en</div>
-                <div class="t-clock">
-                    <div class="t-unit"><span id="t-h">00</span><small>Horas</small></div>
-                    <div class="t-sep">:</div>
-                    <div class="t-unit"><span id="t-m">00</span><small>Min</small></div>
-                    <div class="t-sep">:</div>
-                    <div class="t-unit"><span id="t-s">00</span><small>Seg</small></div>
-                </div>
+            <div class="promo10-promo generic" id="promo-dia">
+                <div class="pd-text">🎁 Pendiente de tus combos y promociones de tus productos favoritos</div>
             </div>
         </div>
 
@@ -1248,6 +1233,7 @@
     <script>
         let productos = [];
         let carrito = [];
+        let promoDia = '';
         let categoriaActual = 'Todas';
         let letraActual = '';
 
@@ -1268,8 +1254,11 @@
                     header: true,
                     skipEmptyLines: true,
                     complete: (results) => {
-                        productos = results.data
-                            .filter(p => p.nombre && p.nombre.trim())
+                        const filas = results.data.filter(p => p.nombre && p.nombre.trim());
+                        const promoRow = filas.find(p => p.nombre.trim().toUpperCase() === 'PROMO');
+                        promoDia = promoRow ? (promoRow.descripcion || promoRow.uso || '').trim() : '';
+                        productos = filas
+                            .filter(p => p.nombre.trim().toUpperCase() !== 'PROMO')
                             .map(p => {
                                 const cv = (p.condicion_venta || '').trim().toLowerCase();
                                 const recetaSi = /^(s[ií]|x|1|true|requiere)/i.test((p.receta || '').trim());
@@ -1306,6 +1295,7 @@
                         generarNav();
                         generarLetras();
                         renderProducts();
+                        renderPromo();
                     },
                     error: (error) => {
                         console.error('Error en Papa Parse:', error);
@@ -1678,23 +1668,18 @@
             document.getElementById('img-modal').classList.remove('active');
         }
 
-        // Contador regresivo del 10% (se reinicia cada día a medianoche)
-        function tickPromo10() {
-            const now = new Date();
-            const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-            let diff = Math.max(0, Math.floor((end - now) / 1000));
-            const h = String(Math.floor(diff / 3600)).padStart(2, '0');
-            const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-            const s = String(diff % 60).padStart(2, '0');
-            const eh = document.getElementById('t-h');
-            if (eh) {
-                eh.textContent = h;
-                document.getElementById('t-m').textContent = m;
-                document.getElementById('t-s').textContent = s;
+        // Promo del día (editable desde el Sheet: fila con nombre "PROMO" y el texto en la columna "descripcion")
+        function renderPromo() {
+            const cont = document.getElementById('promo-dia');
+            if (!cont) return;
+            if (promoDia) {
+                cont.classList.remove('generic');
+                cont.innerHTML = `<span class="pd-tag">🔥 Promo del día</span><div class="pd-text">${promoDia}</div>`;
+            } else {
+                cont.classList.add('generic');
+                cont.innerHTML = `<div class="pd-text">🎁 Pendiente de tus combos y promociones de tus productos favoritos</div>`;
             }
         }
-        tickPromo10();
-        setInterval(tickPromo10, 1000);
 
         // Botón subir al inicio
         function scrollToTop() {
