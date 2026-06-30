@@ -556,6 +556,25 @@
         .ficha-sec { margin-bottom: 14px; }
         .ficha-sec h4 { font-size: 13px; font-weight: 800; color: #1f2937; margin-bottom: 5px; }
         .ficha-sec p { font-size: 13px; color: #4b5563; line-height: 1.55; }
+        .ficha-warn { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; }
+        .ficha-warn h4 { font-size: 13px; font-weight: 800; color: #92400e; margin-bottom: 4px; }
+        .ficha-warn p { font-size: 13px; color: #78350f; line-height: 1.55; }
+        .consulta-cred { font-size: 11.5px; color: #356614; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 10px; margin-bottom: 14px; font-weight: 600; text-align: center; line-height: 1.4; }
+        .consulta-tipos { display: flex; gap: 10px; margin-bottom: 12px; }
+        .consulta-tipo { flex: 1; }
+        .consulta-tipo input { display: none; }
+        .consulta-tipo > span { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 2px solid #e5e7eb; border-radius: 10px; padding: 12px 8px; cursor: pointer; transition: all 0.15s; }
+        .consulta-tipo > span b { font-size: 13px; color: #1f2937; }
+        .consulta-tipo > span small { font-size: 16px; font-weight: 800; color: #1565c0; }
+        .consulta-tipo input:checked + span { border-color: #1565c0; background: #eff6ff; }
+        .consulta-pasos { background: #f9fafb; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+        .consulta-pasos p { font-size: 13px; color: #1f2937; margin-bottom: 6px; font-weight: 700; }
+        .consulta-pasos ol { margin: 0; padding-left: 18px; }
+        .consulta-pasos li { font-size: 12.5px; color: #4b5563; line-height: 1.5; margin-bottom: 4px; }
+        .consulta-yape { display: flex; flex-direction: column; align-items: center; gap: 1px; background: #f3e8ff; border: 1px solid #e9d5ff; border-radius: 10px; padding: 10px; margin-bottom: 14px; }
+        .consulta-yape span { font-size: 11px; color: #6b21a8; font-weight: 600; }
+        .consulta-yape b { font-size: 18px; color: #6b21a8; letter-spacing: 0.5px; }
+        .consulta-yape small { font-size: 11px; color: #7c3aed; }
         .ficha-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
         .ficha-actions .btn { padding: 12px; font-size: 13px; text-align: center; text-decoration: none; flex: 1; }
         .ficha-key { background: #25D366; box-shadow: 0 2px 6px rgba(37,211,102,0.3); }
@@ -782,21 +801,21 @@
         .loading { text-align: center; padding: 40px; color: #6b7280; }
 
         .doctorita-banner {
-            background: linear-gradient(135deg, #5daa28 0%, #4a8a1f 100%);
-            border-radius: 14px;
+            background: linear-gradient(135deg, #1e78d6 0%, #134b8f 55%, #0f2a4a 100%);
+            border-radius: 16px;
             padding: 22px 28px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
-            box-shadow: 0 4px 14px rgba(74, 138, 31, 0.25);
+            box-shadow: 0 8px 24px rgba(21, 101, 192, 0.32);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .doctorita-banner:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 138, 31, 0.38);
+            box-shadow: 0 12px 30px rgba(21, 101, 192, 0.45);
         }
         .doctorita-banner h3 {
             color: white;
@@ -983,6 +1002,24 @@
     <nav class="cat-nav" id="cat-nav"></nav>
 
     <div class="container">
+        <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
+            <h3>Consulta a la Dra. Key Aguilar</h3>
+            <img class="doctorita-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('doctorita-fallback').style.display='flex';" />
+            <div id="doctorita-fallback" class="doctorita-photo doctorita-fallback" style="display:none;">
+                <svg width="80" height="80" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Doctora">
+                    <path d="M34 66 Q33 32 60 32 Q87 32 86 66 L86 80 Q86 71 79 71 L41 71 Q34 71 34 80 Z" fill="#4b3a2f"/>
+                    <circle cx="60" cy="58" r="22" fill="#f7d3b0"/>
+                    <path d="M38 58 Q35 33 60 33 Q85 33 82 58 Q75 45 60 45 Q45 45 38 58 Z" fill="#4b3a2f"/>
+                    <circle cx="52" cy="57" r="2.6" fill="#3f3f46"/>
+                    <circle cx="68" cy="57" r="2.6" fill="#3f3f46"/>
+                    <path d="M53 66 Q60 72 67 66" stroke="#c2703b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                    <path d="M30 118 Q30 86 46 79 L60 95 L74 79 Q90 86 90 118 Z" fill="#4a8a1f"/>
+                    <path d="M52 82 L60 95 L52 100 Z" fill="#ffffff"/>
+                    <path d="M68 82 L60 95 L68 100 Z" fill="#ffffff"/>
+                </svg>
+            </div>
+        </div>
+
         <div class="hero-banner">
             <svg class="rdm-scene" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <circle cx="505" cy="44" r="30" fill="#f7d9a0" opacity="0.85"/>
@@ -1048,24 +1085,6 @@
             </div>
         </div>
 
-        <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
-            <h3>Consulta a la Dra. Key Aguilar</h3>
-            <img class="doctorita-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('doctorita-fallback').style.display='flex';" />
-            <div id="doctorita-fallback" class="doctorita-photo doctorita-fallback" style="display:none;">
-                <svg width="80" height="80" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Doctora">
-                    <path d="M34 66 Q33 32 60 32 Q87 32 86 66 L86 80 Q86 71 79 71 L41 71 Q34 71 34 80 Z" fill="#4b3a2f"/>
-                    <circle cx="60" cy="58" r="22" fill="#f7d3b0"/>
-                    <path d="M38 58 Q35 33 60 33 Q85 33 82 58 Q75 45 60 45 Q45 45 38 58 Z" fill="#4b3a2f"/>
-                    <circle cx="52" cy="57" r="2.6" fill="#3f3f46"/>
-                    <circle cx="68" cy="57" r="2.6" fill="#3f3f46"/>
-                    <path d="M53 66 Q60 72 67 66" stroke="#c2703b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-                    <path d="M30 118 Q30 86 46 79 L60 95 L74 79 Q90 86 90 118 Z" fill="#4a8a1f"/>
-                    <path d="M52 82 L60 95 L52 100 Z" fill="#ffffff"/>
-                    <path d="M68 82 L60 95 L68 100 Z" fill="#ffffff"/>
-                </svg>
-            </div>
-        </div>
-
         <div class="newsletter-banner">
             <h3>📩 Tips de salud de la Dra. Key</h3>
             <p>Suscríbete y recibe información de medicina, tratamientos, promociones y ofertas directo a tu WhatsApp.</p>
@@ -1114,15 +1133,39 @@
 
     <div id="consulta-modal" class="modal">
         <div class="modal-content">
-            <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #1f2937;">💊 Consulta a la Doctorita Key</h2>
+            <h2 style="font-size: 17px; font-weight: 800; margin-bottom: 12px; color: #1f2937;">🩺 Agenda tu consulta con la Dra. Key</h2>
 
-            <div class="form-section" id="consulta-form" style="display: block; background: #f9fafb; border: 1px solid #e5e7eb;">
-                <p style="font-size: 12px; font-weight: 600; margin-bottom: 12px; color: #1f2937;">Cuéntanos tu pregunta:</p>
-                <input type="text" id="consulta-name" placeholder="Tu nombre *" />
-                <input type="tel" id="consulta-phone" placeholder="Tu teléfono/WhatsApp *" />
-                <textarea id="consulta-pregunta" placeholder="Tu pregunta o consulta *" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 12px; min-height: 100px; margin-bottom: 12px; resize: vertical;"></textarea>
-                <button class="btn" onclick="enviarConsulta()" style="width: 100%; margin-bottom: 8px;">📱 Enviar Pregunta</button>
+            <div class="consulta-cred">Consultorio médico propio · IPRESS N° 31852<br>Dra. Key Aguilar González</div>
+
+            <div class="consulta-tipos">
+                <label class="consulta-tipo">
+                    <input type="radio" name="consulta-tipo" value="General" checked>
+                    <span><b>Consulta general</b><small>S/ 50</small></span>
+                </label>
+                <label class="consulta-tipo">
+                    <input type="radio" name="consulta-tipo" value="Estética">
+                    <span><b>Consulta estética</b><small>S/ 70</small></span>
+                </label>
             </div>
+
+            <input type="text" id="consulta-name" placeholder="Tu nombre (opcional)" />
+
+            <div class="consulta-pasos">
+                <p>¿Cómo agendar?</p>
+                <ol>
+                    <li>Escríbenos por WhatsApp para ver <b>disponibilidad y horario</b>.</li>
+                    <li>Paga por <b>Yape</b> para confirmar tu cita.</li>
+                    <li>Acude a tu cita en nuestro consultorio.</li>
+                </ol>
+            </div>
+
+            <div class="consulta-yape">
+                <span>Yape para confirmar tu cita</span>
+                <b>926 341 668</b>
+                <small>Key Aguilar González</small>
+            </div>
+
+            <button class="btn ficha-key" onclick="agendarConsulta()" style="width: 100%; margin-bottom: 10px;">💬 Consultar disponibilidad por WhatsApp</button>
 
             <div class="modal-buttons">
                 <button class="btn" onclick="closeConsultaModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
@@ -1194,6 +1237,7 @@
             <p>Q.F. Directora Técnica: <strong>Judy Cleofé Chávez Santos</strong> · CQFP N° 29394</p>
             <p>Autorización Sanitaria de Funcionamiento: R.D. N° 0043-2025-GORE Amazonas-DRSA/DMID</p>
             <p>Farmacia del Establecimiento de Salud <strong>Promedic Amazonas</strong> · RUC 15608094153</p>
+            <p>Consultorio médico propio · <strong>IPRESS N° 31852</strong> · Dra. Key Aguilar González</p>
             <p>Todos nuestros productos cuentan con registro sanitario de DIGEMID.</p>
         </div>
 
@@ -1245,6 +1289,8 @@
                                     imagen: (p.imagen || '').trim(),
                                     descripcion: (p.descripcion || '').trim(),
                                     uso: (p.uso || '').trim(),
+                                    principio: (p.principio_activo || p.principio || '').trim(),
+                                    advertencias: (p.advertencias || '').trim(),
                                     receta: (p.receta || '').trim(),
                                     cond: cond,
                                     precio_por_unidad: parseFloat(p.precio_por_unidad) || 0,
@@ -1569,8 +1615,9 @@
                 : `<div class="ficha-img ficha-img-empty">${formIcon(p.formaFarmaceutica)}</div>`;
             const esReceta = p.cond === 'RECETA';
             const recetaBadge = esReceta ? `<div class="ficha-receta">⚠️ Requiere receta médica</div>` : '';
-            const descBlock = p.descripcion ? `<div class="ficha-sec"><h4>Descripción</h4><p>${p.descripcion}</p></div>` : '';
+            const descBlock = p.descripcion ? `<div class="ficha-sec"><h4>¿Para qué sirve?</h4><p>${p.descripcion}</p></div>` : '';
             const usoBlock = p.uso ? `<div class="ficha-sec"><h4>Modo de uso</h4><p>${p.uso}</p></div>` : '';
+            const advBlock = p.advertencias ? `<div class="ficha-warn"><h4>⚠️ Advertencias</h4><p>${p.advertencias}</p></div>` : '';
             const consultaMsg = `Hola, quiero información sobre el producto: ${p.nombre}${tieneConc ? ' ' + conc : ''}`;
             const waUrl = `https://wa.me/51935896961?text=${encodeURIComponent(consultaMsg)}`;
 
@@ -1599,11 +1646,13 @@
                     ? `<div class="ficha-price"><span class="ficha-price-old">S/. ${p.precio_por_unidad.toFixed(2)}</span>S/. ${(p.precio_por_unidad * 0.9).toFixed(2)} <span class="ficha-off">-10% App</span></div>`
                     : `<div class="ficha-price">S/. ${p.precio_por_unidad.toFixed(2)} <span>por unidad</span></div>`}
                 <div class="ficha-meta">
+                    ${p.principio ? `<div class="ficha-row"><span>Principio activo</span><b>${p.principio}</b></div>` : ''}
                     ${tieneConc ? `<div class="ficha-row"><span>Concentración</span><b>${conc}</b></div>` : ''}
                     <div class="ficha-row"><span>Stock disponible</span><b>${p.stock_unidades} un.</b></div>
                 </div>
                 ${descBlock}
                 ${usoBlock}
+                ${advBlock}
                 <div class="ficha-actions">
                     ${esReceta
                         ? `<button class="btn ficha-rx" onclick="solicitarReceta(${p._k}); closeFicha();">📋 Solicitar con receta</button>`
@@ -1662,28 +1711,20 @@
 
         function closeConsultaModal() {
             document.getElementById('consulta-modal').classList.remove('active');
-            document.getElementById('consulta-name').value = '';
-            document.getElementById('consulta-phone').value = '';
-            document.getElementById('consulta-pregunta').value = '';
+            const n = document.getElementById('consulta-name');
+            if (n) n.value = '';
         }
 
-        function enviarConsulta() {
-            const name = document.getElementById('consulta-name').value;
-            const phone = document.getElementById('consulta-phone').value;
-            const pregunta = document.getElementById('consulta-pregunta').value;
-
-            if (!name || !phone || !pregunta) {
-                alert('Por favor completa todos los campos');
-                return;
-            }
-
-            const mensaje = `💊 CONSULTA CON LA DOCTORITA KEY\n\n👤 Paciente: ${name}\n📱 Teléfono: ${phone}\n\n❓ Pregunta:\n${pregunta}\n\n---\nPor favor, la Doctorita Key responderá tu consulta en breve.\nGuarda este chat para recibir la respuesta.`;
-
+        function agendarConsulta() {
+            const tipoEl = document.querySelector('input[name="consulta-tipo"]:checked');
+            const tipo = tipoEl ? tipoEl.value : 'General';
+            const precio = tipo === 'Estética' ? '70' : '50';
+            const name = (document.getElementById('consulta-name').value || '').trim();
+            const saludo = name ? `Hola Dra. Key, soy ${name}. ` : 'Hola Dra. Key, ';
+            const mensaje = `${saludo}quiero agendar una *Consulta ${tipo}* (S/ ${precio}) en su consultorio. ¿Qué disponibilidad y horarios tiene? Quedo atento(a) para coordinar y pagar por Yape para confirmar la cita.`;
             const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
-
             closeConsultaModal();
-            alert('✓ Tu consulta ha sido enviada. La Doctorita Key te responderá en breve.');
         }
 
         function suscribirNewsletter() {
