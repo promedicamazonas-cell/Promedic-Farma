@@ -1,5 +1,5 @@
 // Service Worker - ProMedic Amazonas
-const CACHE = 'promedic-v1';
+const CACHE = 'promedic-v2';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
@@ -13,10 +13,16 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Estrategia "network-first": siempre intenta traer lo más fresco (catálogo actualizado);
-// si no hay internet, usa la última versión guardada.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+
+  const url = new URL(e.request.url);
+
+  // IMPORTANTE: nunca interceptar ni cachear datos externos (Google Sheets, imágenes de Imgur, etc.).
+  // Siempre van directo a la red para que el catálogo y las promos estén frescos.
+  if (url.hostname !== self.location.hostname) return;
+
+  // Solo el "cascarón" de la app (index.html, manifest) usa estrategia network-first.
   e.respondWith(
     fetch(e.request)
       .then((resp) => {

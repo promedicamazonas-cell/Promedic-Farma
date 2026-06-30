@@ -1314,6 +1314,11 @@
                             .filter(p => p.stock_unidades > 0 && p.cond !== 'CONTROLADO');
                         productos.forEach((p, i) => { p._k = i; });
 
+                        if (!productos.length) {
+                            document.getElementById('loading').innerHTML = '⚠️ No se pudieron cargar los productos en este momento. Revisa tu conexión y vuelve a cargar la página.';
+                            return;
+                        }
+
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
                         generarBotonesCategorias();
