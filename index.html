@@ -792,6 +792,9 @@
 
         .loading { text-align: center; padding: 40px; color: #6b7280; }
 
+        .promo-banner { display: block; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15, 42, 74, 0.18); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .promo-banner:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15, 42, 74, 0.28); }
+        .promo-banner-img { width: 100%; height: auto; display: block; }
         .doctorita-banner {
             background: linear-gradient(135deg, #1e78d6 0%, #134b8f 55%, #0f2a4a 100%);
             border-radius: 16px;
@@ -994,6 +997,10 @@
     <nav class="cat-nav" id="cat-nav"></nav>
 
     <div class="container">
+        <a id="promo-banner" class="promo-banner" style="display:none;" target="_blank" rel="noopener" aria-label="Promoción especial">
+            <img id="promo-banner-img" class="promo-banner-img" src="" alt="Promoción especial" />
+        </a>
+
         <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
             <h3>Consulta a la Dra. Key Aguilar</h3>
             <img class="doctorita-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('doctorita-fallback').style.display='flex';" />
@@ -1234,6 +1241,7 @@
         let productos = [];
         let carrito = [];
         let promoDia = '';
+        let promoImg = '';
         let categoriaActual = 'Todas';
         let letraActual = '';
 
@@ -1257,6 +1265,7 @@
                         const filas = results.data.filter(p => p.nombre && p.nombre.trim());
                         const promoRow = filas.find(p => p.nombre.trim().toUpperCase() === 'PROMO');
                         promoDia = promoRow ? (promoRow.descripcion || promoRow.uso || '').trim() : '';
+                        promoImg = promoRow ? (promoRow.imagen || '').trim() : '';
                         productos = filas
                             .filter(p => p.nombre.trim().toUpperCase() !== 'PROMO')
                             .map(p => {
@@ -1668,8 +1677,24 @@
             document.getElementById('img-modal').classList.remove('active');
         }
 
-        // Promo del día (editable desde el Sheet: fila con nombre "PROMO" y el texto en la columna "descripcion")
+        // Promo del día (editable desde el Sheet: fila con nombre "PROMO")
+        //  - imagen  -> banner grande clickeable arriba de todo
+        //  - descripcion -> texto de la promo (respaldo / mensaje de WhatsApp)
         function renderPromo() {
+            // Banner grande con imagen (clickeable a WhatsApp)
+            const banner = document.getElementById('promo-banner');
+            const bimg = document.getElementById('promo-banner-img');
+            if (banner && bimg) {
+                if (promoImg) {
+                    const msg = `Hola, quiero acceder a la promoción${promoDia ? ': ' + promoDia : ' del día'} 🔥`;
+                    banner.href = `https://wa.me/51935896961?text=${encodeURIComponent(msg)}`;
+                    bimg.src = promoImg.startsWith('http') ? normalizeImg(promoImg) : promoImg;
+                    banner.style.display = 'block';
+                } else {
+                    banner.style.display = 'none';
+                }
+            }
+            // Línea de texto en la franja del 10%
             const cont = document.getElementById('promo-dia');
             if (!cont) return;
             if (promoDia) {
