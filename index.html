@@ -1267,12 +1267,13 @@
 
         async function cargarProductos() {
             try {
-                const csvUrl = 'https://docs.google.com/spreadsheets/d/182UZKEzDkVuph-woSp-ZjA6adIU1HTisEatJpxRCFvM/gviz/tq?tqx=out:csv&gid=2093510093';
+                const csvUrl = 'https://docs.google.com/spreadsheets/d/182UZKEzDkVuph-woSp-ZjA6adIU1HTisEatJpxRCFvM/gviz/tq?tqx=out:csv&gid=2093510093&_=' + Date.now();
                 const response = await fetch(csvUrl);
                 const csv = await response.text();
 
                 Papa.parse(csv, {
                     header: true,
+                    transformHeader: (h) => h.trim(),
                     skipEmptyLines: true,
                     complete: (results) => {
                         const filas = results.data.filter(p => p.nombre && p.nombre.trim());
