@@ -786,9 +786,12 @@
 
         .loading { text-align: center; padding: 40px; color: #6b7280; }
 
-        .promo-banner { display: block; position: relative; container-type: inline-size; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15, 42, 74, 0.18); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .promo-banner { display: block; position: relative; container-type: inline-size; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15, 42, 74, 0.18); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.22s ease; }
         .promo-banner:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15, 42, 74, 0.28); }
         .promo-banner-img { width: 100%; height: auto; display: block; }
+        .promo-dots { position: absolute; bottom: 3.5cqw; left: 4.5cqw; display: flex; gap: 1.4cqw; z-index: 3; }
+        .promo-dot { width: 2cqw; height: 2cqw; min-width: 8px; min-height: 8px; border-radius: 999px; background: rgba(21,101,192,0.3); border: none; padding: 0; cursor: pointer; transition: width 0.2s, background 0.2s; }
+        .promo-dot.active { width: 5cqw; min-width: 22px; background: #1565c0; }
         .promo-overlay { position: absolute; top: 0; left: 0; height: 100%; width: 45%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 2.5cqw 2cqw 2.5cqw 4.5cqw; overflow: hidden; background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.12) 58%, rgba(255,255,255,0) 100%); }
         .po-title { font-size: 5.4cqw; font-weight: 800; color: #0f2a4a; line-height: 1.04; letter-spacing: -0.4px; text-shadow: 0 1px 5px rgba(255,255,255,0.75); }
         .po-sub { font-size: 2.9cqw; font-weight: 600; color: #1565c0; line-height: 1.2; margin-top: 1.2cqw; text-shadow: 0 1px 4px rgba(255,255,255,0.8); }
@@ -1007,6 +1010,7 @@
                 <span class="po-cta">Pídela por la App →</span>
                 <div class="po-note">🏷️ No acumulable con el 10% de la App</div>
             </div>
+            <div class="promo-dots" id="promo-dots" style="display:none;"></div>
         </a>
 
         <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
@@ -1225,10 +1229,9 @@
     <script>
         let productos = [];
         let carrito = [];
-        let promoDia = '';
-        let promoImg = '';
-        let promoTitulo = '';
-        let promoBajada = '';
+        let promos = [];
+        let promoIdx = 0;
+        let promoTimer = null;
         let categoriaActual = 'Todas';
         let letraActual = '';
 
@@ -1251,13 +1254,13 @@
                     skipEmptyLines: true,
                     complete: (results) => {
                         const filas = results.data.filter(p => p.nombre && p.nombre.trim());
-                        const promoRow = filas.find(p => p.nombre.trim().toUpperCase() === 'PROMO');
-                        promoTitulo = promoRow ? (promoRow.descripcion || '').trim() : '';
-                        promoBajada = promoRow ? (promoRow.uso || '').trim() : '';
-                        promoDia = promoTitulo || promoBajada;
-                        promoImg = promoRow ? (promoRow.imagen || '').trim() : '';
+                        const esPromo = (n) => /^promo\s*\d*$/i.test((n || '').trim());
+                        promos = filas
+                            .filter(p => esPromo(p.nombre))
+                            .map(p => ({ img: (p.imagen || '').trim(), titulo: (p.descripcion || '').trim(), bajada: (p.uso || '').trim() }))
+                            .filter(pr => pr.img);
                         productos = filas
-                            .filter(p => p.nombre.trim().toUpperCase() !== 'PROMO')
+                            .filter(p => !esPromo(p.nombre))
                             .map(p => {
                                 const cv = (p.condicion_venta || '').trim().toLowerCase();
                                 const recetaSi = /^(s[ií]|x|1|true|requiere)/i.test((p.receta || '').trim());
@@ -1672,45 +1675,73 @@
             document.getElementById('img-modal').classList.remove('active');
         }
 
-        // Promo del día (editable desde el Sheet: fila con nombre "PROMO")
-        //  - imagen  -> banner grande clickeable arriba de todo
-        //  - descripcion -> texto de la promo (respaldo / mensaje de WhatsApp)
+        // Carrusel de promos (editable desde el Sheet: filas con nombre PROMO, PROMO2, PROMO3...)
+        //  imagen -> diapositiva | descripcion -> título | uso -> bajada
         function renderPromo() {
-            // Banner grande con imagen (clickeable a WhatsApp)
-            const banner = document.getElementById('promo-banner');
-            const bimg = document.getElementById('promo-banner-img');
-            const note = document.getElementById('promo-note');
-            const overlay = document.getElementById('promo-overlay');
-            if (banner && bimg) {
-                if (promoImg) {
-                    const msg = `Hola, quiero acceder a la promoción${promoDia ? ': ' + promoDia : ' del día'} 🔥 (al precio promo, no acumulable con el 10% de la App).`;
-                    banner.href = `https://wa.me/51935896961?text=${encodeURIComponent(msg)}`;
-                    bimg.src = promoImg.startsWith('http') ? normalizeImg(promoImg) : promoImg;
-                    banner.style.display = 'block';
-                    if (note) note.style.display = 'block';
-                    // Texto encima de la imagen (zona izquierda)
-                    if (overlay) {
-                        const t = document.getElementById('po-title');
-                        const s = document.getElementById('po-sub');
-                        if (t) t.textContent = promoTitulo;
-                        if (s) { s.textContent = promoBajada; s.style.display = promoBajada ? 'block' : 'none'; }
-                        overlay.style.display = (promoTitulo || promoBajada) ? 'flex' : 'none';
-                    }
-                } else {
-                    banner.style.display = 'none';
-                    if (note) note.style.display = 'none';
-                    if (overlay) overlay.style.display = 'none';
-                }
-            }
-            // Línea de texto en la franja del 10% (solo si NO hay banner con imagen, para no duplicar)
+            // La franja del 10% queda siempre con su mensaje genérico
             const cont = document.getElementById('promo-dia');
-            if (!cont) return;
-            if (promoDia && !promoImg) {
-                cont.classList.remove('generic');
-                cont.innerHTML = `<span class="pd-tag">🔥 Promo del día</span><div class="pd-text">${promoDia}</div>`;
-            } else {
+            if (cont) {
                 cont.classList.add('generic');
                 cont.innerHTML = `<div class="pd-text">🎁 Pendiente de tus combos y promociones de tus productos favoritos</div>`;
+            }
+
+            const banner = document.getElementById('promo-banner');
+            const dots = document.getElementById('promo-dots');
+            if (promoTimer) { clearInterval(promoTimer); promoTimer = null; }
+            if (!banner) return;
+
+            if (!promos.length) {
+                banner.style.display = 'none';
+                if (dots) dots.style.display = 'none';
+                return;
+            }
+
+            // Precargar imágenes para evitar parpadeos al rotar
+            promos.forEach(pr => { const im = new Image(); im.src = pr.img.startsWith('http') ? normalizeImg(pr.img) : pr.img; });
+
+            banner.style.display = 'block';
+            promoIdx = 0;
+
+            if (dots) {
+                dots.innerHTML = promos.map((_, i) => `<button class="promo-dot${i === 0 ? ' active' : ''}" aria-label="Promoción ${i + 1}" onclick="event.preventDefault(); event.stopPropagation(); goPromo(${i});"></button>`).join('');
+                dots.style.display = promos.length > 1 ? 'flex' : 'none';
+            }
+
+            showPromoSlide(0);
+            if (promos.length > 1) {
+                promoTimer = setInterval(() => goPromo((promoIdx + 1) % promos.length), 5000);
+            }
+        }
+
+        function showPromoSlide(i) {
+            const pr = promos[i];
+            if (!pr) return;
+            const banner = document.getElementById('promo-banner');
+            const bimg = document.getElementById('promo-banner-img');
+            const overlay = document.getElementById('promo-overlay');
+            const t = document.getElementById('po-title');
+            const s = document.getElementById('po-sub');
+            const msg = `Hola, quiero acceder a la promoción${pr.titulo ? ': ' + pr.titulo : ' del día'} 🔥 (al precio promo, no acumulable con el 10% de la App).`;
+            if (banner) banner.href = `https://wa.me/51935896961?text=${encodeURIComponent(msg)}`;
+            if (bimg) bimg.src = pr.img.startsWith('http') ? normalizeImg(pr.img) : pr.img;
+            if (t) t.textContent = pr.titulo;
+            if (s) { s.textContent = pr.bajada; s.style.display = pr.bajada ? 'block' : 'none'; }
+            if (overlay) overlay.style.display = (pr.titulo || pr.bajada) ? 'flex' : 'none';
+            document.querySelectorAll('.promo-dot').forEach((d, di) => d.classList.toggle('active', di === i));
+            promoIdx = i;
+        }
+
+        function goPromo(i) {
+            if (promoTimer) { clearInterval(promoTimer); promoTimer = null; }
+            const banner = document.getElementById('promo-banner');
+            if (banner) {
+                banner.style.opacity = '0';
+                setTimeout(() => { showPromoSlide(i); banner.style.opacity = '1'; }, 220);
+            } else {
+                showPromoSlide(i);
+            }
+            if (promos.length > 1) {
+                promoTimer = setInterval(() => goPromo((promoIdx + 1) % promos.length), 5000);
             }
         }
 
