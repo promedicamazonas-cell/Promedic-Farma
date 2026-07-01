@@ -34,7 +34,10 @@
             font-weight: 700;
             text-decoration: none;
         }
+        .wa-main { display: inline-flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; color: inherit; text-decoration: none; }
         .wa-topbar strong { font-weight: 800; }
+        .wa-cond { background: none; border: none; color: #075e54; font-size: 11.5px; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 0; opacity: 0.9; }
+        .wa-cond:hover { opacity: 1; }
         .wa-num {
             display: inline-flex;
             align-items: center;
@@ -844,13 +847,6 @@
             .doctorita-banner h3 { font-size: 16px; }
             .doctorita-img { width: 58px; height: 58px; }
             .doctorita-photo { width: 58px; height: 58px; border-width: 3px; }
-            /* Promo en móvil: imagen completa arriba (todos los productos visibles) + texto debajo */
-            .promo-banner { display: flex; flex-direction: column; }
-            .promo-banner-img { width: 100%; }
-            .promo-overlay { position: static; width: 100%; height: auto; padding: 13px 16px 15px; background: #eef4fc; }
-            .po-title { font-size: 19px; }
-            .po-sub { font-size: 13px; margin-top: 3px; }
-            .po-cta { font-size: 13px; padding: 8px 18px; margin-top: 11px; }
         }
 
         .newsletter-banner {
@@ -993,12 +989,15 @@
     </style>
 </head>
 <body>
-    <a class="wa-topbar" href="https://wa.me/51935896961" target="_blank" rel="noopener">
-        <span>📲 Pide <strong>rápido y fácil</strong> por nuestro WhatsApp</span>
-        <span class="wa-num">935 896 961
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
-        </span>
-    </a>
+    <div class="wa-topbar">
+        <a class="wa-main" href="https://wa.me/51935896961" target="_blank" rel="noopener">
+            <span>🛵 <strong>Pídelo y te lo llevamos</strong> — por WhatsApp</span>
+            <span class="wa-num">935 896 961
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
+            </span>
+        </a>
+        <button class="wa-cond" onclick="openCond()">Condiciones de envío</button>
+    </div>
 
     <header>
         <div class="header-logo">
@@ -1038,29 +1037,6 @@
             </div>
         </div>
 
-        <div class="hero-banner">
-            <svg class="rdm-scene" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="505" cy="44" r="30" fill="#f7d9a0" opacity="0.85"/>
-                <circle cx="505" cy="44" r="44" fill="#f7d9a0" opacity="0.18"/>
-                <path d="M0 150 L90 95 L170 140 L260 78 L360 145 L450 100 L540 150 L600 118 L600 200 L0 200 Z" fill="#3a7d54" opacity="0.5"/>
-                <path d="M0 176 L120 110 L230 166 L330 108 L430 166 L520 120 L600 162 L600 200 L0 200 Z" fill="#235c3c"/>
-                <path d="M0 200 L0 178 L150 150 L300 186 L460 150 L600 184 L600 200 Z" fill="#5b3a23"/>
-                <g stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round">
-                    <path d="M120 56 q5 -5 10 0"/><path d="M130 56 q5 -5 10 0"/>
-                    <path d="M156 46 q5 -5 10 0"/><path d="M166 46 q5 -5 10 0"/>
-                </g>
-            </svg>
-            <div class="hero-content">
-                <span class="hero-eyebrow">📍 Rodríguez de Mendoza · Paraíso Escondido</span>
-                <h2 class="hero-title">Haz tu pedido,<br/>nosotros <b>lo llevamos</b> 🛵</h2>
-                <div class="hero-badges">
-                    <span>⏱️ Rápido</span>
-                    <span>✓ Seguro</span>
-                    <span>📍 A donde estés</span>
-                </div>
-                <button class="banner-cond" onclick="openCond()">* Ciertas condiciones aplican</button>
-            </div>
-        </div>
 
         <div class="promo10">
             <div class="promo10-left">
