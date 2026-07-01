@@ -786,7 +786,7 @@
 
         .loading { text-align: center; padding: 40px; color: #6b7280; }
 
-        .promo-banner { display: block; position: relative; container-type: inline-size; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15, 42, 74, 0.18); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.55s ease; }
+        .promo-banner { display: block; position: relative; container-type: inline-size; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15, 42, 74, 0.18); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.85s ease; }
         .promo-banner:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15, 42, 74, 0.28); }
         .promo-banner-img { width: 100%; height: auto; display: block; }
         .promo-dots { position: absolute; bottom: 3.5cqw; left: 4.5cqw; display: flex; gap: 1.4cqw; z-index: 3; }
@@ -1753,7 +1753,7 @@
             const banner = document.getElementById('promo-banner');
             if (banner) {
                 banner.style.opacity = '0';
-                setTimeout(() => { showPromoSlide(i); banner.style.opacity = '1'; }, 550);
+                setTimeout(() => { showPromoSlide(i); banner.style.opacity = '1'; }, 850);
             } else {
                 showPromoSlide(i);
             }
