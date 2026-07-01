@@ -1007,8 +1007,8 @@
             <div id="promo-overlay" class="promo-overlay" style="display:none;">
                 <div class="po-title" id="po-title"></div>
                 <div class="po-sub" id="po-sub"></div>
-                <span class="po-cta">Pídela por la App →</span>
-                <div class="po-note">🏷️ No acumulable con el 10% de la App</div>
+                <span class="po-cta" id="po-cta">Pídela por la App →</span>
+                <div class="po-note" id="po-note">🏷️ No acumulable con el 10% de la App</div>
             </div>
             <div class="promo-dots" id="promo-dots" style="display:none;"></div>
         </a>
@@ -1257,7 +1257,7 @@
                         const esPromo = (n) => /^promo\s*\d*$/i.test((n || '').trim());
                         promos = filas
                             .filter(p => esPromo(p.nombre))
-                            .map(p => ({ img: (p.imagen || '').trim(), titulo: (p.descripcion || '').trim(), bajada: (p.uso || '').trim() }))
+                            .map(p => ({ img: (p.imagen || '').trim(), titulo: (p.descripcion || '').trim(), bajada: (p.uso || '').trim(), cta: (p.cta || '').trim(), link: (p.link || '').trim() }))
                             .filter(pr => pr.img);
                         productos = filas
                             .filter(p => !esPromo(p.nombre))
@@ -1351,15 +1351,18 @@
 
         function navCat(cat) {
             categoriaActual = cat;
+            letraActual = '';
             generarBotonesCategorias();
             generarNav();
+            generarLetras();
             renderProducts();
             const dest = document.getElementById('catalogo');
             if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function generarLetras() {
-            const letras = [...new Set(productos.map(p => inicial(p.nombre)))].sort();
+            const base = productos.filter(p => categoriaActual === 'Todas' || p.categoria === categoriaActual);
+            const letras = [...new Set(base.map(p => inicial(p.nombre)))].sort();
             const container = document.getElementById('letras-container');
             container.innerHTML =
                 `<button class="${letraActual === '' ? 'active' : ''}" onclick="filterLetra('')">Todos</button>` +
@@ -1449,8 +1452,10 @@
 
         function filterCat(cat) {
             categoriaActual = cat;
+            letraActual = '';
             generarBotonesCategorias();
             generarNav();
+            generarLetras();
             renderProducts();
         }
 
@@ -1721,11 +1726,23 @@
             const overlay = document.getElementById('promo-overlay');
             const t = document.getElementById('po-title');
             const s = document.getElementById('po-sub');
-            const msg = `Hola, quiero acceder a la promoción${pr.titulo ? ': ' + pr.titulo : ' del día'} 🔥 (al precio promo, no acumulable con el 10% de la App).`;
-            if (banner) banner.href = `https://wa.me/51935896961?text=${encodeURIComponent(msg)}`;
+            const cta = document.getElementById('po-cta');
+            // Destino del botón: link propio de la promo, o WhatsApp por defecto
+            let href;
+            if (pr.link) {
+                href = /^https?:\/\//i.test(pr.link) ? pr.link : 'https://' + pr.link;
+            } else {
+                const msg = `Hola, quiero acceder a la promoción${pr.titulo ? ': ' + pr.titulo : ' del día'} 🔥 (al precio promo, no acumulable con el 10% de la App).`;
+                href = `https://wa.me/51935896961?text=${encodeURIComponent(msg)}`;
+            }
+            if (banner) banner.href = href;
             if (bimg) bimg.src = pr.img.startsWith('http') ? normalizeImg(pr.img) : pr.img;
             if (t) t.textContent = pr.titulo;
             if (s) { s.textContent = pr.bajada; s.style.display = pr.bajada ? 'block' : 'none'; }
+            if (cta) cta.textContent = pr.cta || 'Pídela por la App →';
+            // El sello "no acumulable con el 10%" solo aplica a promos de producto (botón/link por defecto)
+            const note = document.getElementById('po-note');
+            if (note) note.style.display = (!pr.cta && !pr.link) ? 'block' : 'none';
             if (overlay) overlay.style.display = (pr.titulo || pr.bajada) ? 'flex' : 'none';
             document.querySelectorAll('.promo-dot').forEach((d, di) => d.classList.toggle('active', di === i));
             promoIdx = i;
