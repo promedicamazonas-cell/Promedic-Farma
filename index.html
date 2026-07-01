@@ -1059,7 +1059,6 @@
                 <div class="categories" id="categories-container">
                     <button class="active" onclick="filterCat('Todas')">Todas</button>
                 </div>
-                <div class="letras" id="letras-container"></div>
             </div>
 
             <div id="loading" class="loading">⏳ Cargando productos...</div>
@@ -1303,7 +1302,6 @@
                         document.getElementById('table-container').style.display = 'block';
                         generarBotonesCategorias();
                         generarNav();
-                        generarLetras();
                         renderProducts();
                         renderPromo();
                     },
@@ -1357,7 +1355,6 @@
             letraActual = '';
             generarBotonesCategorias();
             generarNav();
-            generarLetras();
             renderProducts();
             const dest = document.getElementById('catalogo');
             if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1374,7 +1371,6 @@
 
         function filterLetra(l) {
             letraActual = l;
-            generarLetras();
             renderProducts();
         }
 
@@ -1458,7 +1454,6 @@
             letraActual = '';
             generarBotonesCategorias();
             generarNav();
-            generarLetras();
             renderProducts();
         }
 
