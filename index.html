@@ -474,6 +474,7 @@
         .pc-name { font-size: 13px; font-weight: 700; color: #1f2937; line-height: 1.3; margin-bottom: 6px; overflow-wrap: break-word; }
         .pc-brand { font-size: 11px; font-weight: 700; color: #0f4c9a; margin-bottom: 6px; overflow-wrap: break-word; }
         .pc-conc { font-size: 11px; color: #6b7280; margin-bottom: 6px; }
+        .pc-conc-in { font-size: 0.82em; font-weight: 600; color: #6b7280; white-space: nowrap; }
         .pc-foot { margin-top: auto; }
         .pc-price { font-size: 19px; font-weight: 800; color: #1565c0; margin-bottom: 6px; }
         .pc-stock { margin-bottom: 10px; }
@@ -516,8 +517,8 @@
         @media (max-width: 768px) {
             .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
             .product-card { padding: 9px; border-radius: 10px; }
-            .product-card-img, .product-card-img-empty { height: 96px; margin-bottom: 7px; }
-            .product-card-img-empty svg { width: 42px; height: 42px; }
+            .product-card-img, .product-card-img-empty { height: 135px; margin-bottom: 8px; }
+            .product-card-img-empty svg { width: 52px; height: 52px; }
             .pc-pres { font-size: 9px; margin-bottom: 2px; }
             .pc-name { font-size: 11.5px; line-height: 1.2; margin-bottom: 3px; }
             .pc-brand { font-size: 10px; margin-bottom: 3px; }
@@ -1473,7 +1474,7 @@
                     ? `<img src="${imgSrc}" alt="${p.nombre}" class="product-card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="product-card-img-empty" style="display:none;">${iconHtml}</div>`
                     : `<div class="product-card-img-empty">${iconHtml}</div>`;
                 const conc = (p.concentracion || '').trim();
-                const concLine = (conc && conc.toUpperCase() !== 'N/A') ? `<div class="pc-conc">${conc}</div>` : '';
+                const tieneConc = conc && conc.toUpperCase() !== 'N/A';
                 const rxTag = p.cond === 'RECETA' ? `<div class="pc-rx">📋 Requiere receta</div>` : '';
                 const accionBtn = p.cond === 'RECETA'
                     ? `<button class="pc-btn pc-btn-rx" onclick="event.stopPropagation(); solicitarReceta(${p._k})">📋 Solicitar con receta</button>`
@@ -1481,16 +1482,12 @@
                 return `
                 <div class="product-card" onclick="openFicha(${p._k})">
                     ${imgBlock}
-                    ${p.formaFarmaceutica ? `<div class="pc-pres">${p.formaFarmaceutica}</div>` : ''}
-                    <div class="pc-name">${p.nombre}</div>
-                    ${p.fabricante ? `<div class="pc-brand">${p.fabricante}</div>` : ''}
-                    ${concLine}
+                    <div class="pc-name">${p.nombre}${tieneConc ? ` <span class="pc-conc-in">${conc}</span>` : ''}</div>
                     ${rxTag}
                     <div class="pc-foot">
                         ${p.precio_por_unidad > 0
                             ? `<div class="pc-price-old">S/. ${p.precio_por_unidad.toFixed(2)}</div><div class="pc-price">S/. ${(p.precio_por_unidad * 0.9).toFixed(2)}<span class="pc-off">-10%</span></div>`
                             : `<div class="pc-price">S/. ${p.precio_por_unidad.toFixed(2)}</div>`}
-                        <div class="pc-stock"><span class="badge ${p.stock_unidades > 20 ? 'badge-green' : 'badge-yellow'}">${p.stock_unidades} un.</span></div>
                         ${accionBtn}
                     </div>
                 </div>
