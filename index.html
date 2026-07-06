@@ -568,6 +568,8 @@
         .ficha-actions .btn { padding: 12px; font-size: 13px; text-align: center; text-decoration: none; flex: 1; }
         .ficha-key { background: #25D366; box-shadow: 0 2px 6px rgba(37,211,102,0.3); }
         .ficha-key:hover { background: #1ebe5d; }
+        .ficha-subs { display: block; width: 100%; margin-top: 10px; background: #eff6ff; color: #1565c0; border: 1px dashed #93c5fd; border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background .15s; }
+        .ficha-subs:hover { background: #dbeafe; }
 
         .prod-cell { display: flex; align-items: center; gap: 10px; }
         .prod-thumb {
@@ -808,6 +810,15 @@
         .cc-price { font-size: 12px; font-weight: 800; color: #1565c0; white-space: nowrap; }
         .cc-add { background: #eff6ff; color: #1565c0; border: 1px solid #bfdbfe; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
         .cc-add:hover { background: #1565c0; color: #fff; }
+        .club-banner { background: linear-gradient(135deg, #0f2a4a 0%, #1565c0 100%); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15,42,74,0.25); }
+        .club-badge { display: inline-block; background: #f59e0b; color: #0f2a4a; font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
+        .club-title { color: #fff; font-size: 22px; font-weight: 800; margin: 0 0 6px; }
+        .club-text { color: rgba(255,255,255,0.9); font-size: 13px; margin: 0 0 12px; max-width: 540px; line-height: 1.45; }
+        .club-bonus { display: inline-block; background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.55); color: #ffe4a3; font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 10px; margin-bottom: 14px; }
+        .club-bonus b { color: #fff; }
+        .club-btn { display: inline-block; background: #f59e0b; color: #0f2a4a; border: none; font-size: 14px; font-weight: 800; padding: 12px 24px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(245,158,11,0.4); transition: transform .15s, background .15s; }
+        .club-btn:hover { background: #eab308; transform: translateY(-1px); }
+        @media (max-width: 768px) { .club-banner { padding: 18px; } .club-title { font-size: 19px; } .club-btn { display: block; width: 100%; } }
         .promo-overlay { position: absolute; top: 0; left: 0; height: 100%; width: 45%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 2.5cqw 2cqw 2.5cqw 4.5cqw; overflow: hidden; background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.12) 58%, rgba(255,255,255,0) 100%); }
         .po-title { font-size: 5.4cqw; font-weight: 800; color: #0f2a4a; line-height: 1.04; letter-spacing: -0.4px; text-shadow: 0 1px 5px rgba(255,255,255,0.75); }
         .po-sub { font-size: 2.9cqw; font-weight: 600; color: #1565c0; line-height: 1.2; margin-top: 1.2cqw; text-shadow: 0 1px 4px rgba(255,255,255,0.8); }
@@ -1079,6 +1090,14 @@
             <div id="table-container" style="display: none;">
                 <div class="products-grid" id="products-grid"></div>
             </div>
+        </div>
+
+        <div class="club-banner">
+            <span class="club-badge">⭐ CLUB PROMEDIC</span>
+            <h3 class="club-title">Gana puntos con cada compra</h3>
+            <p class="club-text">Acumula puntos y canjéalos por descuentos, más beneficios exclusivos y sorpresas para clientes frecuentes.</p>
+            <div class="club-bonus">🎁 Bono de bienvenida: <b>50 puntos</b> al unirte</div>
+            <button class="club-btn" onclick="joinClub()">Únete al Club — es gratis →</button>
         </div>
 
         <div class="newsletter-banner">
@@ -1712,12 +1731,25 @@
                         : `<button class="btn" onclick="addCart(${p._k}); closeFicha();">🛒 Agregar al carrito</button>`}
                     <a class="btn ficha-key" href="${waUrl}" target="_blank" rel="noopener">💬 Preguntar a la Dra. Key</a>
                 </div>
+                <button class="ficha-subs" onclick="suscribirProducto(${p._k})">🔁 Recíbelo cada mes · recompra automática por WhatsApp</button>
                 ${relHtml}
             `;
             document.getElementById('ficha-modal').classList.add('active');
         }
         function closeFicha() {
             document.getElementById('ficha-modal').classList.remove('active');
+        }
+        function suscribirProducto(k) {
+            const p = productos[k];
+            if (!p) return;
+            const conc = (p.concentracion || '').trim();
+            const tieneConc = conc && conc.toUpperCase() !== 'N/A';
+            const msg = `Hola, quiero *suscribirme* para recibir cada mes: ${p.nombre}${tieneConc ? ' ' + conc : ''}. Por favor recuérdenme y coordinamos la recompra mensual. 🔁`;
+            window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+        function joinClub() {
+            const msg = '¡Hola! Quiero unirme al *Club ProMedic* para acumular puntos con mis compras y recibir mi bono de bienvenida de 50 puntos. 🎁';
+            window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         // Ampliar imagen del producto
