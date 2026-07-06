@@ -833,6 +833,14 @@
         .club-bonus b { color: #fff; }
         .club-btn { display: inline-block; background: #f59e0b; color: #0f2a4a; border: none; font-size: 14px; font-weight: 800; padding: 12px 24px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(245,158,11,0.4); transition: transform .15s, background .15s; }
         .club-btn:hover { background: #eab308; transform: translateY(-1px); }
+        .club-benefits { margin-bottom: 14px; }
+        .cb-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; color: #374151; line-height: 1.4; }
+        .cb-row > span { font-size: 18px; flex-shrink: 0; }
+        .cb-row b { color: #0f2a4a; }
+        .club-refer { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+        .club-refer h4 { font-size: 14px; color: #15803d; margin: 0 0 6px; }
+        .club-refer p { font-size: 12px; color: #4b5563; line-height: 1.45; margin: 0 0 10px; }
+        .club-refer input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 13px; margin-bottom: 10px; font-family: inherit; box-sizing: border-box; }
         @media (max-width: 768px) { .club-banner { padding: 18px; } .club-title { font-size: 19px; } .club-btn { display: block; width: 100%; } }
         .quick-access { display: flex; gap: 12px; margin-bottom: 20px; }
         .qa-card { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; cursor: pointer; color: #fff; box-shadow: 0 4px 14px rgba(15,42,74,0.2); transition: transform .15s; }
@@ -1072,7 +1080,7 @@
                 <span class="qa-ico" style="background:#1e78d6; display:none;">🩺</span>
                 <div class="qa-txt"><b>Consulta Dra. Key</b><span>Agenda tu cita médica</span></div>
             </div>
-            <div class="qa-card qa-club" onclick="joinClub()" role="button" tabindex="0">
+            <div class="qa-card qa-club" onclick="openClubModal()" role="button" tabindex="0">
                 <span class="qa-ico">⭐</span>
                 <div class="qa-txt"><b>Club ProMedic</b><span>Gana puntos · +50 de regalo</span></div>
             </div>
@@ -1120,6 +1128,30 @@
                 <input type="text" id="news-name" placeholder="Tu nombre *" />
                 <input type="tel" id="news-phone" placeholder="Tu WhatsApp *" />
                 <button class="newsletter-btn" onclick="suscribirNewsletter()">📲 Suscribirme</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="club-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 4px;">⭐ Club ProMedic</h2>
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 14px;">Gana puntos con cada compra y canjéalos por descuentos.</p>
+            <div class="club-benefits">
+                <div class="cb-row"><span>🎁</span><div><b>50 puntos de bienvenida</b> solo por unirte.</div></div>
+                <div class="cb-row"><span>⭐</span><div>Ganas <b>1 punto por cada S/ 1</b>; 100 puntos = S/ 1 de descuento.</div></div>
+                <div class="cb-row"><span>🚀</span><div>Beneficios exclusivos y sorpresas para clientes frecuentes.</div></div>
+            </div>
+            <button class="btn" onclick="joinClub()" style="width: 100%; margin-bottom: 16px;">Unirme al Club — es gratis</button>
+
+            <div class="club-refer">
+                <h4>🤝 Recomienda y ganen los dos</h4>
+                <p>Comparte ProMedic con un amigo. Cuando haga su primera compra, <b>tú ganas puntos</b> y <b>él un descuento de bienvenida</b>.</p>
+                <input type="text" id="refer-name" placeholder="Tu nombre (para saber quién recomendó)" />
+                <button class="btn" onclick="referir()" style="width: 100%; background: #25D366; box-shadow: 0 2px 6px rgba(37,211,102,0.3);">📲 Compartir con un amigo</button>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeClubModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1775,6 +1807,15 @@
         function joinClub() {
             const msg = '¡Hola! Quiero unirme al *Club ProMedic* para acumular puntos con mis compras y recibir mi bono de bienvenida de 50 puntos. 🎁';
             window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+        function openClubModal() { document.getElementById('club-modal').classList.add('active'); }
+        function closeClubModal() { document.getElementById('club-modal').classList.remove('active'); }
+        function referir() {
+            const name = (document.getElementById('refer-name').value || '').trim();
+            const quien = name || 'un amigo';
+            const link = 'https://promedic-farma.vercel.app';
+            const msg = `¡Te recomiendo *ProMedic Amazonas*! 💊 Medicinas, dermatológicos y vitaminas con delivery en Chachapoyas.\n\nÚnete al *Club ProMedic* y ganamos los dos: tú un descuento de bienvenida y yo puntos. 🎁\n\n👉 ${link}\n\nCuando hagas tu primera compra, menciona que te recomendó: ${quien}.`;
+            window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
         }
 
         // Ampliar imagen del producto
