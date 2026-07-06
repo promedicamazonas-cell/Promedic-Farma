@@ -582,6 +582,10 @@
         .ficha-subs:hover { background: #dbeafe; }
         .ver-mas-btn { background: #fff; color: #1565c0; border: 2px solid #1565c0; border-radius: 12px; padding: 12px 28px; font-size: 14px; font-weight: 800; cursor: pointer; transition: all .15s; }
         .ver-mas-btn:hover { background: #1565c0; color: #fff; }
+        .search-chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
+        .search-chips::-webkit-scrollbar { display: none; }
+        .search-chips button { flex-shrink: 0; background: #eff6ff; color: #1565c0; border: 1px solid #dbeafe; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .search-chips button:hover { background: #1565c0; color: #fff; }
         .cargando-mas { color: #1565c0; font-weight: 700; font-size: 13px; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .cm-dot { width: 15px; height: 15px; border: 2px solid #bfdbfe; border-top-color: #1565c0; border-radius: 50%; display: inline-block; animation: cmspin 0.7s linear infinite; }
         @keyframes cmspin { to { transform: rotate(360deg); } }
@@ -1106,7 +1110,16 @@
             <div class="search-section">
                 <div class="search-box">
                     <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-                    <input type="text" id="search" placeholder="Buscar por nombre o concentración..." />
+                    <input type="text" id="search" placeholder="Busca por nombre, síntoma o uso… (ej. gripe, piel grasa)" />
+                </div>
+                <div class="search-chips">
+                    <button onclick="buscarChip('gripe')">🤧 Gripe</button>
+                    <button onclick="buscarChip('dolor de cabeza')">🤕 Dolor de cabeza</button>
+                    <button onclick="buscarChip('piel grasa')">✨ Piel grasa</button>
+                    <button onclick="buscarChip('protector solar')">☀️ Protector solar</button>
+                    <button onclick="buscarChip('vitaminas')">💊 Vitaminas</button>
+                    <button onclick="buscarChip('bebé')">🍼 Bebé</button>
+                    <button onclick="buscarChip('hongos')">🦶 Hongos</button>
                 </div>
                 <div class="categories" id="categories-container">
                     <button class="active" onclick="filterCat('Todas')">Todas</button>
@@ -1374,6 +1387,7 @@
                             })
                             .filter(p => p.stock_unidades > 0 && p.cond !== 'CONTROLADO');
                         productos.forEach((p, i) => { p._k = i; });
+                        productos.forEach(p => { p._busq = normaliza([p.nombre, p.concentracion, p.fabricante, p.categoria, p.formaFarmaceutica, p.descripcion, p.uso, p.principio].join(' ')); });
 
                         if (!productos.length) {
                             document.getElementById('loading').innerHTML = '⚠️ No se pudieron cargar los productos en este momento. Revisa tu conexión y vuelve a cargar la página.';
@@ -1489,14 +1503,106 @@
             return ic('<circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/>');
         }
 
+        function normaliza(s) {
+            return (s || '').toLowerCase()
+                .replace(/[áàäâ]/g, 'a').replace(/[éèëê]/g, 'e').replace(/[íìïî]/g, 'i')
+                .replace(/[óòöô]/g, 'o').replace(/[úùüû]/g, 'u').replace(/ñ/g, 'n').trim();
+        }
+        function lev(a, b) {
+            const m = a.length, n = b.length;
+            if (!m) return n; if (!n) return m;
+            let prev = Array.from({ length: n + 1 }, (_, i) => i);
+            for (let i = 1; i <= m; i++) {
+                const cur = [i];
+                for (let j = 1; j <= n; j++) {
+                    cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1] : 1 + Math.min(prev[j - 1], prev[j], cur[j - 1]);
+                }
+                prev = cur;
+            }
+            return prev[n];
+        }
+        function enTexto(hay, token) {
+            if (hay.includes(token)) return true;
+            if (token.length < 4) return false;
+            const maxD = token.length >= 9 ? 2 : 1;
+            const words = hay.split(/[^a-z0-9]+/);
+            for (const w of words) {
+                if (!w || Math.abs(w.length - token.length) > maxD) continue;
+                if (lev(w, token) <= maxD) return true;
+            }
+            return false;
+        }
+        const sinonimos = {
+            'gripe':'antigripal gripa resfrio resfriado paracetamol comtrex tapsin',
+            'gripa':'antigripal gripe resfrio paracetamol comtrex tapsin',
+            'resfrio':'antigripal gripe gripa paracetamol',
+            'resfriado':'antigripal gripe paracetamol',
+            'dolor de cabeza':'paracetamol ibuprofeno naproxeno analgesico migra',
+            'cabeza':'paracetamol ibuprofeno analgesico',
+            'migrana':'paracetamol migradorixina',
+            'dolor':'paracetamol ibuprofeno naproxeno analgesico',
+            'fiebre':'paracetamol ibuprofeno antipiretico panadol',
+            'tos':'ambroxol jarabe mucolitico expectorante bromhexina dextrometorfano muxol atos',
+            'flema':'ambroxol mucolitico acetilcisteina',
+            'garganta':'paracetamol antigripal',
+            'alergia':'loratadina cetirizina clorfenamina antialergico',
+            'rinitis':'loratadina cetirizina antialergico',
+            'acne':'effaclar limpiador imperfecciones',
+            'espinilla':'effaclar acne',
+            'piel grasa':'effaclar matificante seborreico',
+            'piel seca':'lipikar cerave hidratante ureadin nutratopic',
+            'atopica':'lipikar nutratopic',
+            'manchas':'mela glicoisdin antimanchas fotoultra',
+            'melasma':'mela antimanchas',
+            'arrugas':'retinol retinal antiedad',
+            'protector solar':'anthelios fotoprotector fusion water bloqueador solar dermaglos',
+            'bloqueador':'anthelios fotoprotector fusion solar',
+            'sol':'anthelios fotoprotector fusion solar',
+            'gastritis':'omeprazol antiacido hidroxido',
+            'acidez':'antiacido hidroxido omeprazol simeticona',
+            'colico':'buscapina busdol antiespasmodico',
+            'gases':'simeticona aero',
+            'estrenimiento':'laxante lactulosa laxaliv',
+            'diarrea':'suero rehidratante',
+            'nauseas':'dimenhidrinato',
+            'mareo':'dimenhidrinato gravax',
+            'quemadura':'cicaplast reparador',
+            'herida':'cicaplast reparador procicar',
+            'panal':'pomada pañal',
+            'bebe':'baby johnson pañal',
+            'defensas':'vitamina c zinc multivitaminico',
+            'energia':'multivitaminico oramin energiforte',
+            'cansancio':'hierro multivitaminico complejo',
+            'anemia':'hierro sulfato ferroso ferroviton anemiplus',
+            'hierro':'ferroso ferroviton anemiplus hierronim',
+            'huesos':'calcio vitamina d calcium',
+            'articulaciones':'colageno glucosamina condroitina arthron activflex',
+            'colageno':'colageno activflex',
+            'cabello':'biotina',
+            'sueno':'melatonina',
+            'insomnio':'melatonina',
+            'estres':'ashwagandha',
+            'intimo':'sebamed intimo',
+            'hongos':'clotrimazol antimicotico ketoconazol terbinafina micosolin',
+            'omega':'omega fish oil pescado',
+            'parasito':'mebendazol albendazol zentel'
+        };
+
         function renderProducts() {
-            const search = document.getElementById('search').value.toLowerCase();
+            const rawQ = normaliza(document.getElementById('search').value);
+            let synWords = [];
+            if (rawQ) {
+                for (const key in sinonimos) { if (rawQ.includes(key)) synWords = synWords.concat(sinonimos[key].split(' ')); }
+            }
+            const tokens = rawQ ? rawQ.split(/\s+/).filter(t => t.length >= 2) : [];
             const filtrados = productos.filter(p => {
-                const matchSearch = p.nombre.toLowerCase().includes(search) ||
-                                   p.concentracion.toLowerCase().includes(search);
-                const matchCat = categoriaActual === 'Todas' || p.categoria === categoriaActual;
-                const matchLetra = letraActual === '' || inicial(p.nombre) === letraActual;
-                return matchSearch && matchCat && matchLetra;
+                if (!(categoriaActual === 'Todas' || p.categoria === categoriaActual)) return false;
+                if (!(letraActual === '' || inicial(p.nombre) === letraActual)) return false;
+                if (!rawQ) return true;
+                const hay = p._busq || '';
+                if (tokens.length && tokens.every(t => enTexto(hay, t))) return true;
+                if (synWords.length && synWords.some(w => w.length >= 3 && hay.includes(w))) return true;
+                return false;
             });
 
             const html = filtrados.slice(0, paginaProductos).map((p) => {
@@ -1727,6 +1833,15 @@
             document.getElementById('cart-modal').classList.add('active');
         });
 
+        function buscarChip(q) {
+            const inp = document.getElementById('search');
+            inp.value = q;
+            categoriaActual = 'Todas'; letraActual = ''; paginaProductos = 15;
+            generarBotonesCategorias();
+            renderProducts();
+            const dest = document.getElementById('catalogo');
+            if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
         document.getElementById('search').addEventListener('input', () => { paginaProductos = 15; renderProducts(); });
         cargarProductos();
         cargarCarrito();
