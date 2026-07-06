@@ -819,6 +819,17 @@
         .club-btn { display: inline-block; background: #f59e0b; color: #0f2a4a; border: none; font-size: 14px; font-weight: 800; padding: 12px 24px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(245,158,11,0.4); transition: transform .15s, background .15s; }
         .club-btn:hover { background: #eab308; transform: translateY(-1px); }
         @media (max-width: 768px) { .club-banner { padding: 18px; } .club-title { font-size: 19px; } .club-btn { display: block; width: 100%; } }
+        .quick-access { display: flex; gap: 12px; margin-bottom: 20px; }
+        .qa-card { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; cursor: pointer; color: #fff; box-shadow: 0 4px 14px rgba(15,42,74,0.2); transition: transform .15s; }
+        .qa-card:hover { transform: translateY(-2px); }
+        .qa-dra { background: linear-gradient(135deg, #1e78d6 0%, #0f2a4a 100%); }
+        .qa-club { background: linear-gradient(135deg, #0f2a4a 0%, #1565c0 100%); }
+        .qa-photo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: center 22%; border: 2px solid rgba(255,255,255,0.85); flex-shrink: 0; }
+        .qa-ico { width: 44px; height: 44px; border-radius: 50%; background: #f59e0b; color: #0f2a4a; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+        .qa-txt { min-width: 0; }
+        .qa-txt b { display: block; font-size: 13px; font-weight: 800; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .qa-txt span { display: block; font-size: 10.5px; color: rgba(255,255,255,0.85); line-height: 1.2; margin-top: 2px; }
+        @media (max-width: 400px) { .quick-access { gap: 8px; } .qa-card { padding: 10px; gap: 8px; } .qa-photo, .qa-ico { width: 38px; height: 38px; font-size: 19px; } .qa-txt b { font-size: 11.5px; } .qa-txt span { font-size: 9px; } }
         .promo-overlay { position: absolute; top: 0; left: 0; height: 100%; width: 45%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 2.5cqw 2cqw 2.5cqw 4.5cqw; overflow: hidden; background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.12) 58%, rgba(255,255,255,0) 100%); }
         .po-title { font-size: 5.4cqw; font-weight: 800; color: #0f2a4a; line-height: 1.04; letter-spacing: -0.4px; text-shadow: 0 1px 5px rgba(255,255,255,0.75); }
         .po-sub { font-size: 2.9cqw; font-weight: 600; color: #1565c0; line-height: 1.2; margin-top: 1.2cqw; text-shadow: 0 1px 4px rgba(255,255,255,0.8); }
@@ -1040,21 +1051,15 @@
             <div class="promo-dots" id="promo-dots" style="display:none;"></div>
         </a>
 
-        <div class="doctorita-banner" onclick="openConsultaModal()" role="button" tabindex="0">
-            <h3>Consulta a la Dra. Key Aguilar</h3>
-            <img class="doctorita-photo" src="dra-key.jpg" alt="Dra. Key Aguilar" onerror="this.style.display='none';document.getElementById('doctorita-fallback').style.display='flex';" />
-            <div id="doctorita-fallback" class="doctorita-photo doctorita-fallback" style="display:none;">
-                <svg width="80" height="80" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Doctora">
-                    <path d="M34 66 Q33 32 60 32 Q87 32 86 66 L86 80 Q86 71 79 71 L41 71 Q34 71 34 80 Z" fill="#4b3a2f"/>
-                    <circle cx="60" cy="58" r="22" fill="#f7d3b0"/>
-                    <path d="M38 58 Q35 33 60 33 Q85 33 82 58 Q75 45 60 45 Q45 45 38 58 Z" fill="#4b3a2f"/>
-                    <circle cx="52" cy="57" r="2.6" fill="#3f3f46"/>
-                    <circle cx="68" cy="57" r="2.6" fill="#3f3f46"/>
-                    <path d="M53 66 Q60 72 67 66" stroke="#c2703b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-                    <path d="M30 118 Q30 86 46 79 L60 95 L74 79 Q90 86 90 118 Z" fill="#4a8a1f"/>
-                    <path d="M52 82 L60 95 L52 100 Z" fill="#ffffff"/>
-                    <path d="M68 82 L60 95 L68 100 Z" fill="#ffffff"/>
-                </svg>
+        <div class="quick-access">
+            <div class="qa-card qa-dra" onclick="openConsultaModal()" role="button" tabindex="0">
+                <img class="qa-photo" src="dra-key.jpg" alt="Dra. Key" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                <span class="qa-ico" style="background:#1e78d6; display:none;">🩺</span>
+                <div class="qa-txt"><b>Consulta Dra. Key</b><span>Agenda tu cita médica</span></div>
+            </div>
+            <div class="qa-card qa-club" onclick="joinClub()" role="button" tabindex="0">
+                <span class="qa-ico">⭐</span>
+                <div class="qa-txt"><b>Club ProMedic</b><span>Gana puntos · +50 de regalo</span></div>
             </div>
         </div>
 
@@ -1090,14 +1095,6 @@
             <div id="table-container" style="display: none;">
                 <div class="products-grid" id="products-grid"></div>
             </div>
-        </div>
-
-        <div class="club-banner">
-            <span class="club-badge">⭐ CLUB PROMEDIC</span>
-            <h3 class="club-title">Gana puntos con cada compra</h3>
-            <p class="club-text">Acumula puntos y canjéalos por descuentos, más beneficios exclusivos y sorpresas para clientes frecuentes.</p>
-            <div class="club-bonus">🎁 Bono de bienvenida: <b>50 puntos</b> al unirte</div>
-            <button class="club-btn" onclick="joinClub()">Únete al Club — es gratis →</button>
         </div>
 
         <div class="newsletter-banner">
