@@ -514,10 +514,19 @@
         .rel-price { font-size: 11px; font-weight: 800; color: #1565c0; margin-top: 3px; }
         @media (max-width: 768px) { .ficha-rel-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) {
-            .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-            .product-card-img, .product-card-img-empty { height: 125px; }
-            .pc-name { font-size: 12px; }
-            .pc-price { font-size: 17px; }
+            .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+            .product-card { padding: 9px; border-radius: 10px; }
+            .product-card-img, .product-card-img-empty { height: 96px; margin-bottom: 7px; }
+            .product-card-img-empty svg { width: 42px; height: 42px; }
+            .pc-pres { font-size: 9px; margin-bottom: 2px; }
+            .pc-name { font-size: 11.5px; line-height: 1.2; margin-bottom: 3px; }
+            .pc-brand { font-size: 10px; margin-bottom: 3px; }
+            .pc-conc { font-size: 10px; margin-bottom: 3px; }
+            .pc-rx { font-size: 9px; padding: 2px 6px; margin-bottom: 5px; }
+            .pc-price { font-size: 16px; margin-bottom: 3px; }
+            .pc-price-old { font-size: 10.5px; }
+            .pc-stock { margin-bottom: 6px; }
+            .pc-btn { padding: 7px; font-size: 12px; }
         }
 
         #ficha-content { position: relative; }
@@ -572,6 +581,9 @@
         .ficha-subs:hover { background: #dbeafe; }
         .ver-mas-btn { background: #fff; color: #1565c0; border: 2px solid #1565c0; border-radius: 12px; padding: 12px 28px; font-size: 14px; font-weight: 800; cursor: pointer; transition: all .15s; }
         .ver-mas-btn:hover { background: #1565c0; color: #fff; }
+        .cargando-mas { color: #1565c0; font-weight: 700; font-size: 13px; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .cm-dot { width: 15px; height: 15px; border: 2px solid #bfdbfe; border-top-color: #1565c0; border-radius: 50%; display: inline-block; animation: cmspin 0.7s linear infinite; }
+        @keyframes cmspin { to { transform: rotate(360deg); } }
 
         .prod-cell { display: flex; align-items: center; gap: 10px; }
         .prod-thumb {
@@ -1271,7 +1283,8 @@
         let promoTimer = null;
         let categoriaActual = 'Todas';
         let letraActual = '';
-        let paginaProductos = 24;
+        let paginaProductos = 15;
+        let totalFiltrados = 0;
 
         function inicial(nombre) {
             let c = ((nombre || '').trim().charAt(0) || '').toUpperCase();
@@ -1389,7 +1402,7 @@
         function navCat(cat) {
             categoriaActual = cat;
             letraActual = '';
-            paginaProductos = 24;
+            paginaProductos = 15;
             generarBotonesCategorias();
             generarNav();
             renderProducts();
@@ -1408,7 +1421,7 @@
 
         function filterLetra(l) {
             letraActual = l;
-            paginaProductos = 24;
+            paginaProductos = 15;
             renderProducts();
         }
 
@@ -1485,12 +1498,12 @@
             }).join('');
 
             document.getElementById('products-grid').innerHTML = html || '<p style="grid-column:1/-1; text-align:center; color:#6b7280; padding:20px;">No se encontraron productos.</p>';
+            totalFiltrados = filtrados.length;
             const vm = document.getElementById('ver-mas-cont');
             if (vm) {
-                const restantes = filtrados.length - paginaProductos;
-                if (restantes > 0) {
+                if (paginaProductos < totalFiltrados) {
                     vm.style.display = 'block';
-                    vm.innerHTML = `<button class="ver-mas-btn" onclick="verMas()">Ver más productos (${restantes} más)</button>`;
+                    vm.innerHTML = '<div class="cargando-mas"><span class="cm-dot"></span> Cargando más productos…</div>';
                 } else {
                     vm.style.display = 'none';
                     vm.innerHTML = '';
@@ -1498,15 +1511,10 @@
             }
         }
 
-        function verMas() {
-            paginaProductos += 24;
-            renderProducts();
-        }
-
         function filterCat(cat) {
             categoriaActual = cat;
             letraActual = '';
-            paginaProductos = 24;
+            paginaProductos = 15;
             generarBotonesCategorias();
             generarNav();
             renderProducts();
@@ -1690,7 +1698,7 @@
             document.getElementById('cart-modal').classList.add('active');
         });
 
-        document.getElementById('search').addEventListener('input', () => { paginaProductos = 24; renderProducts(); });
+        document.getElementById('search').addEventListener('input', () => { paginaProductos = 15; renderProducts(); });
         cargarProductos();
         cargarCarrito();
         updateCart();
@@ -1871,6 +1879,11 @@
         }
         window.addEventListener('scroll', () => {
             document.getElementById('scroll-top').classList.toggle('show', window.scrollY > 300);
+            if (paginaProductos < totalFiltrados &&
+                window.innerHeight + window.scrollY >= document.body.offsetHeight - 700) {
+                paginaProductos += 15;
+                renderProducts();
+            }
         });
 
         // Funciones para Consulta con Doctorita Key
