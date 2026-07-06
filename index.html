@@ -795,6 +795,19 @@
         .promo-dots { position: absolute; bottom: 3.5cqw; left: 4.5cqw; display: flex; gap: 1.4cqw; z-index: 3; }
         .promo-dot { width: 2cqw; height: 2cqw; min-width: 8px; min-height: 8px; border-radius: 999px; background: rgba(21,101,192,0.3); border: none; padding: 0; cursor: pointer; transition: width 0.2s, background 0.2s; }
         .promo-dot.active { width: 5cqw; min-width: 22px; background: #1565c0; }
+        .envio-prog { background: #f0f7ff; border: 1px solid #dbeafe; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; }
+        .envio-prog-text { font-size: 12.5px; font-weight: 700; color: #0f4c9a; margin-bottom: 7px; text-align: center; }
+        .envio-prog.free .envio-prog-text { color: #15803d; }
+        .envio-prog-bar { height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+        .envio-prog-fill { height: 100%; background: linear-gradient(90deg, #1e78d6, #1565c0); border-radius: 999px; transition: width .35s ease; }
+        .envio-prog.free .envio-prog-fill { background: #16a34a; }
+        .cart-cross { margin-bottom: 14px; }
+        .cart-cross .cc-title { font-size: 13px; font-weight: 800; color: #1f2937; margin-bottom: 6px; }
+        .cc-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid #f1f5f9; }
+        .cc-name { flex: 1; font-size: 12px; color: #374151; font-weight: 600; line-height: 1.25; }
+        .cc-price { font-size: 12px; font-weight: 800; color: #1565c0; white-space: nowrap; }
+        .cc-add { background: #eff6ff; color: #1565c0; border: 1px solid #bfdbfe; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
+        .cc-add:hover { background: #1565c0; color: #fff; }
         .promo-overlay { position: absolute; top: 0; left: 0; height: 100%; width: 45%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 2.5cqw 2cqw 2.5cqw 4.5cqw; overflow: hidden; background: linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.12) 58%, rgba(255,255,255,0) 100%); }
         .po-title { font-size: 5.4cqw; font-weight: 800; color: #0f2a4a; line-height: 1.04; letter-spacing: -0.4px; text-shadow: 0 1px 5px rgba(255,255,255,0.75); }
         .po-sub { font-size: 2.9cqw; font-weight: 600; color: #1565c0; line-height: 1.2; margin-top: 1.2cqw; text-shadow: 0 1px 4px rgba(255,255,255,0.8); }
@@ -1088,6 +1101,9 @@
             <div id="cart-items" style="max-height: 250px; overflow-y: auto; margin-bottom: 16px;">
                 <p style="color: #6b7280; text-align: center;">Carrito vacío</p>
             </div>
+
+            <div id="envio-progreso" class="envio-prog" style="display:none;"></div>
+            <div id="cart-cross" class="cart-cross" style="display:none;"></div>
 
             <div class="total" id="total-section">
                 <div class="total-sub"><span>Subtotal</span><span id="subtotal-amount">S/. 0.00</span></div>
@@ -1507,7 +1523,44 @@
             document.getElementById('total-amount').textContent = `S/. ${total.toFixed(2)}`;
             document.getElementById('cart-btn').textContent = `🛒 (${carrito.length})`;
             document.getElementById('total-section').classList.toggle('active', carrito.length > 0);
+
+            // Barra de progreso hacia el envío gratis (umbral S/ 99)
+            const UMBRAL = 99;
+            const prog = document.getElementById('envio-progreso');
+            if (prog) {
+                if (!carrito.length) {
+                    prog.style.display = 'none';
+                } else {
+                    prog.style.display = 'block';
+                    const falta = UMBRAL - total;
+                    const pct = Math.min(100, (total / UMBRAL) * 100);
+                    if (falta <= 0) {
+                        prog.className = 'envio-prog free';
+                        prog.innerHTML = '<div class="envio-prog-text">🎉 ¡Tu pedido ya tiene envío gratis!</div><div class="envio-prog-bar"><div class="envio-prog-fill" style="width:100%"></div></div>';
+                    } else {
+                        prog.className = 'envio-prog';
+                        prog.innerHTML = `<div class="envio-prog-text">🛵 Te faltan S/. ${falta.toFixed(2)} para el envío gratis</div><div class="envio-prog-bar"><div class="envio-prog-fill" style="width:${pct}%"></div></div>`;
+                    }
+                }
+            }
+            renderCrossSell();
             guardarCarrito();
+        }
+
+        // Venta cruzada dentro del carrito
+        function renderCrossSell() {
+            const cont = document.getElementById('cart-cross');
+            if (!cont) return;
+            if (!carrito.length) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            const enCarrito = new Set(carrito.map(i => i._k));
+            const cats = new Set(carrito.map(i => i.categoria));
+            const cand = productos.filter(p => p.cond === 'LIBRE' && p.precio_por_unidad > 0 && !enCarrito.has(p._k));
+            const mismos = cand.filter(p => cats.has(p.categoria));
+            const pool = (mismos.length >= 3 ? mismos : cand).slice(0, 3);
+            if (!pool.length) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            cont.style.display = 'block';
+            cont.innerHTML = '<div class="cc-title">✨ También te puede interesar</div>' +
+                pool.map(p => `<div class="cc-item"><span class="cc-name">${p.nombre}</span><span class="cc-price">S/. ${(p.precio_por_unidad * 0.9).toFixed(2)}</span><button class="cc-add" onclick="addCart(${p._k})">+ Agregar</button></div>`).join('');
         }
 
         function guardarCarrito() {
