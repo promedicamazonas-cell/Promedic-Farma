@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProMedic - Farmacia Online</title>
+
+    <!-- Google Analytics 4 · REEMPLAZA G-XXXXXXXXXX por tu ID de medición (2 veces) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+        function track(name, params) { try { gtag('event', name, params || {}); } catch (e) {} }
+    </script>
     <link rel="icon" href="favicon.png" type="image/png">
 
     <link rel="manifest" href="manifest.json">
@@ -1637,8 +1647,9 @@
             const vm = document.getElementById('ver-mas-cont');
             if (vm) {
                 if (paginaProductos < totalFiltrados) {
+                    const restantes = totalFiltrados - paginaProductos;
                     vm.style.display = 'block';
-                    vm.innerHTML = '<div class="cargando-mas"><span class="cm-dot"></span> Cargando más productos…</div>';
+                    vm.innerHTML = `<button class="ver-mas-btn" onclick="verMasProductos()">Ver más productos (${restantes})</button>`;
                 } else {
                     vm.style.display = 'none';
                     vm.innerHTML = '';
@@ -1658,6 +1669,7 @@
         function solicitarReceta(k) {
             const p = productos[k];
             if (!p) return;
+            track('solicitar_receta', { producto: p.nombre });
             const conc = (p.concentracion || '').trim();
             const tieneConc = conc && conc.toUpperCase() !== 'N/A';
             const msg = `📋 SOLICITUD DE PRODUCTO CON RECETA - PROMEDIC\n\nProducto: ${p.nombre}${tieneConc ? ' ' + conc : ''}\n\nEste producto requiere receta médica. Adjunto la foto de mi receta para que el Químico Farmacéutico la valide antes de la entrega.`;
@@ -1675,6 +1687,7 @@
             } else {
                 carrito.push({...p, cantidad: 1});
             }
+            track('agregar_carrito', { producto: p.nombre, valor: +(p.precio_por_unidad * 0.9).toFixed(2) });
             updateCart();
             document.getElementById('cart-modal').classList.add('active');
         }
@@ -1802,6 +1815,8 @@
             const ordNum = `PM-${String(f.getFullYear()).slice(2)}${String(f.getMonth() + 1).padStart(2, '0')}${String(f.getDate()).padStart(2, '0')}-${String(f.getHours()).padStart(2, '0')}${String(f.getMinutes()).padStart(2, '0')}`;
             const mensaje = `🛒 NUEVO PEDIDO - PROMEDIC\n🧾 Pedido N° ${ordNum}\n\n👤 Cliente: ${name}\n📱 Teléfono: ${phone}\n${document.getElementById('client-email').value ? '📧 Email: ' + document.getElementById('client-email').value + '\n' : ''}\n${items}\n\n💰 Subtotal: S/. ${subtotal.toFixed(2)}\n🎁 Descuento 10% (App): - S/. ${descuento.toFixed(2)}\n✅ TOTAL: S/. ${total.toFixed(2)}\n\n---\nEnviado desde ProMedic App`;
 
+            track('pedido_whatsapp', { valor: +total.toFixed(2), currency: 'PEN', items: carrito.length, pedido: ordNum });
+
             const url = `https://wa.me/51935896961?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
 
@@ -1836,13 +1851,22 @@
         function buscarChip(q) {
             const inp = document.getElementById('search');
             inp.value = q;
+            track('buscar', { termino: q, origen: 'chip' });
             categoriaActual = 'Todas'; letraActual = ''; paginaProductos = 15;
             generarBotonesCategorias();
             renderProducts();
             const dest = document.getElementById('catalogo');
             if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        document.getElementById('search').addEventListener('input', () => { paginaProductos = 15; renderProducts(); });
+        let searchTrackTimer;
+        document.getElementById('search').addEventListener('input', () => {
+            paginaProductos = 15; renderProducts();
+            clearTimeout(searchTrackTimer);
+            searchTrackTimer = setTimeout(() => {
+                const q = document.getElementById('search').value.trim();
+                if (q.length >= 3) track('buscar', { termino: q, origen: 'texto' });
+            }, 1500);
+        });
         cargarProductos();
         cargarCarrito();
         updateCart();
@@ -1851,6 +1875,7 @@
         function openFicha(k) {
             const p = productos[k];
             if (!p) return;
+            track('ver_producto', { producto: p.nombre });
             const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
             const conc = (p.concentracion || '').trim();
             const tieneConc = conc && conc.toUpperCase() !== 'N/A';
@@ -1914,18 +1939,21 @@
         function suscribirProducto(k) {
             const p = productos[k];
             if (!p) return;
+            track('suscripcion', { producto: p.nombre });
             const conc = (p.concentracion || '').trim();
             const tieneConc = conc && conc.toUpperCase() !== 'N/A';
             const msg = `Hola, quiero *suscribirme* para recibir cada mes: ${p.nombre}${tieneConc ? ' ' + conc : ''}. Por favor recuérdenme y coordinamos la recompra mensual. 🔁`;
             window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
         }
         function joinClub() {
+            track('club_inscripcion');
             const msg = '¡Hola! Quiero unirme al *Club ProMedic* para acumular puntos con mis compras y recibir mi bono de bienvenida de 50 puntos. 🎁';
             window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
         }
         function openClubModal() { document.getElementById('club-modal').classList.add('active'); }
         function closeClubModal() { document.getElementById('club-modal').classList.remove('active'); }
         function referir() {
+            track('referir');
             const name = (document.getElementById('refer-name').value || '').trim();
             const quien = name || 'un amigo';
             const link = 'https://promedic-farma.vercel.app';
@@ -2032,12 +2060,11 @@
         }
         window.addEventListener('scroll', () => {
             document.getElementById('scroll-top').classList.toggle('show', window.scrollY > 300);
-            if (paginaProductos < totalFiltrados &&
-                window.innerHeight + window.scrollY >= document.body.offsetHeight - 700) {
-                paginaProductos += 15;
-                renderProducts();
-            }
         });
+        function verMasProductos() {
+            paginaProductos += 15;
+            renderProducts();
+        }
 
         // Funciones para Consulta con Doctorita Key
         function openConsultaModal() {
@@ -2053,6 +2080,7 @@
         function agendarConsulta() {
             const tipoEl = document.querySelector('input[name="consulta-tipo"]:checked');
             const tipo = tipoEl ? tipoEl.value : 'General';
+            track('agendar_consulta', { tipo });
             const precio = tipo === 'Estética' ? '70' : '50';
             const name = (document.getElementById('consulta-name').value || '').trim();
             const saludo = name ? `Hola Dra. Key, soy ${name}. ` : 'Hola Dra. Key, ';
