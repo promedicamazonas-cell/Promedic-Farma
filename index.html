@@ -590,8 +590,9 @@
         .ficha-key:hover { background: #1ebe5d; }
         .ficha-subs { display: block; width: 100%; margin-top: 10px; background: #eff6ff; color: #1565c0; border: 1px dashed #93c5fd; border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: background .15s; }
         .ficha-subs:hover { background: #dbeafe; }
-        .ver-mas-btn { background: #fff; color: #1565c0; border: 2px solid #1565c0; border-radius: 12px; padding: 12px 28px; font-size: 14px; font-weight: 800; cursor: pointer; transition: all .15s; }
-        .ver-mas-btn:hover { background: #1565c0; color: #fff; }
+        .ver-mas-btn { display: inline-flex; align-items: center; gap: 8px; background: #F59E0B; color: #fff; border: none; border-radius: 999px; padding: 14px 44px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(245,158,11,.35); transition: all .15s; }
+        .ver-mas-btn:hover { background: #e08c00; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,158,11,.45); }
+        .ver-mas-btn svg { width: 15px; height: 15px; }
         .search-chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
         .search-chips::-webkit-scrollbar { display: none; }
         .search-chips button { flex-shrink: 0; background: #eff6ff; color: #1565c0; border: 1px solid #dbeafe; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -1649,7 +1650,7 @@
                 if (paginaProductos < totalFiltrados) {
                     const restantes = totalFiltrados - paginaProductos;
                     vm.style.display = 'block';
-                    vm.innerHTML = `<button class="ver-mas-btn" onclick="verMasProductos()">Ver más productos (${restantes})</button>`;
+                    vm.innerHTML = `<button class="ver-mas-btn" onclick="verMasProductos()">Ver más <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>`;
                 } else {
                     vm.style.display = 'none';
                     vm.innerHTML = '';
