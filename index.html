@@ -913,6 +913,23 @@
         .ruleta-result.lose { background: #f8fafc; border-color: #e5e7eb; }
         .ruleta-result b { display: block; font-size: 16px; color: #0f2a4a; margin-bottom: 4px; }
         .ruleta-result p { font-size: 12px; color: #4b5563; margin: 0 0 10px; }
+        /* Mi Piel · Corner Dra. Key */
+        .mipiel-banner { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 16px; margin-bottom: 20px; cursor: pointer; color: #fff; background: linear-gradient(135deg, #ec4899 0%, #1565c0 100%); box-shadow: 0 6px 18px rgba(219,39,119,.25); transition: transform .15s; }
+        .mipiel-banner:hover { transform: translateY(-2px); }
+        .mipiel-banner .mp-ico { font-size: 30px; flex-shrink: 0; }
+        .mipiel-banner b { font-size: 15px; display: block; }
+        .mipiel-banner span { font-size: 11.5px; opacity: .92; }
+        .mipiel-banner .mp-arrow { margin-left: auto; font-size: 22px; opacity: .9; }
+        .mp-steps { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 14px; }
+        .mp-step { display: flex; gap: 12px; align-items: flex-start; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; }
+        .mp-step .mp-n { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #ec4899; color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+        .mp-step b { font-size: 13px; color: #0f2a4a; }
+        .mp-step p { font-size: 11.5px; color: #4b5563; margin: 2px 0 0; line-height: 1.4; }
+        .mp-cta { display: block; width: 100%; text-align: center; text-decoration: none; padding: 12px; border-radius: 10px; font-size: 13.5px; font-weight: 800; margin-bottom: 10px; cursor: pointer; border: none; }
+        .mp-plan { background: #25D366; color: #fff; box-shadow: 0 2px 6px rgba(37,211,102,.3); }
+        .mp-agenda { background: #1565c0; color: #fff; }
+        .mp-prod { background: #fff; color: #1565c0; border: 2px solid #1565c0; }
+        .mp-tip { font-size: 11.5px; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 12px; line-height: 1.45; margin-bottom: 12px; }
         .club-refer { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
         .club-refer h4 { font-size: 14px; color: #15803d; margin: 0 0 6px; }
         .club-refer p { font-size: 12px; color: #4b5563; line-height: 1.45; margin: 0 0 10px; }
@@ -1145,6 +1162,7 @@
         </div>
         <nav class="drawer-list">
             <a onclick="navDrawerAction('consulta')"><span class="d-ico dra">👩‍⚕️</span>Consulta con la Dra. Key<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('mipiel')"><span class="d-ico" style="background:#fce7f3">🌸</span>Mi Piel (Dra. Key)<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('club')"><span class="d-ico club">⭐</span>Club ProMedic<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('ruleta')"><span class="d-ico" style="background:#fef3c7">🎡</span>Ruleta de premios<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('wa')"><span class="d-ico wa">💬</span>Pedir por WhatsApp<span class="d-arrow">›</span></a>
@@ -1181,6 +1199,12 @@
                 <span class="qa-ico">⭐</span>
                 <div class="qa-txt"><b>Club ProMedic</b><span>Gana puntos · +50 de regalo</span></div>
             </div>
+        </div>
+
+        <div class="mipiel-banner" onclick="openMiPiel()" role="button" tabindex="0">
+            <span class="mp-ico">🌸</span>
+            <div><b>Mi Piel · Corner Dra. Key</b><span>Cuida tus resultados y recibe tu plan personalizado</span></div>
+            <span class="mp-arrow">›</span>
         </div>
 
 
@@ -1292,6 +1316,36 @@
 
             <div class="modal-buttons">
                 <button class="btn" onclick="closeClubModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mipiel-modal" class="modal">
+        <div class="modal-content" style="max-width: 420px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 2px;">🌸 Mi Piel · Corner Dra. Key</h2>
+            <p style="font-size: 12.5px; color: #6b7280; margin-bottom: 12px; line-height: 1.5;">Tu piel es un <b>tratamiento, no un evento</b>. Los resultados que lograste con la Dra. Key se mantienen con una rutina simple y controles a tiempo. No dejes que se pierdan.</p>
+
+            <button class="mp-cta mp-plan" onclick="planPiel()">📲 Recibe tu plan personalizado</button>
+            <button class="mp-cta mp-agenda" onclick="agendarMantenimiento()">🗓️ Agenda tu control de mantenimiento</button>
+
+            <h4 class="club-sec-title" style="margin-top:6px;">Tu rutina base en 3 pasos</h4>
+            <div class="mp-steps">
+                <div class="mp-step"><span class="mp-n">1</span><div><b>Limpia</b><p>Limpiador suave, mañana y noche. Prepara la piel para lo demás.</p></div></div>
+                <div class="mp-step"><span class="mp-n">2</span><div><b>Trata</b><p>Tu activo según indicación (vitamina C en el día; retinol o despigmentante en la noche).</p></div></div>
+                <div class="mp-step"><span class="mp-n">3</span><div><b>Protege</b><p>Protector solar cada mañana. Es el paso que cuida y no deja perder tu tratamiento.</p></div></div>
+            </div>
+
+            <button class="mp-cta mp-prod" onclick="verProductosPiel()">🧴 Ver productos recomendados</button>
+
+            <div class="mp-tip">💡 Consejo: el protector solar es el #1 para mantener resultados. Sin él, manchas y arrugas regresan más rápido.</div>
+
+            <div class="club-refer" style="margin-bottom:14px;">
+                <h4>⭐ Suma con tu rutina</h4>
+                <p>Cada compra de tus productos de piel suma puntos en el <b>Club ProMedic</b> y te acerca a tus beneficios. Pregunta por tus productos en <b>suscripción</b> para que nunca te falten.</p>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeMiPiel()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1634,6 +1688,7 @@
             if (accion === 'consulta') openConsultaModal();
             else if (accion === 'club') openClubModal();
             else if (accion === 'ruleta') openRuleta();
+            else if (accion === 'mipiel') openMiPiel();
             else if (accion === 'wa') window.open('https://wa.me/51935896961?text=' + encodeURIComponent('Hola ProMedic 👋, quisiera hacer un pedido / consulta.'), '_blank');
         }
 
@@ -2216,6 +2271,21 @@
             const msg = `¡Hola ProMedic! 🎡 Gané en la Ruleta de premios: *${label}* (código ${code}). Quiero reclamarlo en mi próxima compra.`;
             window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
         }
+
+        // === Mi Piel · Corner Dra. Key ===
+        function openMiPiel() { track('mipiel_abrir'); document.getElementById('mipiel-modal').classList.add('active'); }
+        function closeMiPiel() { document.getElementById('mipiel-modal').classList.remove('active'); }
+        function planPiel() {
+            track('mipiel_plan');
+            const msg = '¡Hola Dra. Key! 🌸 Me hice un tratamiento estético con ustedes y quiero mi *plan personalizado de cuidado de la piel* para mantener mis resultados. ¿Me lo pueden armar?';
+            window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
+        }
+        function agendarMantenimiento() {
+            track('mipiel_mantenimiento');
+            const msg = '¡Hola! 🗓️ Quiero agendar mi *control/mantenimiento de estética* con la Dra. Key para cuidar mis resultados. ¿Qué disponibilidad hay?';
+            window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
+        }
+        function verProductosPiel() { closeMiPiel(); navCat('Dermatológicos'); }
 
         // === Cupones del Club (edita este arreglo para cambiar/agregar cupones) ===
         let cupones = [
