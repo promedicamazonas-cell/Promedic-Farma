@@ -900,6 +900,19 @@
         .cupon-body small { font-size: 11.5px; color: #4b5563; line-height: 1.35; }
         .cupon-code { background: #1565c0; color: #fff; font-weight: 800; font-size: 12px; padding: 6px 11px; border-radius: 8px; letter-spacing: .5px; white-space: nowrap; flex-shrink: 0; }
         .cupon-code.cupon-copiado { background: #16a34a; }
+        /* Ruleta de premios */
+        .ruleta-wrap { text-align: center; }
+        .ruleta-stage { position: relative; width: 280px; max-width: 78vw; aspect-ratio: 1; margin: 6px auto 10px; }
+        .ruleta-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 24px solid #f59e0b; z-index: 3; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+        .ruleta-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 6px 22px rgba(0,0,0,.28); transition: transform 4.6s cubic-bezier(.17,.67,.16,1); }
+        .ruleta-hub { position: absolute; top: 50%; left: 50%; width: 48px; height: 48px; transform: translate(-50%,-50%); background: #fff; border: 4px solid #0f2a4a; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .ruleta-girar { width: 100%; margin-top: 4px; background: linear-gradient(135deg,#f59e0b 0%,#d97706 100%); }
+        .ruleta-girar:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
+        .ruleta-nota { font-size: 11px; color: #6b7280; margin-top: 8px; line-height: 1.4; }
+        .ruleta-result { margin-top: 12px; padding: 14px; border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; display: none; }
+        .ruleta-result.lose { background: #f8fafc; border-color: #e5e7eb; }
+        .ruleta-result b { display: block; font-size: 16px; color: #0f2a4a; margin-bottom: 4px; }
+        .ruleta-result p { font-size: 12px; color: #4b5563; margin: 0 0 10px; }
         .club-refer { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
         .club-refer h4 { font-size: 14px; color: #15803d; margin: 0 0 6px; }
         .club-refer p { font-size: 12px; color: #4b5563; line-height: 1.45; margin: 0 0 10px; }
@@ -1133,6 +1146,7 @@
         <nav class="drawer-list">
             <a onclick="navDrawerAction('consulta')"><span class="d-ico dra">👩‍⚕️</span>Consulta con la Dra. Key<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('club')"><span class="d-ico club">⭐</span>Club ProMedic<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('ruleta')"><span class="d-ico" style="background:#fef3c7">🎡</span>Ruleta de premios<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('wa')"><span class="d-ico wa">💬</span>Pedir por WhatsApp<span class="d-arrow">›</span></a>
         </nav>
         <div class="drawer-section">Categorías</div>
@@ -1264,6 +1278,8 @@
                 </div>
             </div>
 
+            <button class="btn" onclick="closeClubModal(); openRuleta();" style="width: 100%; margin-bottom: 18px; background: linear-gradient(135deg,#f59e0b 0%,#d97706 100%);">🎡 Gira la Ruleta de premios</button>
+
             <h4 class="club-sec-title">🎟️ Cupones activos</h4>
             <div id="cupones-cont" class="cupones"></div>
 
@@ -1276,6 +1292,26 @@
 
             <div class="modal-buttons">
                 <button class="btn" onclick="closeClubModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ruleta-modal" class="modal">
+        <div class="modal-content" style="max-width: 380px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 2px;">🎡 Ruleta de premios</h2>
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 6px;">¡Gira 1 vez al día y gana! Reclama tu premio por WhatsApp en tu próxima compra.</p>
+            <div class="ruleta-wrap">
+                <div class="ruleta-stage">
+                    <div class="ruleta-pointer"></div>
+                    <div id="ruleta-wheel" class="ruleta-wheel"></div>
+                    <div class="ruleta-hub">🎁</div>
+                </div>
+                <button id="ruleta-girar" class="btn ruleta-girar" onclick="girarRuleta()">¡Girar!</button>
+                <div id="ruleta-result" class="ruleta-result"></div>
+                <p class="ruleta-nota">Premios válidos en tu próxima compra (desde S/ 99). 1 giro por día. Sujeto a disponibilidad.</p>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeRuleta()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1394,6 +1430,7 @@
             <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">Tu opinión nos ayuda muchísimo. ¿Nos dejas una reseña en Google?</p>
             <div style="font-size: 26px; letter-spacing: 4px; margin-bottom: 18px;">⭐⭐⭐⭐⭐</div>
             <button class="btn" onclick="goReview()" style="width: 100%; margin-bottom: 8px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">⭐ Califícanos en Google</button>
+            <button class="btn" onclick="closeReview(); openRuleta();" style="width: 100%; margin-bottom: 8px; background: #1565c0;">🎡 Gira la ruleta por tu compra</button>
             <button class="btn" onclick="closeReview()" style="width: 100%; background: #e5e7eb; color: #374151; box-shadow: none;">Ahora no</button>
         </div>
     </div>
@@ -1596,6 +1633,7 @@
             closeDrawer();
             if (accion === 'consulta') openConsultaModal();
             else if (accion === 'club') openClubModal();
+            else if (accion === 'ruleta') openRuleta();
             else if (accion === 'wa') window.open('https://wa.me/51935896961?text=' + encodeURIComponent('Hola ProMedic 👋, quisiera hacer un pedido / consulta.'), '_blank');
         }
 
@@ -2091,6 +2129,92 @@
             const link = 'https://promedic-farma.vercel.app';
             const msg = `¡Te recomiendo *ProMedic Amazonas*! 💊 Medicinas, dermatológicos y vitaminas con delivery en Rodríguez de Mendoza.\n\nÚnete al *Club ProMedic* y ganamos los dos: tú un descuento de bienvenida y yo puntos. 🎁\n\n👉 ${link}\n\nCuando hagas tu primera compra, menciona que te recomendó: ${quien}.`;
             window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+        }
+
+        // === RULETA DE PREMIOS (edita este arreglo: label corto, code, color, premio true/false, peso=probabilidad) ===
+        let premios = [
+            { label: 'S/ 5 dscto', code: 'RUL-5', color: '#1565c0', premio: true, peso: 12 },
+            { label: 'Delivery gratis', code: 'RUL-DELIV', color: '#5daa28', premio: true, peso: 10 },
+            { label: '10 puntos Club', code: 'RUL-10PTS', color: '#1e78d6', premio: true, peso: 16 },
+            { label: 'Sigue participando', code: '', color: '#94a3b8', premio: false, peso: 22 },
+            { label: 'Muestra de regalo', code: 'RUL-MUESTRA', color: '#f59e0b', premio: true, peso: 10 },
+            { label: '5% extra', code: 'RUL-5PCT', color: '#0f4c9a', premio: true, peso: 12 },
+            { label: 'Casi... reintenta', code: '', color: '#cbd5e1', premio: false, peso: 14 },
+            { label: 'S/ 10 dscto', code: 'RUL-10', color: '#db2777', premio: true, peso: 4 }
+        ];
+        let ruletaRot = 0;
+        let ruletaGirando = false;
+        function hoyStr() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+        function yaGiroHoy() { try { return localStorage.getItem('promedic_ruleta_fecha') === hoyStr(); } catch(e) { return false; } }
+        function buildRuleta() {
+            const n = premios.length, seg = 360 / n, cx = 100, cy = 100, R = 98;
+            let s = '';
+            premios.forEach((p, i) => {
+                const a0 = (i*seg - 90) * Math.PI/180, a1 = ((i+1)*seg - 90) * Math.PI/180;
+                const x0 = cx + R*Math.cos(a0), y0 = cy + R*Math.sin(a0);
+                const x1 = cx + R*Math.cos(a1), y1 = cy + R*Math.sin(a1);
+                s += `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${R},${R} 0 0,1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${p.color}" stroke="#ffffff" stroke-width="1.2"/>`;
+                const am = ((i+0.5)*seg - 90) * Math.PI/180;
+                const lx = cx + (R*0.60)*Math.cos(am), ly = cy + (R*0.60)*Math.sin(am);
+                const rot = (i+0.5)*seg;
+                const words = p.label.split(' ');
+                let lines = words.length > 1 ? [words.slice(0, Math.ceil(words.length/2)).join(' '), words.slice(Math.ceil(words.length/2)).join(' ')] : [p.label];
+                const tspans = lines.map((ln, k) => `<tspan x="0" dy="${k === 0 ? (lines.length>1?-3:0) : 8}">${ln}</tspan>`).join('');
+                s += `<g transform="translate(${lx.toFixed(2)},${ly.toFixed(2)}) rotate(${rot})"><text text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">${tspans}</text></g>`;
+            });
+            document.getElementById('ruleta-wheel').innerHTML = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;border:8px solid #0f2a4a;box-sizing:border-box;">${s}</svg>`;
+        }
+        function openRuleta() {
+            buildRuleta();
+            const btn = document.getElementById('ruleta-girar');
+            const res = document.getElementById('ruleta-result');
+            res.style.display = 'none';
+            if (yaGiroHoy()) { btn.disabled = true; btn.textContent = 'Ya giraste hoy · vuelve mañana'; }
+            else { btn.disabled = false; btn.textContent = '¡Girar!'; }
+            document.getElementById('ruleta-modal').classList.add('active');
+        }
+        function closeRuleta() { document.getElementById('ruleta-modal').classList.remove('active'); }
+        function pickPremio() {
+            const total = premios.reduce((a, p) => a + (p.peso || 1), 0);
+            let r = Math.random() * total;
+            for (let i = 0; i < premios.length; i++) { r -= (premios[i].peso || 1); if (r < 0) return i; }
+            return premios.length - 1;
+        }
+        function girarRuleta() {
+            if (ruletaGirando || yaGiroHoy()) return;
+            ruletaGirando = true;
+            const btn = document.getElementById('ruleta-girar');
+            btn.disabled = true; btn.textContent = 'Girando...';
+            document.getElementById('ruleta-result').style.display = 'none';
+            const n = premios.length, seg = 360 / n;
+            const idx = pickPremio();
+            const jitter = (Math.random() - 0.5) * (seg * 0.6);
+            ruletaRot += 360*6 - ((idx + 0.5) * seg) - (ruletaRot % 360) + jitter;
+            document.getElementById('ruleta-wheel').style.transform = `rotate(${ruletaRot}deg)`;
+            track('ruleta_giro', { premio: premios[idx].label });
+            try { localStorage.setItem('promedic_ruleta_fecha', hoyStr()); } catch(e) {}
+            setTimeout(() => {
+                ruletaGirando = false;
+                mostrarPremio(idx);
+                btn.textContent = 'Ya giraste hoy · vuelve mañana';
+            }, 4700);
+        }
+        function mostrarPremio(idx) {
+            const p = premios[idx];
+            const res = document.getElementById('ruleta-result');
+            res.style.display = 'block';
+            if (p.premio) {
+                res.classList.remove('lose');
+                res.innerHTML = `<b>🎉 ¡Ganaste: ${p.label}!</b><p>Código <b style="display:inline">${p.code}</b>. Válido en tu próxima compra (desde S/ 99).</p><button class="btn" style="width:100%;background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,.3);" onclick="reclamarPremio('${p.label.replace(/'/g,"")}','${p.code}')">📲 Reclamar por WhatsApp</button>`;
+            } else {
+                res.classList.add('lose');
+                res.innerHTML = `<b>¡Casi! 🙂</b><p>Hoy no salió premio, pero mañana tienes otro giro. ¡Vuelve!</p>`;
+            }
+        }
+        function reclamarPremio(label, code) {
+            track('ruleta_reclamo', { premio: label });
+            const msg = `¡Hola ProMedic! 🎡 Gané en la Ruleta de premios: *${label}* (código ${code}). Quiero reclamarlo en mi próxima compra.`;
+            window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
         }
 
         // === Cupones del Club (edita este arreglo para cambiar/agregar cupones) ===
