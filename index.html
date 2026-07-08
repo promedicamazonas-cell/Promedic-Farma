@@ -135,6 +135,7 @@
         @media (max-width: 768px) {
             .hamburger { display: inline-flex; }
             .cat-nav { display: none; }
+            #categories-container { display: none; }
         }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
@@ -619,9 +620,9 @@
         .ver-mas-btn { display: inline-flex; align-items: center; gap: 8px; background: #1565C0; color: #fff; border: none; border-radius: 999px; padding: 14px 44px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(21,101,192,.35); transition: all .15s; }
         .ver-mas-btn:hover { background: #0f4c9a; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(21,101,192,.45); }
         .ver-mas-btn svg { width: 15px; height: 15px; }
-        .search-chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
+        .search-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 0 2px; }
         .search-chips::-webkit-scrollbar { display: none; }
-        .search-chips button { flex-shrink: 0; background: #eff6ff; color: #1565c0; border: 1px solid #dbeafe; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+        .search-chips button { background: #eff6ff; color: #1565c0; border: 1px solid #dbeafe; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
         .search-chips button:hover { background: #1565c0; color: #fff; }
         .cargando-mas { color: #1565c0; font-weight: 700; font-size: 13px; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .cm-dot { width: 15px; height: 15px; border: 2px solid #bfdbfe; border-top-color: #1565c0; border-radius: 50%; display: inline-block; animation: cmspin 0.7s linear infinite; }
@@ -1115,7 +1116,7 @@
         </nav>
         <div class="drawer-section">Categorías</div>
         <nav class="drawer-list" id="drawer-list"></nav>
-        <a class="drawer-foot" href="https://www.google.com/maps/search/?api=1&query=Av.+Juan+Pardo+de+Miguel+cuadra+4%2C+San+Nicol%C3%A1s%2C+Rodr%C3%ADguez+de+Mendoza%2C+Amazonas" target="_blank" rel="noopener">
+        <a class="drawer-foot" href="https://www.google.com/maps/search/?api=1&query=Promedic+Amazonas%2C+San+Nicol%C3%A1s%2C+Rodr%C3%ADguez+de+Mendoza%2C+Amazonas" target="_blank" rel="noopener">
             <span class="df-ico">📍</span>
             <span>Av. Juan Pardo de Miguel cuadra 4<br>San Nicolás, Rodríguez de Mendoza<br><span class="df-link">Ver en Google Maps ›</span></span>
         </a>
