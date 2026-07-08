@@ -122,6 +122,12 @@
         .drawer-list a .d-arrow { margin-left: auto; color: #cbd5e1; font-size: 20px; font-weight: 700; }
         .drawer-list a.active { color: #1565c0; background: #f0f9ff; }
         .drawer-list a.active .d-arrow { color: #1565c0; }
+        .drawer-list a .d-ico.dra { background: #e0f2fe; }
+        .drawer-list a .d-ico.club { background: #fef3c7; }
+        .drawer-list a .d-ico.wa { background: #dcfce7; }
+        .drawer-section { padding: 16px 18px 6px; font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #94a3b8; }
+        .drawer-foot { margin-top: auto; display: flex; align-items: flex-start; gap: 10px; padding: 16px 18px; border-top: 1px solid #eef2f7; background: #f8fafc; font-size: 12.5px; color: #475569; line-height: 1.5; }
+        .drawer-foot .df-ico { font-size: 16px; }
         .drawer-backdrop { position: fixed; inset: 0; background: rgba(15,42,74,.45); z-index: 55; opacity: 0; visibility: hidden; transition: opacity .28s; }
         .drawer-backdrop.open { opacity: 1; visibility: visible; }
         @media (max-width: 768px) {
@@ -1095,12 +1101,22 @@
     </header>
 
     <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
-    <aside id="drawer" class="drawer" aria-label="Menú de categorías">
+    <aside id="drawer" class="drawer" aria-label="Menú">
         <div class="drawer-head">
             <span>Menú</span>
             <button class="drawer-close" onclick="closeDrawer()" aria-label="Cerrar menú">✕</button>
         </div>
+        <nav class="drawer-list">
+            <a onclick="navDrawerAction('consulta')"><span class="d-ico dra">👩‍⚕️</span>Consulta con la Dra. Key<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('club')"><span class="d-ico club">⭐</span>Club ProMedic<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('wa')"><span class="d-ico wa">💬</span>Pedir por WhatsApp<span class="d-arrow">›</span></a>
+        </nav>
+        <div class="drawer-section">Categorías</div>
         <nav class="drawer-list" id="drawer-list"></nav>
+        <div class="drawer-foot">
+            <span class="df-ico">📍</span>
+            <span>Av. Juan Pardo de Miguel cuadra 4<br>San Nicolás, Rodríguez de Mendoza</span>
+        </div>
     </aside>
 
     <nav class="cat-nav" id="cat-nav"></nav>
@@ -1519,6 +1535,12 @@
         function navCatDrawer(cat) {
             closeDrawer();
             navCat(cat);
+        }
+        function navDrawerAction(accion) {
+            closeDrawer();
+            if (accion === 'consulta') openConsultaModal();
+            else if (accion === 'club') openClubModal();
+            else if (accion === 'wa') window.open('https://wa.me/51935896961?text=' + encodeURIComponent('Hola ProMedic 👋, quisiera hacer un pedido / consulta.'), '_blank');
         }
 
         function generarLetras() {
