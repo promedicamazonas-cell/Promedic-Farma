@@ -1230,7 +1230,9 @@
             <p style="font-size: 12px; color: #6b7280; margin-bottom: 14px;">Gana puntos con cada compra y sube de nivel. Mientras más compras, más beneficios.</p>
             <div class="club-benefits">
                 <div class="cb-row"><span>🎁</span><div><b>50 puntos de bienvenida</b> solo por unirte.</div></div>
-                <div class="cb-row"><span>⭐</span><div>Ganas <b>1 punto por cada S/ 1</b>; 100 puntos = S/ 1 de descuento.</div></div>
+                <div class="cb-row"><span>⭐</span><div>Ganas <b>1 punto por cada S/ 1</b> que compras.</div></div>
+                <div class="cb-row"><span>💰</span><div>Junta <b>100 puntos</b> y los canjeas por <b>S/ 1 de descuento</b>.</div></div>
+                <div class="cb-row"><span>🧾</span><div><small style="color:#6b7280;">Ejemplo: una compra de S/ 100 te da 100 puntos = S/ 1 para tu próxima compra.</small></div></div>
             </div>
             <button class="btn" onclick="joinClub()" style="width: 100%; margin-bottom: 18px;">Unirme al Club — es gratis</button>
 
@@ -2093,8 +2095,8 @@
 
         // === Cupones del Club (edita este arreglo para cambiar/agregar cupones) ===
         let cupones = [
-            { codigo: 'BIENVENIDA', titulo: 'Descuento de bienvenida', desc: 'Para tu primera compra como socio del Club.', icono: '🎁' },
-            { codigo: 'CLUB', titulo: 'Beneficio de socio', desc: 'Menciónalo al pedir por WhatsApp para tus ofertas del Club.', icono: '⭐' }
+            { codigo: 'BIENVENIDA', titulo: 'S/ 10 de descuento', desc: 'En tu 1ª compra desde S/ 99. Se suma al 10% de la app · un solo uso.', icono: '🎁' },
+            { codigo: 'CLUB', titulo: 'S/ 10 de descuento', desc: 'En compras desde S/ 99. Se suma al 10% de la app · un solo uso.', icono: '⭐' }
         ];
         function renderCupones() {
             const el = document.getElementById('cupones-cont');
