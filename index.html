@@ -126,8 +126,10 @@
         .drawer-list a .d-ico.club { background: #fef3c7; }
         .drawer-list a .d-ico.wa { background: #dcfce7; }
         .drawer-section { padding: 16px 18px 6px; font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #94a3b8; }
-        .drawer-foot { margin-top: auto; display: flex; align-items: flex-start; gap: 10px; padding: 16px 18px; border-top: 1px solid #eef2f7; background: #f8fafc; font-size: 12.5px; color: #475569; line-height: 1.5; }
+        .drawer-foot { margin-top: auto; display: flex; align-items: flex-start; gap: 10px; padding: 16px 18px; border-top: 1px solid #eef2f7; background: #f8fafc; font-size: 12.5px; color: #475569; line-height: 1.5; text-decoration: none; }
+        .drawer-foot:hover { background: #f0f9ff; }
         .drawer-foot .df-ico { font-size: 16px; }
+        .drawer-foot .df-link { color: #1565c0; font-weight: 700; }
         .drawer-backdrop { position: fixed; inset: 0; background: rgba(15,42,74,.45); z-index: 55; opacity: 0; visibility: hidden; transition: opacity .28s; }
         .drawer-backdrop.open { opacity: 1; visibility: visible; }
         @media (max-width: 768px) {
@@ -1113,10 +1115,10 @@
         </nav>
         <div class="drawer-section">Categorías</div>
         <nav class="drawer-list" id="drawer-list"></nav>
-        <div class="drawer-foot">
+        <a class="drawer-foot" href="https://www.google.com/maps/search/?api=1&query=Av.+Juan+Pardo+de+Miguel+cuadra+4%2C+San+Nicol%C3%A1s%2C+Rodr%C3%ADguez+de+Mendoza%2C+Amazonas" target="_blank" rel="noopener">
             <span class="df-ico">📍</span>
-            <span>Av. Juan Pardo de Miguel cuadra 4<br>San Nicolás, Rodríguez de Mendoza</span>
-        </div>
+            <span>Av. Juan Pardo de Miguel cuadra 4<br>San Nicolás, Rodríguez de Mendoza<br><span class="df-link">Ver en Google Maps ›</span></span>
+        </a>
     </aside>
 
     <nav class="cat-nav" id="cat-nav"></nav>
