@@ -879,6 +879,27 @@
         .cb-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; color: #374151; line-height: 1.4; }
         .cb-row > span { font-size: 18px; flex-shrink: 0; }
         .cb-row b { color: #0f2a4a; }
+        .club-sec-title { font-size: 14px; font-weight: 800; color: #0f2a4a; margin: 2px 0 10px; }
+        .club-tiers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+        .tier { border: 1px solid #e5e7eb; border-radius: 12px; padding: 11px 14px; background: #fff; }
+        .tier-head { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+        .tier-ico { font-size: 24px; }
+        .tier-head b { font-size: 14px; color: #0f2a4a; }
+        .tier-head small { display: block; font-size: 11px; color: #6b7280; font-weight: 700; }
+        .tier ul { margin: 0; padding-left: 18px; }
+        .tier li { font-size: 12px; color: #4b5563; line-height: 1.55; }
+        .tier-bronce { border-left: 4px solid #cd7f32; }
+        .tier-plata { border-left: 4px solid #9ca3af; }
+        .tier-oro { border-left: 4px solid #f59e0b; background: #fffbeb; }
+        .cupones { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+        .cupon { display: flex; align-items: center; gap: 12px; border: 1.5px dashed #1565c0; border-radius: 12px; padding: 11px 13px; background: #eff6ff; cursor: pointer; transition: background .15s; }
+        .cupon:hover { background: #dbeafe; }
+        .cupon-ico { font-size: 22px; flex-shrink: 0; }
+        .cupon-body { flex: 1; min-width: 0; }
+        .cupon-body b { font-size: 13px; color: #0f2a4a; display: block; }
+        .cupon-body small { font-size: 11.5px; color: #4b5563; line-height: 1.35; }
+        .cupon-code { background: #1565c0; color: #fff; font-weight: 800; font-size: 12px; padding: 6px 11px; border-radius: 8px; letter-spacing: .5px; white-space: nowrap; flex-shrink: 0; }
+        .cupon-code.cupon-copiado { background: #16a34a; }
         .club-refer { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
         .club-refer h4 { font-size: 14px; color: #15803d; margin: 0 0 6px; }
         .club-refer p { font-size: 12px; color: #4b5563; line-height: 1.45; margin: 0 0 10px; }
@@ -1206,13 +1227,43 @@
     <div id="club-modal" class="modal">
         <div class="modal-content">
             <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 4px;">⭐ Club ProMedic</h2>
-            <p style="font-size: 12px; color: #6b7280; margin-bottom: 14px;">Gana puntos con cada compra y canjéalos por descuentos.</p>
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 14px;">Gana puntos con cada compra y sube de nivel. Mientras más compras, más beneficios.</p>
             <div class="club-benefits">
                 <div class="cb-row"><span>🎁</span><div><b>50 puntos de bienvenida</b> solo por unirte.</div></div>
                 <div class="cb-row"><span>⭐</span><div>Ganas <b>1 punto por cada S/ 1</b>; 100 puntos = S/ 1 de descuento.</div></div>
-                <div class="cb-row"><span>🚀</span><div>Beneficios exclusivos y sorpresas para clientes frecuentes.</div></div>
             </div>
-            <button class="btn" onclick="joinClub()" style="width: 100%; margin-bottom: 16px;">Unirme al Club — es gratis</button>
+            <button class="btn" onclick="joinClub()" style="width: 100%; margin-bottom: 18px;">Unirme al Club — es gratis</button>
+
+            <h4 class="club-sec-title">🏆 Niveles del Club</h4>
+            <div class="club-tiers">
+                <div class="tier tier-bronce">
+                    <div class="tier-head"><span class="tier-ico">🥉</span><div><b>Bronce</b><small>Al unirte</small></div></div>
+                    <ul>
+                        <li>1 punto por cada S/ 1</li>
+                        <li>Bono de 50 puntos de bienvenida</li>
+                        <li>Ofertas exclusivas del Club</li>
+                    </ul>
+                </div>
+                <div class="tier tier-plata">
+                    <div class="tier-head"><span class="tier-ico">🥈</span><div><b>Plata</b><small>500 puntos</small></div></div>
+                    <ul>
+                        <li>Todo lo de Bronce</li>
+                        <li>Descuento extra exclusivo en fechas y productos selectos</li>
+                        <li>Atención prioritaria por WhatsApp</li>
+                    </ul>
+                </div>
+                <div class="tier tier-oro">
+                    <div class="tier-head"><span class="tier-ico">🥇</span><div><b>Oro</b><small>1500 puntos</small></div></div>
+                    <ul>
+                        <li>Todo lo de Plata</li>
+                        <li><b>Delivery gratis siempre</b>, sin monto mínimo</li>
+                        <li>Descuentos premium y sorpresas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4 class="club-sec-title">🎟️ Cupones activos</h4>
+            <div id="cupones-cont" class="cupones"></div>
 
             <div class="club-refer">
                 <h4>🤝 Recomienda y ganen los dos</h4>
@@ -2029,15 +2080,46 @@
             const msg = '¡Hola! Quiero unirme al *Club ProMedic* para acumular puntos con mis compras y recibir mi bono de bienvenida de 50 puntos. 🎁';
             window.open(`https://wa.me/51935896961?text=${encodeURIComponent(msg)}`, '_blank');
         }
-        function openClubModal() { document.getElementById('club-modal').classList.add('active'); }
+        function openClubModal() { renderCupones(); document.getElementById('club-modal').classList.add('active'); }
         function closeClubModal() { document.getElementById('club-modal').classList.remove('active'); }
         function referir() {
             track('referir');
             const name = (document.getElementById('refer-name').value || '').trim();
             const quien = name || 'un amigo';
             const link = 'https://promedic-farma.vercel.app';
-            const msg = `¡Te recomiendo *ProMedic Amazonas*! 💊 Medicinas, dermatológicos y vitaminas con delivery en Chachapoyas.\n\nÚnete al *Club ProMedic* y ganamos los dos: tú un descuento de bienvenida y yo puntos. 🎁\n\n👉 ${link}\n\nCuando hagas tu primera compra, menciona que te recomendó: ${quien}.`;
+            const msg = `¡Te recomiendo *ProMedic Amazonas*! 💊 Medicinas, dermatológicos y vitaminas con delivery en Rodríguez de Mendoza.\n\nÚnete al *Club ProMedic* y ganamos los dos: tú un descuento de bienvenida y yo puntos. 🎁\n\n👉 ${link}\n\nCuando hagas tu primera compra, menciona que te recomendó: ${quien}.`;
             window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+        }
+
+        // === Cupones del Club (edita este arreglo para cambiar/agregar cupones) ===
+        let cupones = [
+            { codigo: 'BIENVENIDA', titulo: 'Descuento de bienvenida', desc: 'Para tu primera compra como socio del Club.', icono: '🎁' },
+            { codigo: 'CLUB', titulo: 'Beneficio de socio', desc: 'Menciónalo al pedir por WhatsApp para tus ofertas del Club.', icono: '⭐' }
+        ];
+        function renderCupones() {
+            const el = document.getElementById('cupones-cont');
+            if (!el) return;
+            if (!cupones.length) { el.innerHTML = '<p style="font-size:12px;color:#6b7280;">Pronto tendremos cupones nuevos. 👀</p>'; return; }
+            el.innerHTML = cupones.map((c, i) => `
+                <div class="cupon" onclick="usarCupon(${i})">
+                    <span class="cupon-ico">${c.icono}</span>
+                    <div class="cupon-body"><b>${c.titulo}</b><small>${c.desc}</small></div>
+                    <span class="cupon-code" id="cupcode-${i}">${c.codigo}</span>
+                </div>`).join('');
+        }
+        function usarCupon(i) {
+            const c = cupones[i];
+            if (!c) return;
+            track('usar_cupon', { codigo: c.codigo });
+            if (navigator.clipboard) { navigator.clipboard.writeText(c.codigo).catch(() => {}); }
+            const tag = document.getElementById('cupcode-' + i);
+            if (tag) {
+                tag.textContent = '¡Copiado!';
+                tag.classList.add('cupon-copiado');
+                setTimeout(() => { tag.textContent = c.codigo; tag.classList.remove('cupon-copiado'); }, 1600);
+            }
+            const msg = `¡Hola ProMedic! 👋 Quiero usar mi cupón *${c.codigo}* (${c.titulo}) del Club ProMedic en mi pedido.`;
+            window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
         }
 
         // Ampliar imagen del producto
