@@ -1255,13 +1255,13 @@
                     <input type="text" id="search" placeholder="Busca por nombre, síntoma o uso… (ej. gripe, piel grasa)" />
                 </div>
                 <div class="search-chips">
-                    <button onclick="buscarChip('gripe')">🤧 Gripe</button>
-                    <button onclick="buscarChip('dolor de cabeza')">🤕 Dolor de cabeza</button>
-                    <button onclick="buscarChip('piel grasa')">✨ Piel grasa</button>
-                    <button onclick="buscarChip('protector solar')">☀️ Protector solar</button>
-                    <button onclick="buscarChip('vitaminas')">💊 Vitaminas</button>
-                    <button onclick="buscarChip('bebé')">🍼 Bebé</button>
-                    <button onclick="buscarChip('hongos')">🦶 Hongos</button>
+                    <button onclick="buscarChip('gripe','Medicamentos')">🤧 Gripe</button>
+                    <button onclick="buscarChip('dolor de cabeza','Medicamentos')">🤕 Dolor de cabeza</button>
+                    <button onclick="buscarChip('piel grasa','Dermatológicos')">✨ Piel grasa</button>
+                    <button onclick="buscarChip('protector solar','Dermatológicos')">☀️ Protector solar</button>
+                    <button onclick="buscarChip('vitaminas','Vitaminas')">💊 Vitaminas</button>
+                    <button onclick="buscarChip('bebé','Dermatológicos')">🍼 Bebé</button>
+                    <button onclick="buscarChip('manchas','Dermatológicos')">🌸 Manchas</button>
                 </div>
                 <div class="categories" id="categories-container">
                     <button class="active" onclick="filterCat('Todas')">Todas</button>
@@ -2100,12 +2100,15 @@
             document.getElementById('cart-modal').classList.add('active');
         });
 
-        function buscarChip(q) {
+        function buscarChip(q, cat) {
             const inp = document.getElementById('search');
             inp.value = q;
             track('buscar', { termino: q, origen: 'chip' });
-            categoriaActual = 'Todas'; letraActual = ''; paginaProductos = loteProductos();
+            // Scope el chip a su categoría (si esa categoría tiene productos); si no, busca en todas.
+            categoriaActual = (cat && productos.some(p => p.categoria === cat)) ? cat : 'Todas';
+            letraActual = ''; paginaProductos = loteProductos();
             generarBotonesCategorias();
+            generarNav();
             renderProducts();
             const dest = document.getElementById('catalogo');
             if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
