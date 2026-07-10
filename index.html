@@ -1851,6 +1851,13 @@
             'parasito':'mebendazol albendazol zentel'
         };
 
+        // Evita falsos positivos: estos productos NO deben engancharse por un ingrediente
+        // secundario (paracetamol/analgésico). Igual aparecen por nombre o en su chip real.
+        const bloqueoSinonimo = {
+            'busdol': ['paracetamol', 'analgesico'],
+            'clorzodisten': ['paracetamol', 'analgesico']
+        };
+
         function renderProducts() {
             const rawQ = normaliza(document.getElementById('search').value);
             let synWords = [];
@@ -1864,7 +1871,16 @@
                 if (!rawQ) return true;
                 const hay = p._busq || '';
                 if (tokens.length && tokens.every(t => enTexto(hay, t))) return true;
-                if (synWords.length && synWords.some(w => w.length >= 3 && hay.includes(w))) return true;
+                if (synWords.length) {
+                    for (const w of synWords) {
+                        if (w.length < 3 || !hay.includes(w)) continue;
+                        let bloqueado = false;
+                        for (const pref in bloqueoSinonimo) {
+                            if (hay.startsWith(pref) && bloqueoSinonimo[pref].includes(w)) { bloqueado = true; break; }
+                        }
+                        if (!bloqueado) return true;
+                    }
+                }
                 return false;
             });
 
