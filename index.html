@@ -580,6 +580,7 @@
         }
         .ficha-img-empty { height: 220px; display: flex; align-items: center; justify-content: center; }
         .ficha-img-empty svg { width: 90px; height: 90px; }
+        .pc-rot { transition: opacity .3s ease; }
         .ficha-thumbs { display: flex; gap: 8px; margin: -6px 0 14px; flex-wrap: wrap; }
         .ficha-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb; cursor: pointer; background: #f8fafc; transition: border-color .15s; }
         .ficha-thumb.active { border-color: #1565c0; }
@@ -1900,10 +1901,12 @@
             });
 
             const html = filtrados.slice(0, paginaProductos).map((p) => {
-                const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
+                const cardImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s);
+                const imgSrc = cardImgs[0] || '';
+                const multi = cardImgs.length > 1;
                 const iconHtml = formIcon(p.formaFarmaceutica);
                 const imgBlock = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="product-card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="product-card-img-empty" style="display:none;">${iconHtml}</div>`
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="product-card-img${multi ? ' pc-rot' : ''}"${multi ? ` data-imgs="${cardImgs.join('|')}"` : ''} onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="product-card-img-empty" style="display:none;">${iconHtml}</div>`
                     : `<div class="product-card-img-empty">${iconHtml}</div>`;
                 const conc = (p.concentracion || '').trim();
                 const tieneConc = conc && conc.toUpperCase() !== 'N/A';
@@ -2355,10 +2358,12 @@
             const dest = productos.filter(p => p.destacado > 0).sort((a, b) => a.destacado - b.destacado);
             if (!dest.length) { card.style.display = 'none'; return; }
             row.innerHTML = dest.map(p => {
-                const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
+                const destImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s);
+                const imgSrc = destImgs[0] || '';
+                const dmulti = destImgs.length > 1;
                 const icon = formIcon(p.formaFarmaceutica);
                 const img = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="dest-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="dest-img-empty" style="display:none;">${icon}</div>`
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="dest-img${dmulti ? ' pc-rot' : ''}"${dmulti ? ` data-imgs="${destImgs.join('|')}"` : ''} onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="dest-img-empty" style="display:none;">${icon}</div>`
                     : `<div class="dest-img-empty">${icon}</div>`;
                 const precio = p.precio_por_unidad > 0
                     ? `<div class="dest-price-old">S/. ${p.precio_por_unidad.toFixed(2)}</div><div class="dest-price">S/. ${(p.precio_por_unidad*0.9).toFixed(2)}<span class="dest-off">-10%</span></div>`
@@ -2549,6 +2554,25 @@
             paginaProductos += loteProductos();
             renderProducts();
         }
+
+        // Rota las imágenes de productos que tienen 2-3 fotos, mientras el cliente navega
+        function rotarImagenes() {
+            if (document.hidden) return;
+            document.querySelectorAll('.pc-rot').forEach(img => {
+                const list = (img.dataset.imgs || '').split('|').filter(Boolean);
+                if (list.length < 2) return;
+                let idx = parseInt(img.dataset.idx);
+                if (isNaN(idx)) idx = 0;
+                idx = (idx + 1) % list.length;
+                img.dataset.idx = idx;
+                const nueva = list[idx];
+                const pre = new Image();
+                pre.onload = () => { img.style.opacity = '0.3'; setTimeout(() => { img.src = nueva; img.style.opacity = '1'; }, 180); };
+                pre.onerror = () => {};
+                pre.src = nueva;
+            });
+        }
+        setInterval(rotarImagenes, 3500);
 
         // Funciones para Consulta con Doctorita Key
         function openConsultaModal() {
