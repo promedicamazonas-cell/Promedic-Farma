@@ -2352,6 +2352,28 @@
                 </div>`;
             }).join('');
             card.style.display = 'block';
+            iniciarCarruselDestacados(row);
+        }
+        let destTimer = null;
+        function iniciarCarruselDestacados(row) {
+            if (destTimer) { clearInterval(destTimer); destTimer = null; }
+            const cards = row.querySelectorAll('.dest-card');
+            if (cards.length < 2) return;
+            let pausado = false;
+            const paso = () => (cards[0].offsetWidth + 12);
+            const pausaBreve = () => { pausado = true; clearTimeout(row._resume); row._resume = setTimeout(() => { pausado = false; }, 4000); };
+            row.addEventListener('touchstart', pausaBreve, { passive: true });
+            row.addEventListener('mouseenter', () => { pausado = true; });
+            row.addEventListener('mouseleave', () => { pausado = false; });
+            destTimer = setInterval(() => {
+                if (pausado || document.hidden) return;
+                if (row.scrollWidth - row.clientWidth <= 4) return; // no hay overflow, nada que rotar
+                if (row.scrollLeft + row.clientWidth >= row.scrollWidth - 4) {
+                    row.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    row.scrollBy({ left: paso(), behavior: 'smooth' });
+                }
+            }, 3000);
         }
         function verMasDestacados() {
             const dest = document.getElementById('catalogo');
