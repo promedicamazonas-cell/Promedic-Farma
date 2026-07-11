@@ -580,6 +580,10 @@
         }
         .ficha-img-empty { height: 220px; display: flex; align-items: center; justify-content: center; }
         .ficha-img-empty svg { width: 90px; height: 90px; }
+        .ficha-thumbs { display: flex; gap: 8px; margin: -6px 0 14px; flex-wrap: wrap; }
+        .ficha-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb; cursor: pointer; background: #f8fafc; transition: border-color .15s; }
+        .ficha-thumb.active { border-color: #1565c0; }
+        .ficha-thumb:hover { border-color: #93c5fd; }
         .ficha-pres { font-size: 11px; color: #6b7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
         .ficha-name { font-size: 21px; font-weight: 800; color: #1f2937; margin: 0 0 6px; line-height: 1.2; }
         .ficha-brand { font-size: 13px; font-weight: 700; color: #0f4c9a; margin-bottom: 10px; }
@@ -1608,6 +1612,8 @@
                                     fabricante: p.fabricante || '',
                                     categoria: p.categoria || '',
                                     imagen: (p.imagen || '').trim(),
+                                    imagen2: (p.imagen2 || '').trim(),
+                                    imagen3: (p.imagen3 || '').trim(),
                                     descripcion: (p.descripcion || '').trim(),
                                     uso: (p.uso || '').trim(),
                                     principio: (p.principio_activo || p.principio || '').trim(),
@@ -2153,16 +2159,29 @@
         updateCart();
 
         // Ficha de producto
+        function fichaSwap(src, el) {
+            const main = document.getElementById('ficha-main-img');
+            if (main) { main.src = src; main.style.display = 'block'; }
+            document.querySelectorAll('.ficha-thumb').forEach(t => t.classList.remove('active'));
+            if (el) el.classList.add('active');
+        }
         function openFicha(k) {
             const p = productos[k];
             if (!p) return;
             track('ver_producto', { producto: p.nombre });
-            const imgSrc = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
+            const resolveImg = s => s ? (s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s) : '';
+            const imgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(resolveImg);
             const conc = (p.concentracion || '').trim();
             const tieneConc = conc && conc.toUpperCase() !== 'N/A';
-            const imgBlock = imgSrc
-                ? `<img src="${imgSrc}" alt="${p.nombre}" class="ficha-img" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="ficha-img ficha-img-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div>`
-                : `<div class="ficha-img ficha-img-empty">${formIcon(p.formaFarmaceutica)}</div>`;
+            let imgBlock;
+            if (imgs.length) {
+                const thumbs = imgs.length > 1
+                    ? `<div class="ficha-thumbs">${imgs.map((s, i) => `<img src="${s}" alt="${p.nombre}" class="ficha-thumb${i === 0 ? ' active' : ''}" onclick="fichaSwap('${s}', this)" />`).join('')}</div>`
+                    : '';
+                imgBlock = `<img id="ficha-main-img" src="${imgs[0]}" alt="${p.nombre}" class="ficha-img" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="ficha-img ficha-img-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div>${thumbs}`;
+            } else {
+                imgBlock = `<div class="ficha-img ficha-img-empty">${formIcon(p.formaFarmaceutica)}</div>`;
+            }
             const esReceta = p.cond === 'RECETA';
             const recetaBadge = esReceta ? `<div class="ficha-receta">⚠️ Requiere receta médica</div>` : '';
             const descBlock = p.descripcion ? `<div class="ficha-sec"><h4>¿Para qué sirve?</h4><p>${p.descripcion}</p></div>` : '';
