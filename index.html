@@ -956,6 +956,21 @@
         .mp-agenda { background: #1565c0; color: #fff; }
         .mp-prod { background: #fff; color: #1565c0; border: 2px solid #1565c0; }
         .mp-tip { font-size: 11.5px; color: #92400e; background: #fef3c7; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 12px; line-height: 1.45; margin-bottom: 12px; }
+        /* Test de piel */
+        .test-progress { font-size: 11px; color: #94a3b8; font-weight: 800; letter-spacing: .4px; margin-bottom: 6px; text-transform: uppercase; }
+        .test-q { font-size: 15.5px; font-weight: 800; color: #0f2a4a; margin: 2px 0 14px; line-height: 1.3; }
+        .test-opt { display: block; width: 100%; text-align: left; background: #f8fafc; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 13px 14px; margin-bottom: 10px; font-size: 13.5px; color: #1f2937; cursor: pointer; transition: all .12s; }
+        .test-opt:hover { border-color: #1565c0; background: #eff6ff; }
+        .test-result-tipo { font-size: 21px; font-weight: 800; color: #1565c0; margin: 2px 0 6px; line-height: 1.15; }
+        .test-result-desc { font-size: 13px; color: #4b5563; line-height: 1.5; margin-bottom: 10px; }
+        .test-tip { font-size: 12px; color: #0f2a4a; background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; line-height: 1.45; }
+        .test-prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .test-prod { border: 1px solid #eef2f7; border-radius: 12px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; background: #fff; }
+        .test-prod img { width: 100%; height: 92px; object-fit: contain; background: #f8fafc; border-radius: 8px; }
+        .test-prod .tp-empty { width: 100%; height: 92px; display: flex; align-items: center; justify-content: center; font-size: 30px; background: #f8fafc; border-radius: 8px; }
+        .test-prod .tp-name { font-size: 11.5px; font-weight: 700; color: #1f2937; margin: 6px 0 3px; line-height: 1.25; height: 29px; overflow: hidden; }
+        .test-prod .tp-price { font-size: 13px; font-weight: 800; color: #1565c0; margin-top: auto; }
+        .test-prod .tp-btn { margin-top: 6px; background: #5daa28; color: #fff; border: none; border-radius: 8px; padding: 7px; font-size: 11px; font-weight: 800; cursor: pointer; }
         .club-refer { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
         .club-refer h4 { font-size: 14px; color: #15803d; margin: 0 0 6px; }
         .club-refer p { font-size: 12px; color: #4b5563; line-height: 1.45; margin: 0 0 10px; }
@@ -1201,6 +1216,7 @@
         <nav class="drawer-list">
             <a onclick="navDrawerAction('consulta')"><span class="d-ico dra">👩‍⚕️</span>Consulta con la Dra. Key<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('mipiel')"><span class="d-ico" style="background:#fce7f3">🌸</span>Mi Piel (Dra. Key)<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('test')"><span class="d-ico" style="background:#e0e7ff">🧪</span>Test de tu piel<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('club')"><span class="d-ico club">⭐</span>Club ProMedic<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('ruleta')"><span class="d-ico" style="background:#fef3c7">🎡</span>Ruleta de premios<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('wa')"><span class="d-ico wa">💬</span>Pedir por WhatsApp<span class="d-arrow">›</span></a>
@@ -1372,6 +1388,16 @@
         </div>
     </div>
 
+    <div id="test-modal" class="modal">
+        <div class="modal-content" style="max-width: 470px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 10px;">🧪 Test de tu piel</h2>
+            <div id="test-body"></div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeTest()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="libro-modal" class="modal">
         <div class="modal-content" style="max-width: 460px;">
             <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 4px;">📕 Libro de Reclamaciones</h2>
@@ -1389,6 +1415,7 @@
             <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 2px;">🌸 Mi Piel · Corner Dra. Key</h2>
             <p style="font-size: 12.5px; color: #6b7280; margin-bottom: 12px; line-height: 1.5;">Tu piel es un <b>tratamiento, no un evento</b>. Los resultados que lograste con la Dra. Key se mantienen con una rutina simple y controles a tiempo. No dejes que se pierdan.</p>
 
+            <button class="mp-cta" style="background: linear-gradient(135deg,#ec4899 0%,#1565c0 100%); color:#fff;" onclick="closeMiPiel(); openTest();">🧪 Descubre tu tipo de piel (test)</button>
             <button class="mp-cta mp-plan" onclick="planPiel()">📲 Recibe tu plan personalizado</button>
             <button class="mp-cta mp-agenda" onclick="agendarMantenimiento()">🗓️ Agenda tu control de mantenimiento</button>
 
@@ -1758,6 +1785,7 @@
             else if (accion === 'club') openClubModal();
             else if (accion === 'ruleta') openRuleta();
             else if (accion === 'mipiel') openMiPiel();
+            else if (accion === 'test') openTest();
             else if (accion === 'libro') openLibroModal();
             else if (accion === 'wa') window.open('https://wa.me/51935896961?text=' + encodeURIComponent('Hola ProMedic 👋, quisiera hacer un pedido / consulta.'), '_blank');
         }
@@ -2466,6 +2494,129 @@
             window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
         }
         function verProductosPiel() { closeMiPiel(); navCat('Dermatológicos'); }
+
+        // ===== TEST DE PIEL =====
+        const testPreguntas = [
+            { t: 'Unas horas después de lavarte la cara, ¿cómo la sientes?', o: [
+                { l: 'Brillosa o grasosa en toda la cara', v: 'grasa' },
+                { l: 'Tirante, áspera o con descamación', v: 'seca' },
+                { l: 'Brillosa solo en frente y nariz', v: 'mixta' },
+                { l: 'Cómoda, ni grasa ni tirante', v: 'normal' } ] },
+            { t: '¿Cómo se ven tus poros?', o: [
+                { l: 'Grandes y visibles en toda la cara', v: 'grasa' },
+                { l: 'Casi no se notan', v: 'seca' },
+                { l: 'Grandes solo en la zona T (frente y nariz)', v: 'mixta' },
+                { l: 'Normales', v: 'normal' } ] },
+            { t: '¿Con qué frecuencia tienes brillo durante el día?', o: [
+                { l: 'Todo el día, en toda la cara', v: 'grasa' },
+                { l: 'Casi nunca; más bien resequedad', v: 'seca' },
+                { l: 'Solo en la zona T', v: 'mixta' },
+                { l: 'Rara vez', v: 'normal' } ] },
+            { t: '¿Tu piel se irrita, enrojece o pica con facilidad (productos, sol, clima)?', o: [
+                { l: 'Sí, con frecuencia', v: 'sens2' },
+                { l: 'A veces', v: 'sens1' },
+                { l: 'No, la tolero bien', v: 'sens0' } ] },
+            { t: '¿Cuál es tu principal preocupación?', o: [
+                { l: 'Manchas o melasma', v: 'c_manchas' },
+                { l: 'Granitos, acné o imperfecciones', v: 'c_acne' },
+                { l: 'Arrugas, líneas o antiedad', v: 'c_arrugas' },
+                { l: 'Ninguna; solo mantener mi piel', v: 'c_ninguna' } ] }
+        ];
+        const tipoInfo = {
+            grasa:  { emoji: '💧', label: 'grasa',  desc: 'Produce más sebo, con brillo y poros visibles. Necesita limpieza suave, control de grasa (matificantes) y protección solar ligera (oil-free).' },
+            seca:   { emoji: '🌵', label: 'seca',   desc: 'Tiende a la tirantez y descamación. Pide hidratación y nutrición constante, y limpiadores muy suaves.' },
+            mixta:  { emoji: '🌗', label: 'mixta',  desc: 'Zona T grasa y mejillas normales o secas. La clave es equilibrar: controlar grasa en la T e hidratar las mejillas.' },
+            normal: { emoji: '🌸', label: 'normal', desc: 'Equilibrada y sin grandes problemas. Mantenla con limpieza suave, hidratación y protección solar diaria.' }
+        };
+        const concernInfo = {
+            c_manchas: 'Para las manchas: usa despigmentantes y, sobre todo, protector solar alto TODOS los días (es lo más importante).',
+            c_acne:    'Para el acné e imperfecciones: activos purificantes (ácido salicílico, niacinamida) y productos no comedogénicos.',
+            c_arrugas: 'Para el antiedad: retinol o retinal en la noche, vitamina C en el día y protección solar constante.',
+            c_ninguna: 'Mantén una rutina simple y constante: limpia, hidrata y protege del sol cada día.'
+        };
+        const pielKeywords = {
+            grasa:  'effaclar matificante seborreico purificante oil grasa',
+            seca:   'cerave lipikar hidratante nutritiv ureadin nutratopic hidra',
+            mixta:  'effaclar hidratante equilibr cerave',
+            normal: 'cerave hidratante hidra'
+        };
+        const concernKeywords = {
+            c_manchas: 'mela antimanchas glicoisdin despigment fotoultra pigment melasyl anthelios fotoprotector',
+            c_acne:    'effaclar acne imperfecciones salicilico duo',
+            c_arrugas: 'retinol retinal antiedad redermic hyalu vitamina colageno anthelios fotoprotector',
+            c_ninguna: 'hidratante cerave anthelios fotoprotector'
+        };
+        let testIdx = 0, testScore = {}, testSens = 0, testConcern = 'c_ninguna';
+        function openTest() {
+            track('test_piel_iniciar');
+            testIdx = 0; testScore = { grasa: 0, seca: 0, mixta: 0, normal: 0 }; testSens = 0; testConcern = 'c_ninguna';
+            renderTestPregunta();
+            document.getElementById('test-modal').classList.add('active');
+        }
+        function closeTest() { document.getElementById('test-modal').classList.remove('active'); }
+        function renderTestPregunta() {
+            const q = testPreguntas[testIdx];
+            document.getElementById('test-body').innerHTML =
+                `<div class="test-progress">Pregunta ${testIdx + 1} de ${testPreguntas.length}</div>
+                 <div class="test-q">${q.t}</div>` +
+                q.o.map(op => `<button class="test-opt" onclick="responderTest('${op.v}')">${op.l}</button>`).join('');
+        }
+        function responderTest(v) {
+            if (testScore[v] !== undefined) testScore[v]++;
+            else if (v === 'sens2') testSens += 2;
+            else if (v === 'sens1') testSens += 1;
+            else if (v.startsWith('c_')) testConcern = v;
+            testIdx++;
+            if (testIdx < testPreguntas.length) renderTestPregunta();
+            else mostrarResultadoTest();
+        }
+        function productosParaPiel(tipo, concern, sensible) {
+            const split = s => (s || '').split(' ').filter(w => w.length >= 3);
+            const cKw = split(concernKeywords[concern]);
+            const tKw = split(pielKeywords[tipo]).concat(sensible ? ['sensible', 'calmante', 'toleriane', 'cicaplast', 'tolerance'] : []);
+            const pool = productos.filter(p => p.categoria === 'Dermatológicos' && p.precio_por_unidad > 0);
+            const match = (p, kws) => { const hay = p._busq || ''; return kws.some(w => hay.includes(w)); };
+            const out = [];
+            const push = arr => arr.forEach(p => { if (!out.includes(p)) out.push(p); });
+            push(pool.filter(p => match(p, cKw)));
+            push(pool.filter(p => match(p, tKw)));
+            return out.slice(0, 8);
+        }
+        function mostrarResultadoTest() {
+            let tipo = 'normal', max = -1;
+            for (const k in testScore) { if (testScore[k] > max) { max = testScore[k]; tipo = k; } }
+            const sensible = testSens >= 2;
+            const info = tipoInfo[tipo];
+            track('test_piel_resultado', { tipo: tipo + (sensible ? '-sensible' : ''), preocupacion: testConcern });
+            const prods = productosParaPiel(tipo, testConcern, sensible);
+            let grid;
+            if (prods.length) {
+                grid = '<div class="test-prod-grid">' + prods.map(p => {
+                    const img = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
+                    const imgHtml = img
+                        ? `<img src="${img}" alt="${p.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="tp-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div>`
+                        : `<div class="tp-empty">${formIcon(p.formaFarmaceutica)}</div>`;
+                    return `<div class="test-prod" onclick="closeTest(); openFicha(${p._k})">
+                        ${imgHtml}
+                        <div class="tp-name">${p.nombre}</div>
+                        <div class="tp-price">S/ ${(p.precio_por_unidad * 0.9).toFixed(2)}</div>
+                        <button class="tp-btn" onclick="event.stopPropagation(); addCart(${p._k})">Agregar</button>
+                    </div>`;
+                }).join('') + '</div>';
+            } else {
+                grid = `<p style="font-size:12.5px;color:#6b7280;margin-bottom:12px;">Aún no tenemos productos cargados para esta recomendación. Escríbenos y la Dra. Key te arma tu rutina.</p>`;
+            }
+            document.getElementById('test-body').innerHTML =
+                `<div class="test-progress">Tu resultado</div>
+                 <div class="test-result-tipo">${info.emoji} Piel ${info.label}${sensible ? ' · sensible' : ''}</div>
+                 <div class="test-result-desc">${info.desc}${sensible ? ' Además tu piel es sensible: prefiere productos calmantes, sin fragancia y para piel sensible.' : ''}</div>
+                 <div class="test-tip">💡 ${concernInfo[testConcern]}</div>
+                 <h4 class="club-sec-title">✨ Productos recomendados para ti</h4>
+                 ${grid}
+                 <button class="mp-cta mp-agenda" onclick="closeTest(); openConsultaModal();">🩺 Rutina personalizada con la Dra. Key</button>
+                 <button class="btn" onclick="openTest()" style="width:100%; background:#eff6ff; color:#1565c0; box-shadow:none;">↺ Repetir el test</button>
+                 <p style="font-size:10.5px;color:#94a3b8;margin-top:10px;text-align:center;">Este test es orientativo y no reemplaza una evaluación profesional.</p>`;
+        }
 
         // === Cupones del Club (edita este arreglo para cambiar/agregar cupones) ===
         let cupones = [
