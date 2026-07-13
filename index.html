@@ -1058,11 +1058,11 @@
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             color: white;
             margin-top: 48px;
-            padding: 24px;
+            padding: 24px 20px 92px;
             text-align: center;
             font-size: 12px;
         }
-        footer p { margin: 6px 0; }
+        footer p { margin: 5px 0; }
         footer p:first-child { font-weight: 700; font-size: 13px; }
         .footer-review {
             display: inline-flex;
@@ -1097,9 +1097,14 @@
             line-height: 1.7;
             color: rgba(255,255,255,0.82);
         }
-        .footer-legal p { margin: 2px 0; }
+        .footer-legal p { margin: 1px 0; }
         .footer-legal strong { color: #ffffff; font-weight: 700; }
         .footer-legal .fl-title { color: #86efac; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+        @media (min-width: 600px) {
+            .footer-legal { column-count: 2; column-gap: 26px; text-align: left; }
+            .footer-legal .fl-title { column-span: all; text-align: center; }
+            .footer-legal p { break-inside: avoid; }
+        }
 
         @media (max-width: 768px) {
             header { padding: 10px 12px; }
@@ -1579,8 +1584,7 @@
             <p>Todos nuestros productos cuentan con registro sanitario de DIGEMID.</p>
         </div>
 
-        <p style="margin-top: 14px; font-size: 11px; opacity: 0.8;">© 2026 ProMedic - Todos los derechos reservados</p>
-        <p style="margin-top: 4px; font-size: 11px; opacity: 0.75;">Desarrollado por Ing. Ángel Ybarra Rivas</p>
+        <p style="margin-top: 14px; font-size: 11px; opacity: 0.8;">© 2026 ProMedic · Desarrollado por Ing. Ángel Ybarra Rivas</p>
     </footer>
 
     <script>
