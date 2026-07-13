@@ -1076,6 +1076,9 @@
             box-shadow: 0 2px 8px rgba(251,191,36,0.3);
         }
         .footer-review:hover { background: #f59e0b; transform: translateY(-2px); }
+        .footer-libro { display: inline-flex; align-items: center; gap: 8px; background: #ffffff; color: #0f2a4a; border: 2px solid #0f2a4a; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 800; text-decoration: none; transition: all .15s; }
+        .footer-libro:hover { background: #0f2a4a; color: #ffffff; }
+        .libro-aviso { width: 100%; border-radius: 10px; border: 1px solid #e5e7eb; margin-bottom: 14px; cursor: zoom-in; background: #f8fafc; }
         .footer-legal {
             max-width: 580px;
             margin: 16px auto 0;
@@ -1189,6 +1192,7 @@
             <a onclick="navDrawerAction('club')"><span class="d-ico club">⭐</span>Club ProMedic<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('ruleta')"><span class="d-ico" style="background:#fef3c7">🎡</span>Ruleta de premios<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('wa')"><span class="d-ico wa">💬</span>Pedir por WhatsApp<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('libro')"><span class="d-ico" style="background:#fee2e2">📕</span>Libro de Reclamaciones<span class="d-arrow">›</span></a>
         </nav>
         <div class="drawer-section">Categorías</div>
         <nav class="drawer-list" id="drawer-list"></nav>
@@ -1351,6 +1355,18 @@
 
             <div class="modal-buttons">
                 <button class="btn" onclick="closeClubModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="libro-modal" class="modal">
+        <div class="modal-content" style="max-width: 460px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 4px;">📕 Libro de Reclamaciones</h2>
+            <p style="font-size: 12.5px; color: #6b7280; margin-bottom: 12px; line-height: 1.5;">Conforme a INDECOPI, puedes registrar aquí tu <b>reclamo</b> (sobre un producto/servicio) o <b>queja</b> (sobre la atención). Te responderemos en un máximo de <b>15 días hábiles</b>.</p>
+            <img src="AvisoVirtual_libro%20de%20reclamaciones.jpg" alt="Aviso del Libro de Reclamaciones" class="libro-aviso" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';" />
+            <a href="https://forms.gle/5mHAfCnf5hLYouwe6" target="_blank" rel="noopener" class="btn" style="width:100%; display:block; box-sizing:border-box; text-align:center; text-decoration:none; margin-bottom:10px;">📝 Presentar mi reclamo o queja</a>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeLibroModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1544,6 +1560,9 @@
         </p>
         <p style="margin-top: 14px;">📞 +51 935 896 961 | 📍 Av. Juan Pardo de Miguel cuadra 4</p>
         <p style="margin-top: 4px;">Ref.: al costado de la Capilla Señor de Ánimas</p>
+        <p style="margin-top: 14px;">
+            <a href="https://forms.gle/5mHAfCnf5hLYouwe6" target="_blank" rel="noopener" class="footer-libro" onclick="event.preventDefault(); openLibroModal();">📕 Libro de Reclamaciones</a>
+        </p>
 
         <div class="footer-legal">
             <p class="fl-title">🏥 Botica autorizada — Atención farmacéutica profesional</p>
@@ -1729,6 +1748,7 @@
             else if (accion === 'club') openClubModal();
             else if (accion === 'ruleta') openRuleta();
             else if (accion === 'mipiel') openMiPiel();
+            else if (accion === 'libro') openLibroModal();
             else if (accion === 'wa') window.open('https://wa.me/51935896961?text=' + encodeURIComponent('Hola ProMedic 👋, quisiera hacer un pedido / consulta.'), '_blank');
         }
 
@@ -2405,6 +2425,8 @@
         }
 
         // === Mi Piel · Corner Dra. Key ===
+        function openLibroModal() { track('libro_reclamaciones'); document.getElementById('libro-modal').classList.add('active'); }
+        function closeLibroModal() { document.getElementById('libro-modal').classList.remove('active'); }
         function openMiPiel() { track('mipiel_abrir'); document.getElementById('mipiel-modal').classList.add('active'); }
         function closeMiPiel() { document.getElementById('mipiel-modal').classList.remove('active'); }
         function planPiel() {
