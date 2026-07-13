@@ -952,6 +952,9 @@
         .intimo-banner b { font-size: 14.5px; display: block; }
         .intimo-banner span { font-size: 11px; opacity: .93; line-height: 1.35; }
         .intimo-banner .mp-arrow { margin-left: auto; font-size: 22px; opacity: .9; }
+        .hero-banner { display: block; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 6px 18px rgba(15,42,74,0.15); cursor: pointer; transition: transform .15s, box-shadow .15s; background: #eef3ff; }
+        .hero-banner:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15,42,74,0.22); }
+        .hero-banner img { width: 100%; height: auto; display: block; }
         .mp-steps { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 14px; }
         .mp-step { display: flex; gap: 12px; align-items: flex-start; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; }
         .mp-step .mp-n { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #ec4899; color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
@@ -1263,16 +1266,12 @@
             </div>
         </div>
 
-        <div class="mipiel-banner" onclick="openMiPiel()" role="button" tabindex="0">
-            <span class="mp-ico">🌸</span>
-            <div><b>Mi Piel · Corner Dra. Key</b><span>Cuida tus resultados y recibe tu plan personalizado</span></div>
-            <span class="mp-arrow">›</span>
+        <div class="hero-banner" onclick="openMiPiel()" role="button" tabindex="0" aria-label="Mi Piel, corner de la Dra. Key">
+            <img src="https://i.imgur.com/EZHAKLM.png" alt="Mi Piel · Corner de la Dra. Key" loading="lazy" />
         </div>
 
-        <div class="intimo-banner" onclick="openTestIntimo()" role="button" tabindex="0">
-            <span class="mp-ico">🌷</span>
-            <div><b>Cuidado íntimo femenino</b><span>Encuentra tu producto ideal en privado. Con la confianza y el respaldo de la Dra. Key 🔒</span></div>
-            <span class="mp-arrow">›</span>
+        <div class="hero-banner" onclick="openTestIntimo()" role="button" tabindex="0" aria-label="Cuidado íntimo femenino, privado y confidencial">
+            <img src="https://i.imgur.com/fNUVwYa.png" alt="Cuidado íntimo femenino · privado y confidencial" loading="lazy" />
         </div>
 
 
