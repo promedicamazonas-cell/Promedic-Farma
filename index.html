@@ -946,6 +946,12 @@
         .mipiel-banner b { font-size: 15px; display: block; }
         .mipiel-banner span { font-size: 11.5px; opacity: .92; }
         .mipiel-banner .mp-arrow { margin-left: auto; font-size: 22px; opacity: .9; }
+        .intimo-banner { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-radius: 16px; margin: -8px 0 20px; cursor: pointer; color: #fff; background: linear-gradient(135deg, #db2777 0%, #7c3aed 100%); box-shadow: 0 6px 18px rgba(124,58,237,.22); transition: transform .15s; }
+        .intimo-banner:hover { transform: translateY(-2px); }
+        .intimo-banner .mp-ico { font-size: 28px; flex-shrink: 0; }
+        .intimo-banner b { font-size: 14.5px; display: block; }
+        .intimo-banner span { font-size: 11px; opacity: .93; line-height: 1.35; }
+        .intimo-banner .mp-arrow { margin-left: auto; font-size: 22px; opacity: .9; }
         .mp-steps { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 14px; }
         .mp-step { display: flex; gap: 12px; align-items: flex-start; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; }
         .mp-step .mp-n { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #ec4899; color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
@@ -1217,6 +1223,7 @@
             <a onclick="navDrawerAction('consulta')"><span class="d-ico dra">👩‍⚕️</span>Consulta con la Dra. Key<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('mipiel')"><span class="d-ico" style="background:#fce7f3">🌸</span>Mi Piel (Dra. Key)<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('test')"><span class="d-ico" style="background:#e0e7ff">🧪</span>Test de tu piel<span class="d-arrow">›</span></a>
+            <a onclick="navDrawerAction('intimo')"><span class="d-ico" style="background:#fce7f3">🌷</span>Tu higiene íntima ideal<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('club')"><span class="d-ico club">⭐</span>Club ProMedic<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('ruleta')"><span class="d-ico" style="background:#fef3c7">🎡</span>Ruleta de premios<span class="d-arrow">›</span></a>
             <a onclick="navDrawerAction('wa')"><span class="d-ico wa">💬</span>Pedir por WhatsApp<span class="d-arrow">›</span></a>
@@ -1259,6 +1266,12 @@
         <div class="mipiel-banner" onclick="openMiPiel()" role="button" tabindex="0">
             <span class="mp-ico">🌸</span>
             <div><b>Mi Piel · Corner Dra. Key</b><span>Cuida tus resultados y recibe tu plan personalizado</span></div>
+            <span class="mp-arrow">›</span>
+        </div>
+
+        <div class="intimo-banner" onclick="openTestIntimo()" role="button" tabindex="0">
+            <span class="mp-ico">🌷</span>
+            <div><b>Cuidado íntimo femenino</b><span>Encuentra tu producto ideal en privado. Con la confianza y el respaldo de la Dra. Key 🔒</span></div>
             <span class="mp-arrow">›</span>
         </div>
 
@@ -1384,6 +1397,17 @@
 
             <div class="modal-buttons">
                 <button class="btn" onclick="closeClubModal()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="intimo-modal" class="modal">
+        <div class="modal-content" style="max-width: 470px;">
+            <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 2px;">🌷 Tu higiene íntima ideal</h2>
+            <p style="font-size: 11.5px; color: #6b7280; margin-bottom: 12px; line-height: 1.5;">Responde en privado y te ayudamos a elegir tu producto. 🔒 No guardamos ninguna respuesta.</p>
+            <div id="intimo-body"></div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeIntimo()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1786,6 +1810,7 @@
             else if (accion === 'ruleta') openRuleta();
             else if (accion === 'mipiel') openMiPiel();
             else if (accion === 'test') openTest();
+            else if (accion === 'intimo') openTestIntimo();
             else if (accion === 'libro') openLibroModal();
             else if (accion === 'wa') window.open('https://wa.me/51935896961?text=' + encodeURIComponent('Hola ProMedic 👋, quisiera hacer un pedido / consulta.'), '_blank');
         }
@@ -2494,6 +2519,116 @@
             window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
         }
         function verProductosPiel() { closeMiPiel(); navCat('Dermatológicos'); }
+
+        // ===== HIGIENE ÍNTIMA (selector con compuerta de seguridad) =====
+        const intimoPreguntas = [
+            { t: '¿En qué etapa te encuentras?', o: [
+                { l: 'Edad reproductiva (con regla)', v: 'ph38' },
+                { l: 'Embarazo o posparto', v: 'ph68' },
+                { l: 'Menopausia', v: 'ph68' } ] },
+            { t: '¿Sientes que tu zona íntima es sensible o se irrita con facilidad?', o: [
+                { l: 'Sí, es sensible', v: 'sens' },
+                { l: 'No, la tolero bien', v: 'nosens' } ] },
+            { t: '¿Para qué lo necesitas principalmente?', o: [
+                { l: 'Higiene diaria en casa', v: 'diario' },
+                { l: 'Deporte o días muy activos', v: 'activo' },
+                { l: 'Viajes o fuera de casa', v: 'viaje' } ] },
+            { t: '¿Tienes alguna molestia ahora? (picazón, ardor, flujo distinto o mal olor)', o: [
+                { l: 'No, ninguna molestia', v: 'nomol' },
+                { l: 'Sí, tengo alguna molestia', v: 'molestia' } ] }
+        ];
+        let intimoIdx = 0, intimoPh = 'ph38', intimoSens = false, intimoUso = 'diario', intimoMolestia = false;
+        function openTestIntimo() {
+            track('intimo_iniciar');
+            intimoIdx = 0; intimoPh = 'ph38'; intimoSens = false; intimoUso = 'diario'; intimoMolestia = false;
+            renderIntimoPregunta();
+            document.getElementById('intimo-modal').classList.add('active');
+        }
+        function closeIntimo() { document.getElementById('intimo-modal').classList.remove('active'); }
+        function renderIntimoPregunta() {
+            const q = intimoPreguntas[intimoIdx];
+            document.getElementById('intimo-body').innerHTML =
+                `<div class="test-progress">Pregunta ${intimoIdx + 1} de ${intimoPreguntas.length}</div>
+                 <div class="test-q">${q.t}</div>` +
+                q.o.map(op => `<button class="test-opt" onclick="responderIntimo('${op.v}')">${op.l}</button>`).join('');
+        }
+        function responderIntimo(v) {
+            if (v === 'ph38' || v === 'ph68') intimoPh = v;
+            else if (v === 'sens') intimoSens = true;
+            else if (v === 'nosens') intimoSens = false;
+            else if (v === 'diario' || v === 'activo' || v === 'viaje') intimoUso = v;
+            else if (v === 'molestia') intimoMolestia = true;
+            intimoIdx++;
+            if (intimoIdx < intimoPreguntas.length) renderIntimoPregunta();
+            else mostrarResultadoIntimo();
+        }
+        function consultaIntima() {
+            track('intimo_consulta');
+            const msg = 'Hola Dra. Key, quisiera una *consulta privada sobre salud íntima*. ¿Qué disponibilidad hay? Gracias.';
+            window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
+        }
+        function productosIntimos(ph, sens, uso) {
+            const kw = ['intimo', 'intima', 'femenino'];
+            const pool = productos.filter(p => { const hay = p._busq || ''; return p.precio_por_unidad > 0 && kw.some(w => hay.includes(w)); });
+            const phTag = ph === 'ph38' ? '3.8' : '6.8';
+            const otherTag = ph === 'ph38' ? '6.8' : '3.8';
+            const score = p => {
+                const hay = p._busq || ''; let s = 0;
+                if (hay.includes(phTag)) s += 3;
+                if (hay.includes(otherTag)) s -= 2;
+                if (sens && (hay.includes('sensible') || hay.includes('sensitive'))) s += 1;
+                if ((uso === 'viaje' || uso === 'activo') && (hay.includes('toallita') || hay.includes('wipe'))) s += 1;
+                return s;
+            };
+            return pool.slice().sort((a, b) => score(b) - score(a)).slice(0, 6);
+        }
+        function mostrarResultadoIntimo() {
+            const body = document.getElementById('intimo-body');
+            if (intimoMolestia) {
+                track('intimo_derivacion');
+                body.innerHTML =
+                    `<div class="test-progress">Recomendación</div>
+                     <div class="test-result-tipo">🩺 Mejor te ve la Dra. Key</div>
+                     <div class="test-result-desc">Una molestia íntima (picazón, ardor, flujo distinto o mal olor) merece una <b>evaluación profesional</b>, no solo un producto. La Dra. Key te atiende de forma <b>privada, confidencial y sin vergüenza</b>, con un diagnóstico preciso y el tratamiento correcto.</div>
+                     <div class="test-tip">🔒 Tu salud íntima es delicada y tu privacidad está protegida. Este test no guarda ninguna respuesta.</div>
+                     <button class="mp-cta mp-agenda" onclick="closeIntimo(); consultaIntima();">💬 Consultar en privado con la Dra. Key</button>
+                     <button class="btn" onclick="openTestIntimo()" style="width:100%; background:#eff6ff; color:#1565c0; box-shadow:none;">↺ Volver a empezar</button>`;
+                return;
+            }
+            track('intimo_resultado', { ph: intimoPh, uso: intimoUso, sensible: intimoSens });
+            const phLabel = intimoPh === 'ph38' ? 'pH ácido (≈ 3.8)' : 'pH suave (≈ 6.8)';
+            const phDesc = intimoPh === 'ph38'
+                ? 'En edad reproductiva tu zona íntima es naturalmente ácida. Un limpiador con pH cercano a 3.8 respeta tu flora y ayuda a prevenir molestias.'
+                : 'En embarazo, posparto o menopausia conviene un pH más suave (≈ 6.8), acorde a los cambios de esta etapa.';
+            const prods = productosIntimos(intimoPh, intimoSens, intimoUso);
+            let grid;
+            if (prods.length) {
+                grid = '<div class="test-prod-grid">' + prods.map(p => {
+                    const img = p.imagen ? (p.imagen.startsWith('http') ? normalizeImg(p.imagen) : 'fotos/' + p.imagen) : '';
+                    const imgHtml = img
+                        ? `<img src="${img}" alt="${p.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="tp-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div>`
+                        : `<div class="tp-empty">${formIcon(p.formaFarmaceutica)}</div>`;
+                    return `<div class="test-prod" onclick="closeIntimo(); openFicha(${p._k})">
+                        ${imgHtml}
+                        <div class="tp-name">${p.nombre}</div>
+                        <div class="tp-price">S/ ${(p.precio_por_unidad * 0.9).toFixed(2)}</div>
+                        <button class="tp-btn" onclick="event.stopPropagation(); addCart(${p._k})">Agregar</button>
+                    </div>`;
+                }).join('') + '</div>';
+            } else {
+                grid = `<p style="font-size:12.5px;color:#6b7280;margin-bottom:12px;">Pronto tendremos más productos de esta línea. Mientras tanto, la Dra. Key puede recomendarte el ideal para ti.</p>`;
+            }
+            body.innerHTML =
+                `<div class="test-progress">Tu resultado</div>
+                 <div class="test-result-tipo">🌷 ${phLabel}</div>
+                 <div class="test-result-desc">${phDesc}${intimoSens ? ' Como tu piel es sensible, elige fórmulas sin fragancia y calmantes.' : ''}</div>
+                 <div class="test-tip">💡 Ante cualquier molestia (picazón, ardor, flujo distinto o mal olor), no te automediques: consulta a la Dra. Key.</div>
+                 <h4 class="club-sec-title">✨ Recomendado para ti</h4>
+                 ${grid}
+                 <button class="mp-cta mp-agenda" onclick="closeIntimo(); consultaIntima();">🩺 Consulta privada con la Dra. Key</button>
+                 <button class="btn" onclick="openTestIntimo()" style="width:100%; background:#eff6ff; color:#1565c0; box-shadow:none;">↺ Repetir</button>
+                 <p style="font-size:10.5px;color:#94a3b8;margin-top:10px;text-align:center;">Este selector es orientativo y no reemplaza una evaluación médica.</p>`;
+        }
 
         // ===== TEST DE PIEL =====
         const testPreguntas = [
