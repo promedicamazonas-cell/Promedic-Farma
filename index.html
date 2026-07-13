@@ -2535,17 +2535,19 @@
             c_ninguna: 'Mantén una rutina simple y constante: limpia, hidrata y protege del sol cada día.'
         };
         const pielKeywords = {
-            grasa:  'effaclar matificante seborreico purificante oil grasa',
-            seca:   'cerave lipikar hidratante nutritiv ureadin nutratopic hidra',
-            mixta:  'effaclar hidratante equilibr cerave',
-            normal: 'cerave hidratante hidra'
+            grasa:  'effaclar matificante seborreic purificant oily grasa foaming imperfeccion',
+            seca:   'nutratopic nutradeica hidratante hydrating cerave ureadin micelar seca hialuronic sensitive lipikar',
+            mixta:  'effaclar mixta micelar hidratante fusion foaming',
+            normal: 'hidratante micelar cerave anthelios fusion termal'
         };
         const concernKeywords = {
-            c_manchas: 'mela antimanchas glicoisdin despigment fotoultra pigment melasyl anthelios fotoprotector',
-            c_acne:    'effaclar acne imperfecciones salicilico duo',
-            c_arrugas: 'retinol retinal antiedad redermic hyalu vitamina colageno anthelios fotoprotector',
-            c_ninguna: 'hidratante cerave anthelios fotoprotector'
+            c_manchas: 'mela glicoisdin fotoultra unify spot uvmune antimanchas despigment flavo pigment',
+            c_acne:    'effaclar acne imperfeccion purifying salicilic foaming duo',
+            c_arrugas: 'retinol retinal antiedad anti-age correct flavo hialuronic hyaluronic isdinceutics hyalu',
+            c_ninguna: 'micelar hidratante cerave anthelios fusion termal'
         };
+        // Productos NO faciales que hay en la categoría dermo (se excluyen del test)
+        const excluirNoFacial = ['baby','bebe','panal','pediatric','johnson','repelente','body','corporal','antiestria','podos','manos','intimo','intima','champu','shampoo','labial','locion','spray','avena','bano'];
         let testIdx = 0, testScore = {}, testSens = 0, testConcern = 'c_ninguna';
         function openTest() {
             track('test_piel_iniciar');
@@ -2574,12 +2576,17 @@
             const split = s => (s || '').split(' ').filter(w => w.length >= 3);
             const cKw = split(concernKeywords[concern]);
             const tKw = split(pielKeywords[tipo]).concat(sensible ? ['sensible', 'calmante', 'toleriane', 'cicaplast', 'tolerance'] : []);
-            const pool = productos.filter(p => p.categoria === 'Dermatológicos' && p.precio_por_unidad > 0);
+            // Solo faciales: dermo con precio, excluyendo corporales, bebé, pies, íntimos, etc.
+            const pool = productos.filter(p => {
+                if (p.categoria !== 'Dermatológicos' || p.precio_por_unidad <= 0) return false;
+                const hay = p._busq || '';
+                return !excluirNoFacial.some(w => hay.includes(w));
+            });
             const match = (p, kws) => { const hay = p._busq || ''; return kws.some(w => hay.includes(w)); };
             const out = [];
             const push = arr => arr.forEach(p => { if (!out.includes(p)) out.push(p); });
-            push(pool.filter(p => match(p, cKw)));
-            push(pool.filter(p => match(p, tKw)));
+            push(pool.filter(p => match(p, cKw)).slice(0, 5));  // la preocupación manda (máx 5)
+            push(pool.filter(p => match(p, tKw)));               // luego según el tipo de piel
             return out.slice(0, 8);
         }
         function mostrarResultadoTest() {
