@@ -1837,6 +1837,13 @@
             if (m2) return 'https://i.imgur.com/' + m2[1] + '.png';
             return u;
         }
+        // Miniatura más liviana de imgur para las tarjetas (sz: 'm'=320px, 'l'=640px).
+        // Carga mucho más rápido; la ficha del producto usa la imagen completa.
+        function imgThumb(u, sz) {
+            const m = String(u || '').match(/^https?:\/\/i\.imgur\.com\/([A-Za-z0-9]+)\.(jpe?g|png|gif|webp)$/i);
+            if (m) return 'https://i.imgur.com/' + m[1] + sz + '.' + m[2];
+            return u;
+        }
 
         function formIcon(forma) {
             const f = (forma || '').toLowerCase();
@@ -1983,12 +1990,12 @@
             });
 
             const html = filtrados.slice(0, paginaProductos).map((p) => {
-                const cardImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s);
+                const cardImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => imgThumb(s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s, 'l'));
                 const imgSrc = cardImgs[0] || '';
                 const multi = cardImgs.length > 1;
                 const iconHtml = formIcon(p.formaFarmaceutica);
                 const imgBlock = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="product-card-img${multi ? ' pc-rot' : ''}"${multi ? ` data-imgs="${cardImgs.join('|')}"` : ''} onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="product-card-img-empty" style="display:none;">${iconHtml}</div>`
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" loading="lazy" class="product-card-img${multi ? ' pc-rot' : ''}"${multi ? ` data-imgs="${cardImgs.join('|')}"` : ''} onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="product-card-img-empty" style="display:none;">${iconHtml}</div>`
                     : `<div class="product-card-img-empty">${iconHtml}</div>`;
                 const conc = (p.concentracion || '').trim();
                 const tieneConc = conc && conc.toUpperCase() !== 'N/A';
@@ -2296,9 +2303,9 @@
             if (relacionados.length) {
                 relHtml = '<div class="ficha-rel"><h4>También te puede interesar</h4><div class="ficha-rel-grid">' +
                     relacionados.map(r => {
-                        const rImg = r.imagen ? (r.imagen.startsWith('http') ? normalizeImg(r.imagen) : 'fotos/' + r.imagen) : '';
+                        const rImg = r.imagen ? imgThumb(r.imagen.startsWith('http') ? normalizeImg(r.imagen) : 'fotos/' + r.imagen, 'm') : '';
                         const rThumb = rImg
-                            ? `<img src="${rImg}" alt="${r.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="rel-thumb-icon" style="display:none;">${formIcon(r.formaFarmaceutica)}</div>`
+                            ? `<img src="${rImg}" alt="${r.nombre}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="rel-thumb-icon" style="display:none;">${formIcon(r.formaFarmaceutica)}</div>`
                             : `<div class="rel-thumb-icon">${formIcon(r.formaFarmaceutica)}</div>`;
                         const rPrecio = r.precio_por_unidad > 0 ? 'S/. ' + (r.precio_por_unidad * 0.9).toFixed(2) : '';
                         return `<div class="ficha-rel-card" onclick="openFicha(${r._k})"><div class="rel-thumb">${rThumb}</div><div class="rel-name">${r.nombre}</div><div class="rel-price">${rPrecio}</div></div>`;
@@ -2456,12 +2463,12 @@
             const dest = productos.filter(p => p.destacado > 0).sort((a, b) => a.destacado - b.destacado);
             if (!dest.length) { card.style.display = 'none'; return; }
             row.innerHTML = dest.map(p => {
-                const destImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s);
+                const destImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => imgThumb(s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s, 'l'));
                 const imgSrc = destImgs[0] || '';
                 const dmulti = destImgs.length > 1;
                 const icon = formIcon(p.formaFarmaceutica);
                 const img = imgSrc
-                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="dest-img${dmulti ? ' pc-rot' : ''}"${dmulti ? ` data-imgs="${destImgs.join('|')}"` : ''} onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="dest-img-empty" style="display:none;">${icon}</div>`
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" loading="lazy" class="dest-img${dmulti ? ' pc-rot' : ''}"${dmulti ? ` data-imgs="${destImgs.join('|')}"` : ''} onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="dest-img-empty" style="display:none;">${icon}</div>`
                     : `<div class="dest-img-empty">${icon}</div>`;
                 const precio = p.precio_por_unidad > 0
                     ? `<div class="dest-price-old">S/. ${p.precio_por_unidad.toFixed(2)}</div><div class="dest-price">S/. ${(p.precio_por_unidad*0.9).toFixed(2)}<span class="dest-off">-10%</span></div>`
