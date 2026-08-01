@@ -581,6 +581,8 @@
             width: 100%; max-height: 290px; object-fit: contain;
             background: #f8fafc; border-radius: 10px; margin-bottom: 14px; cursor: zoom-in;
         }
+        .ficha-zoom { position: relative; overflow: hidden; border-radius: 10px; margin-bottom: 14px; }
+        .ficha-zoom .ficha-img { margin-bottom: 0; transition: transform .12s ease-out; }
         .ficha-img-empty { height: 220px; display: flex; align-items: center; justify-content: center; }
         .ficha-img-empty svg { width: 90px; height: 90px; }
         .pc-rot { transition: opacity .3s ease; }
@@ -2267,6 +2269,20 @@
         updateCart();
 
         // Ficha de producto
+        function fichaZoom(e) {
+            if (window.matchMedia('(hover: none)').matches) return; // en móvil se usa el toque para ampliar
+            const img = document.getElementById('ficha-main-img');
+            if (!img) return;
+            const r = e.currentTarget.getBoundingClientRect();
+            const x = ((e.clientX - r.left) / r.width) * 100;
+            const y = ((e.clientY - r.top) / r.height) * 100;
+            img.style.transformOrigin = x + '% ' + y + '%';
+            img.style.transform = 'scale(2.3)';
+        }
+        function fichaZoomOut() {
+            const img = document.getElementById('ficha-main-img');
+            if (img) img.style.transform = 'scale(1)';
+        }
         function fichaSwap(src, el) {
             const main = document.getElementById('ficha-main-img');
             if (main) { main.src = src; main.style.display = 'block'; }
@@ -2286,7 +2302,7 @@
                 const thumbs = imgs.length > 1
                     ? `<div class="ficha-thumbs">${imgs.map((s, i) => `<img src="${s}" alt="${p.nombre}" class="ficha-thumb${i === 0 ? ' active' : ''}" onclick="fichaSwap('${s}', this)" />`).join('')}</div>`
                     : '';
-                imgBlock = `<img id="ficha-main-img" src="${imgs[0]}" alt="${p.nombre}" class="ficha-img" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="ficha-img ficha-img-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div>${thumbs}`;
+                imgBlock = `<div class="ficha-zoom" onmousemove="fichaZoom(event)" onmouseleave="fichaZoomOut()"><img id="ficha-main-img" src="${imgs[0]}" alt="${p.nombre}" class="ficha-img" onclick="openImg(this.src, this.alt)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="ficha-img ficha-img-empty" style="display:none;">${formIcon(p.formaFarmaceutica)}</div></div>${thumbs}`;
             } else {
                 imgBlock = `<div class="ficha-img ficha-img-empty">${formIcon(p.formaFarmaceutica)}</div>`;
             }
