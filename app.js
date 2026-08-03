@@ -1185,6 +1185,7 @@
         // Carrusel de promos (editable desde el Sheet: filas con nombre PROMO, PROMO2, PROMO3...)
         //  imagen -> diapositiva | descripcion -> título | uso -> bajada
         function renderPromo() {
+            renderPanelPromo();
             // La franja del 10% queda siempre con su mensaje genérico
             const cont = document.getElementById('promo-dia');
             if (cont) {
@@ -1379,3 +1380,90 @@
             const b = installBtn();
             if (b) b.style.display = 'none';
         });
+
+        /* ============================================================
+           PANEL LATERAL DE PROMOCIONES
+           Usa el mismo array `promos` que el carrusel (filas PROMO del Sheet).
+           Se abre solo la primera visita del dia; luego queda la lengueta.
+           ============================================================ */
+        const PL_CLAVE = 'promedic_panel_promo';
+
+        function plHoy() {
+            const d = new Date();
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        }
+
+        function plLeer() {
+            try { return localStorage.getItem(PL_CLAVE); } catch (e) { return null; }
+        }
+
+        function plGuardar() {
+            try { localStorage.setItem(PL_CLAVE, plHoy()); } catch (e) { /* modo incognito */ }
+        }
+
+        function abrirPanelPromo() {
+            const panel = document.getElementById('pl-panel');
+            const fondo = document.getElementById('pl-backdrop');
+            if (!panel) return;
+            panel.classList.add('open');
+            panel.setAttribute('aria-hidden', 'false');
+            if (fondo) fondo.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            const cerrar = panel.querySelector('.pl-close');
+            if (cerrar) cerrar.focus();
+            plGuardar();
+        }
+
+        function cerrarPanelPromo() {
+            const panel = document.getElementById('pl-panel');
+            const fondo = document.getElementById('pl-backdrop');
+            if (panel) { panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); }
+            if (fondo) fondo.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarPanelPromo();
+        });
+
+        function renderPanelPromo() {
+            const tab = document.getElementById('pl-tab');
+            const body = document.getElementById('pl-body');
+            if (!tab || !body) return;
+
+            // Sin promos en el Sheet no mostramos nada: ni lengueta ni panel.
+            if (!promos.length) {
+                tab.style.display = 'none';
+                cerrarPanelPromo();
+                return;
+            }
+
+            body.innerHTML = promos.map((pr) => {
+                const img = pr.img.startsWith('http') ? normalizeImg(pr.img) : pr.img;
+                let href;
+                if (pr.link) {
+                    href = /^https?:\/\//i.test(pr.link) ? pr.link : 'https://' + pr.link;
+                } else {
+                    const msg = 'Hola, quiero acceder a la promocion' + (pr.titulo ? ': ' + pr.titulo : ' del dia') +
+                                ' \u{1F525} (al precio promo, no acumulable con el 10% de la App).';
+                    href = 'https://wa.me/51935896961?text=' + encodeURIComponent(msg);
+                }
+                const esWa = href.indexOf('wa.me') !== -1;
+                const texto = pr.cta || (esWa ? 'Pedir por WhatsApp' : 'Ver promocion');
+                return '<article class="pl-card">' +
+                       '<img src="' + img + '" alt="' + (pr.titulo || 'Promocion') + '" loading="lazy" ' +
+                       'onerror="this.style.display=\'none\';" />' +
+                       '<div class="pl-card-txt">' +
+                       (pr.titulo ? '<h4>' + pr.titulo + '</h4>' : '') +
+                       (pr.bajada ? '<p>' + pr.bajada + '</p>' : '') +
+                       '<a class="pl-cta" href="' + href + '" target="_blank" rel="noopener">' + texto + '</a>' +
+                       '</div></article>';
+            }).join('');
+
+            tab.style.display = 'flex';
+
+            // Primera visita del dia: se abre sola una vez.
+            if (plLeer() !== plHoy()) {
+                setTimeout(abrirPanelPromo, 1200);
+            }
+        }

@@ -465,6 +465,26 @@
         <p style="margin-top: 14px; font-size: 11px; opacity: 0.8;">© 2026 ProMedic · Desarrollado por Ing. Ángel Ybarra Rivas</p>
     </footer>
 
+
+    <!-- Panel lateral de promociones (contenido desde el Sheet, filas PROMO) -->
+    <button class="pl-tab" id="pl-tab" onclick="abrirPanelPromo()" aria-label="Ver promociones">
+        <span class="pl-dot"></span>
+        <span class="pl-tab-ico">&#127873;</span>
+        PROMOS
+    </button>
+    <div class="pl-backdrop" id="pl-backdrop" onclick="cerrarPanelPromo()"></div>
+    <aside class="pl-panel" id="pl-panel" role="dialog" aria-label="Promociones" aria-hidden="true">
+        <div class="pl-head">
+            <div>
+                <h3>Promociones</h3>
+                <p>Ofertas vigentes de la botica</p>
+            </div>
+            <button class="pl-close" onclick="cerrarPanelPromo()" aria-label="Cerrar">&#10005;</button>
+        </div>
+        <div class="pl-body" id="pl-body"></div>
+        <div class="pl-foot">Precios promocionales no acumulables con el 10% de la App</div>
+    </aside>
+
     <script src="app.js"></script>
 </body>
 </html>
