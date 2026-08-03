@@ -1,0 +1,29 @@
+# --- Documentos de negocio: NO deben ir a un repo publico ---
+*.pdf
+*.xlsx
+*.xls
+*.docx
+
+# --- Material de trabajo: originales pesados y respaldos ---
+imagenes medicamentos/
+imagenes dermatologicos/
+imagenes vitaminas y suplementos/
+cuidado personal/
+bebe/
+PROMO/
+imagenes_fondo_blanco/
+*_files/
+
+# --- Archivos que genera el cruce de la hoja ---
+MAPEO_FOTOS.csv
+COLUMNA_IMAGEN.csv
+REVISAR_*.csv
+Promedic-Farma sheets*.csv
+productos_para_google_sheets.csv
+_*.py
+_*.log
+
+# --- Basura del sistema ---
+Thumbs.db
+desktop.ini
+.DS_Store
