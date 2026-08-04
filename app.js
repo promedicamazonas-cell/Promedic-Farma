@@ -757,6 +757,8 @@
         let ruletaRot = 0;
         let ruletaGirando = false;
         function hoyStr() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+        // El codigo lleva la fecha del dia: asi el mostrador ve de un vistazo si vencio (RUL-5 -> RUL-5-0408)
+        function codigoDelDia(code) { const d = new Date(); return code + '-' + String(d.getDate()).padStart(2,'0') + String(d.getMonth()+1).padStart(2,'0'); }
         function yaGiroHoy() { try { return localStorage.getItem('promedic_ruleta_fecha') === hoyStr(); } catch(e) { return false; } }
         function buildRuleta() {
             const n = premios.length, seg = 360 / n, cx = 100, cy = 100, R = 98;
@@ -817,7 +819,7 @@
             res.style.display = 'block';
             if (p.premio) {
                 res.classList.remove('lose');
-                res.innerHTML = `<b>🎉 ¡Ganaste: ${p.label}!</b><p>Código <b style="display:inline">${p.code}</b>. Válido en tu próxima compra (desde S/ 99).</p><button class="btn" style="width:100%;background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,.3);" onclick="reclamarPremio('${p.label.replace(/'/g,"")}','${p.code}')">📲 Reclamar por WhatsApp</button>`;
+                res.innerHTML = `<b>🎉 ¡Ganaste: ${p.label}!</b><p>Código <b style="display:inline">${codigoDelDia(p.code)}</b> · <b style="display:inline;color:#b45309">vence hoy a medianoche</b>.<br>Válido en <b style="display:inline">una sola compra de hoy</b> desde S/ 99. <b style="display:inline">No es acumulable</b> con otros premios ni con el 10% de la App.</p><button class="btn" style="width:100%;background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,.3);" onclick="reclamarPremio('${p.label.replace(/'/g,"")}','${codigoDelDia(p.code)}')">📲 Reclamar por WhatsApp</button>`;
             } else {
                 res.classList.add('lose');
                 res.innerHTML = `<b>¡Casi! 🙂</b><p>Hoy no salió premio, pero mañana tienes otro giro. ¡Vuelve!</p>`;
@@ -825,7 +827,7 @@
         }
         function reclamarPremio(label, code) {
             track('ruleta_reclamo', { premio: label });
-            const msg = `¡Hola ProMedic! 🎡 Gané en la Ruleta de premios: *${label}* (código ${code}). Quiero reclamarlo en mi próxima compra.`;
+            const msg = `¡Hola ProMedic! 🎡 Gané en la Ruleta de premios: *${label}* (código ${code}). Entiendo que es válido solo para una compra de hoy, en un solo pedido, y que no es acumulable con otros premios ni con el 10% de la App.`;
             window.open('https://wa.me/51935896961?text=' + encodeURIComponent(msg), '_blank');
         }
 

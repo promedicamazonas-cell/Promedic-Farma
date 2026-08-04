@@ -295,7 +295,7 @@
     <div id="ruleta-modal" class="modal">
         <div class="modal-content" style="max-width: 380px;">
             <h2 style="font-size: 18px; font-weight: 800; color: #0f2a4a; margin-bottom: 2px;">🎡 Ruleta de premios</h2>
-            <p style="font-size: 12px; color: #6b7280; margin-bottom: 6px;">¡Gira 1 vez al día y gana! Reclama tu premio por WhatsApp en tu próxima compra.</p>
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 6px;">¡Gira 1 vez al día! Si ganas, el premio es para una compra de <b style="color:#0f2a4a">hoy mismo</b>.</p>
             <div class="ruleta-wrap">
                 <div class="ruleta-stage">
                     <div class="ruleta-pointer"></div>
@@ -304,7 +304,7 @@
                 </div>
                 <button id="ruleta-girar" class="btn ruleta-girar" onclick="girarRuleta()">¡Girar!</button>
                 <div id="ruleta-result" class="ruleta-result"></div>
-                <p class="ruleta-nota">Premios válidos en tu próxima compra (desde S/ 99). 1 giro por día. Sujeto a disponibilidad.</p>
+                <p class="ruleta-nota"><b class="ruleta-alerta">El premio NO es acumulable.</b> Vale solo para una compra del <b>mismo día</b> en que lo ganas y vence a la medianoche. No se juntan premios de varios días, ni dos premios en una misma compra, ni se combinan con el 10% de la App. Compras desde S/ 99, sujeto a disponibilidad.</p>
             </div>
             <div class="modal-buttons">
                 <button class="btn" onclick="closeRuleta()" style="background: #d1d5db; color: #374151; box-shadow: none; flex: 1;">Cerrar</button>
@@ -410,6 +410,10 @@
             <div class="ficha-sec">
                 <h4>🎁 Descuento 10%</h4>
                 <p>Aplica a los pedidos realizados a través de esta app. No acumulable con otras promociones. ProMedic puede modificar o finalizar la promoción en cualquier momento.</p>
+            </div>
+            <div class="ficha-sec">
+                <h4>🎡 Ruleta de premios</h4>
+                <p>Un giro por día y por persona. <b>El premio no es acumulable:</b> vale únicamente para una compra realizada el mismo día en que se gana y vence esa misma noche. No se pueden juntar premios de días distintos, usar dos premios en un mismo pedido, ni combinarlos con el 10% de la App u otras promociones. Cada código lleva la fecha del día en que se ganó y solo se acepta con esa fecha. Aplica en compras desde S/ 99 y está sujeto a disponibilidad de stock. ProMedic puede modificar o finalizar la promoción en cualquier momento.</p>
             </div>
             <div class="ficha-sec">
                 <h4>ℹ️ General</h4>

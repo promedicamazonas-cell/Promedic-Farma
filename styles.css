@@ -911,6 +911,8 @@
         .ruleta-girar { width: 100%; margin-top: 4px; background: linear-gradient(135deg,#f59e0b 0%,#d97706 100%); }
         .ruleta-girar:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
         .ruleta-nota { font-size: 11px; color: #6b7280; margin-top: 8px; line-height: 1.4; }
+        .ruleta-nota b { color: #374151; }
+        .ruleta-alerta { display: inline-block; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; border-radius: 6px; padding: 2px 6px; margin-bottom: 3px; font-weight: 800; }
         .ruleta-result { margin-top: 12px; padding: 14px; border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; display: none; }
         .ruleta-result.lose { background: #f8fafc; border-color: #e5e7eb; }
         .ruleta-result b { display: block; font-size: 16px; color: #0f2a4a; margin-bottom: 4px; }
