@@ -869,10 +869,20 @@
             });
             document.getElementById('ruleta-wheel').innerHTML = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;border:8px solid #0f2a4a;box-sizing:border-box;">${s}</svg>`;
         }
-        // La banda solo se muestra si a esa persona todavia le queda giro.
+        // La banda no desaparece cuando ya se giro: se apaga y avisa que vuelva
+        // manana. Si desaparece, quien entra por la tarde ni se entera del juego.
         function actualizarBandaRuleta() {
             const b = document.getElementById('ruleta-banda');
-            if (b) b.style.display = yaGiroHoy() ? 'none' : 'flex';
+            if (!b) return;
+            const yaGiro = yaGiroHoy();
+            b.style.display = 'flex';
+            b.classList.toggle('usada', yaGiro);
+            const txt = b.querySelector('.rb-txt');
+            const cta = b.querySelector('.rb-cta');
+            if (txt) txt.innerHTML = yaGiro
+                ? '<b>Ya giraste hoy</b><small>Vuelve mañana por otro giro gratis</small>'
+                : '<b>Gira y gana</b><small>Un giro gratis al día · el premio vale solo hoy</small>';
+            if (cta) cta.innerHTML = yaGiro ? 'Mañana' : 'Girar &rsaquo;';
         }
         window.addEventListener('load', actualizarBandaRuleta);
 
