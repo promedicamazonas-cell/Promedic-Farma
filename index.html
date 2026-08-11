@@ -79,6 +79,16 @@
             </div>
         </div>
     </div>
+    <!-- Banda de la ruleta: justo debajo del buscador. Se oculta sola
+         cuando esa persona ya giro hoy, para no ofrecer algo que no puede usar. -->
+    <div class="container banda-cont">
+        <button id="ruleta-banda" class="ruleta-banda" onclick="openRuleta()" style="display:none;">
+            <span class="rb-ico">🎡</span>
+            <span class="rb-txt"><b>Gira y gana</b><small>Un giro gratis al día · el premio vale solo hoy</small></span>
+            <span class="rb-cta">Girar ›</span>
+        </button>
+    </div>
+
     <div class="container chips-top">
     <div class="search-chips">
                         <button onclick="buscarChip('gripe','Medicamentos')">🤧 Gripe</button>

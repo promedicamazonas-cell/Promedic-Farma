@@ -869,6 +869,13 @@
             });
             document.getElementById('ruleta-wheel').innerHTML = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;border:8px solid #0f2a4a;box-sizing:border-box;">${s}</svg>`;
         }
+        // La banda solo se muestra si a esa persona todavia le queda giro.
+        function actualizarBandaRuleta() {
+            const b = document.getElementById('ruleta-banda');
+            if (b) b.style.display = yaGiroHoy() ? 'none' : 'flex';
+        }
+        window.addEventListener('load', actualizarBandaRuleta);
+
         function openRuleta() {
             buildRuleta();
             const btn = document.getElementById('ruleta-girar');
@@ -898,6 +905,7 @@
             document.getElementById('ruleta-wheel').style.transform = `rotate(${ruletaRot}deg)`;
             track('ruleta_giro', { premio: premios[idx].label });
             try { localStorage.setItem('promedic_ruleta_fecha', hoyStr()); } catch(e) {}
+            actualizarBandaRuleta();
             setTimeout(() => {
                 ruletaGirando = false;
                 mostrarPremio(idx);
