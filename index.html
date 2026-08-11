@@ -131,14 +131,6 @@
             </div>
         </div>
 
-        <div class="hero-banner" onclick="openMiPiel()" role="button" tabindex="0" aria-label="Mi Piel, corner de la Dra. Key">
-            <img src="https://i.imgur.com/ZWljYtU.png" alt="Mi Piel · Corner de la Dra. Key" loading="lazy" />
-        </div>
-
-        <div class="hero-banner" onclick="openTestIntimo()" role="button" tabindex="0" aria-label="Cuidado íntimo femenino, privado y confidencial">
-            <img src="https://i.imgur.com/kGYBwOY.png" alt="Cuidado íntimo femenino · privado y confidencial" loading="lazy" />
-        </div>
-
 
         <div class="promo10">
             <div class="promo10-left">
@@ -175,6 +167,18 @@
             <div id="table-container" style="display: none;">
                 <div class="products-grid" id="products-grid"></div>
                 <div id="ver-mas-cont" style="display:none; margin-top:16px; text-align:center;"></div>
+            </div>
+        </div>
+
+        <!-- Mi Piel y Cuidado intimo: estaban arriba ocupando 716 px y empujaban
+             el catalogo. Aqui abajo y en pareja ocupan una sola fila. -->
+        <div class="hero-par">
+            <div class="hero-banner" onclick="openMiPiel()" role="button" tabindex="0" aria-label="Mi Piel, corner de la Dra. Key">
+                <img src="https://i.imgur.com/ZWljYtU.png" alt="Mi Piel · Corner de la Dra. Key" loading="lazy" />
+            </div>
+
+            <div class="hero-banner" onclick="openTestIntimo()" role="button" tabindex="0" aria-label="Cuidado íntimo femenino, privado y confidencial">
+                <img src="https://i.imgur.com/kGYBwOY.png" alt="Cuidado íntimo femenino · privado y confidencial" loading="lazy" />
             </div>
         </div>
 

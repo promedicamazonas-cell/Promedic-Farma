@@ -995,6 +995,9 @@
         .hero-banner { display: block; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 6px 18px rgba(15,42,74,0.15); cursor: pointer; transition: transform .15s, box-shadow .15s; background: #eef3ff; }
         .hero-banner:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15,42,74,0.22); }
         .hero-banner img { width: 100%; height: auto; display: block; }
+        /* Los dos banners en una sola fila: mitad y mitad, sin recortar nada. */
+        .hero-par { display: flex; gap: 12px; margin-bottom: 16px; align-items: stretch; }
+        .hero-par .hero-banner { flex: 1 1 0; min-width: 0; min-height: 0; margin-bottom: 0; }
         .mp-steps { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 14px; }
         .mp-step { display: flex; gap: 12px; align-items: flex-start; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 12px; padding: 10px 12px; }
         .mp-step .mp-n { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #ec4899; color: #fff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
