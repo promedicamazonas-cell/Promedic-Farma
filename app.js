@@ -1,8 +1,13 @@
         let productos = [];
         let carrito = [];
         let promos = [];
+        let notas = [];
         let promoIdx = 0;
         let promoTimer = null;
+        // El catalogo abre en Dermatologicos: 91% tiene foto y ninguno pide receta,
+        // frente a Medicamentos donde el 69% no tiene imagen. Si la categoria no
+        // existiera en la hoja, se cae de vuelta a 'Todas'.
+        const CATEGORIA_INICIAL = 'Dermatológicos';
         let categoriaActual = 'Todas';
         let letraActual = '';
         function loteProductos() { return window.innerWidth <= 640 ? 8 : 15; }
@@ -29,12 +34,18 @@
                     complete: (results) => {
                         const filas = results.data.filter(p => p.nombre && p.nombre.trim());
                         const esPromo = (n) => /^promo\s*\d*$/i.test((n || '').trim());
+                        // Notas de cuidado de la piel: filas NOTA, NOTA2, NOTA3... en la misma hoja.
+                        const esNota = (n) => /^nota\s*\d*$/i.test((n || '').trim());
+                        notas = filas
+                            .filter(p => esNota(p.nombre))
+                            .map(p => ({ img: (p.imagen || '').trim(), titulo: (p.descripcion || '').trim(), bajada: (p.uso || '').trim(), cta: (p.cta || '').trim(), link: (p.link || '').trim() }))
+                            .filter(n => n.titulo);
                         promos = filas
                             .filter(p => esPromo(p.nombre))
                             .map(p => ({ img: (p.imagen || '').trim(), titulo: (p.descripcion || '').trim(), bajada: (p.uso || '').trim(), cta: (p.cta || '').trim(), link: (p.link || '').trim() }))
                             .filter(pr => pr.img);
                         productos = filas
-                            .filter(p => !esPromo(p.nombre))
+                            .filter(p => !esPromo(p.nombre) && !esNota(p.nombre))
                             .map(p => {
                                 const cv = (p.condicion_venta || '').trim().toLowerCase();
                                 const recetaSi = /^(s[ií]|x|1|true|requiere)/i.test((p.receta || '').trim());
@@ -74,9 +85,12 @@
                             return;
                         }
 
+                        if (productos.some(p => p.categoria === CATEGORIA_INICIAL)) categoriaActual = CATEGORIA_INICIAL;
+
                         document.getElementById('loading').style.display = 'none';
                         document.getElementById('table-container').style.display = 'block';
                         renderDestacados();
+                        renderNotas();
                         generarBotonesCategorias();
                         generarNav();
                         renderProducts();
@@ -323,6 +337,54 @@
             'clorzodisten': ['paracetamol', 'analgesico']
         };
 
+        // Orden de vitrina: primero lo que se ve bien y se puede comprar de una.
+        // Una tarjeta sin foto o con "requiere receta" es la que peor primera
+        // impresion deja, asi que va al final. No se esconde nada, solo se ordena.
+        function pesoVitrina(p) {
+            return (p.imagen ? 0 : 2) + (p.cond === 'RECETA' ? 1 : 0);
+        }
+        function ordenVitrina(a, b) {
+            const d = pesoVitrina(a) - pesoVitrina(b);
+            return d !== 0 ? d : a.nombre.localeCompare(b.nombre, 'es');
+        }
+
+        /* ---------------------------------------------------------------
+           NOTAS DE CUIDADO DE LA PIEL
+           Se editan en el Sheet, en filas cuyo nombre sea NOTA, NOTA2, NOTA3...
+             descripcion -> titulo      uso  -> texto
+             imagen      -> foto        cta  -> texto del boton
+             link        -> termino que se busca al pulsar (o una URL completa)
+           Sin filas NOTA el bloque no aparece.
+        --------------------------------------------------------------- */
+        function renderNotas() {
+            const caja = document.getElementById('notas-card');
+            const cont = document.getElementById('notas-row');
+            if (!caja || !cont) return;
+            if (!notas.length) { caja.style.display = 'none'; return; }
+            cont.innerHTML = notas.map(n => {
+                const ruta = n.img ? (n.img.startsWith('http') ? normalizeImg(n.img) : 'fotos/' + n.img) : '';
+                const foto = ruta ? `<img src="${imgThumb(ruta, 'l')}" alt="" loading="lazy" onerror="this.style.display='none';" />` : '';
+                const texto = n.cta || 'Ver productos';
+                const accion = /^https?:/i.test(n.link)
+                    ? `<a class="nota-cta" href="${n.link}" target="_blank" rel="noopener">${texto} &rsaquo;</a>`
+                    : `<button class="nota-cta" onclick="verNota('${n.link.replace(/'/g, "\\'")}')">${texto} &rsaquo;</button>`;
+                return `<article class="nota">${foto}<div class="nota-txt"><h4>${n.titulo}</h4><p>${n.bajada}</p>${n.link ? accion : ''}</div></article>`;
+            }).join('');
+            caja.style.display = 'block';
+        }
+
+        // Al pulsar una nota se busca su termino en el catalogo, no se abre otra pagina.
+        function verNota(termino) {
+            if (!termino) return;
+            const inp = document.getElementById('search');
+            inp.value = termino;
+            categoriaActual = 'Todas'; letraActual = ''; paginaProductos = loteProductos();
+            actualizarClear(); generarBotonesCategorias(); generarNav(); renderProducts();
+            track('nota_click', { termino: termino });
+            const dest = document.getElementById('catalogo');
+            if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         function renderProducts() {
             const rawQ = normaliza(document.getElementById('search').value);
             let synWords = [];
@@ -347,7 +409,7 @@
                     }
                 }
                 return false;
-            });
+            }).sort(ordenVitrina);
 
             const html = filtrados.slice(0, paginaProductos).map((p) => {
                 const cardImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => imgThumb(s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s, 'l'));
@@ -627,7 +689,8 @@
         function limpiarBusqueda() {
             const inp = document.getElementById('search');
             inp.value = '';
-            categoriaActual = 'Todas'; letraActual = ''; paginaProductos = loteProductos();
+            categoriaActual = productos.some(p => p.categoria === CATEGORIA_INICIAL) ? CATEGORIA_INICIAL : 'Todas';
+            letraActual = ''; paginaProductos = loteProductos();
             generarBotonesCategorias(); generarNav(); renderProducts();
             actualizarClear();
             const dest = document.getElementById('catalogo');
@@ -636,6 +699,12 @@
         }
         document.getElementById('search').addEventListener('input', () => {
             actualizarClear();
+            // El filtro es categoria Y texto: si el catalogo abre en Dermatologicos y
+            // alguien escribe "paracetamol", sin esto no encontraria nada.
+            if (document.getElementById('search').value.trim() && categoriaActual !== 'Todas') {
+                categoriaActual = 'Todas'; letraActual = '';
+                generarBotonesCategorias(); generarNav();
+            }
             paginaProductos = loteProductos(); renderProducts();
             acercarCatalogo();
             clearTimeout(searchTrackTimer);
