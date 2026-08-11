@@ -347,6 +347,39 @@
         }
 
         .search-section { margin-bottom: 18px; }
+
+        /* --- Buscador fijo arriba --------------------------------------
+           Se queda pegado bajo la cabecera. El alto de la cabecera cambia
+           segun el ancho, asi que se mide desde app.js (--alto-header). */
+        #buscador-top {
+            position: sticky;
+            top: var(--alto-header, 56px);
+            z-index: 35;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 3px 12px rgba(15, 42, 74, .07);
+        }
+        .buscador-inner { max-width: 1100px; margin: 0 auto; padding: 10px 16px; }
+        #buscador-top .search-box { margin-bottom: 0; }
+        #buscador-top .search-box input[type="text"] {
+            background: #ffffff;
+            border: 2px solid #1565c0;
+            box-shadow: 0 1px 3px rgba(21, 101, 192, .18);
+            font-size: 16px;            /* 16px evita que iOS haga zoom al enfocar */
+            padding: 14px 42px 14px 46px;
+        }
+        #buscador-top .search-box input[type="text"]::placeholder { color: #64748b; opacity: 1; }
+        #buscador-top .search-box input[type="text"]:focus {
+            border-color: #0f4c9a;
+            box-shadow: 0 0 0 4px rgba(21, 101, 192, .16);
+        }
+        #buscador-top .search-icon { stroke: #1565c0; stroke-width: 2.4; }
+        .chips-top { padding-top: 12px; padding-bottom: 0; }
+        .chips-top .search-chips {
+            padding: 0; flex-wrap: nowrap; overflow-x: auto;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch;
+        }
+        #catalogo { scroll-margin-top: var(--alto-fijo, 130px); }
         .search-box { position: relative; margin-bottom: 14px; }
         .search-icon {
             position: absolute;

@@ -68,6 +68,33 @@
         </a>
     </aside>
 
+    <!-- Buscador: primero en pantalla y pegado al hacer scroll.
+         Antes vivia dentro de la tarjeta del catalogo, a dos pantallas de scroll. -->
+    <div id="buscador-top">
+        <div class="buscador-inner">
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                <input type="text" id="search" placeholder="Buscar producto, síntoma o marca…" />
+                <button type="button" id="search-clear" class="search-clear" onclick="limpiarBusqueda()" aria-label="Borrar búsqueda" title="Borrar búsqueda">&times;</button>
+            </div>
+        </div>
+    </div>
+    <div class="container chips-top">
+    <div class="search-chips">
+                        <button onclick="buscarChip('gripe','Medicamentos')">🤧 Gripe</button>
+                        <button onclick="buscarChip('dolor de cabeza','Medicamentos')">🤕 Dolor de cabeza</button>
+                        <button onclick="buscarChip('piel grasa','Dermatológicos')">✨ Piel grasa</button>
+                        <button onclick="buscarChip('protector solar','Dermatológicos')">☀️ Protector solar</button>
+                        <button onclick="buscarChip('vitaminas','Vitaminas')">💊 Vitaminas</button>
+                        <button onclick="buscarChip('bebé','Dermatológicos')">🍼 Bebé</button>
+                        <button onclick="buscarChip('manchas','Dermatológicos')">🌸 Manchas</button>
+                        <button onclick="buscarChip('shampoo','Cuidado personal')">🚿 Shampoo</button>
+                        <button onclick="buscarChip('jabon','Cuidado personal')">🧼 Jabones</button>
+                        <button onclick="buscarChip('desodorante','Cuidado personal')">💨 Desodorantes</button>
+                        <button onclick="buscarChip('higiene intima','Cuidado personal')">🌷 Higiene íntima</button>
+                    </div>
+    </div>
+
     <nav class="cat-nav" id="cat-nav"></nav>
 
     <div class="container">
@@ -128,24 +155,6 @@
             <h2 class="catalog-title">Catálogo de Productos</h2>
 
             <div class="search-section">
-                <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-                    <input type="text" id="search" placeholder="Busca por nombre, síntoma o uso… (ej. gripe, piel grasa)" />
-                    <button type="button" id="search-clear" class="search-clear" onclick="limpiarBusqueda()" aria-label="Borrar búsqueda" title="Borrar búsqueda">&times;</button>
-                </div>
-                <div class="search-chips">
-                    <button onclick="buscarChip('gripe','Medicamentos')">🤧 Gripe</button>
-                    <button onclick="buscarChip('dolor de cabeza','Medicamentos')">🤕 Dolor de cabeza</button>
-                    <button onclick="buscarChip('piel grasa','Dermatológicos')">✨ Piel grasa</button>
-                    <button onclick="buscarChip('protector solar','Dermatológicos')">☀️ Protector solar</button>
-                    <button onclick="buscarChip('vitaminas','Vitaminas')">💊 Vitaminas</button>
-                    <button onclick="buscarChip('bebé','Dermatológicos')">🍼 Bebé</button>
-                    <button onclick="buscarChip('manchas','Dermatológicos')">🌸 Manchas</button>
-                    <button onclick="buscarChip('shampoo','Cuidado personal')">🚿 Shampoo</button>
-                    <button onclick="buscarChip('jabon','Cuidado personal')">🧼 Jabones</button>
-                    <button onclick="buscarChip('desodorante','Cuidado personal')">💨 Desodorantes</button>
-                    <button onclick="buscarChip('higiene intima','Cuidado personal')">🌷 Higiene íntima</button>
-                </div>
                 <div class="categories" id="categories-container">
                     <button class="active" onclick="filterCat('Todas')">Todas</button>
                 </div>

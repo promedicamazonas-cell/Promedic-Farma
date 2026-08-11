@@ -603,6 +603,27 @@
             const b = document.getElementById('search-clear');
             if (b) b.classList.toggle('show', !!document.getElementById('search').value);
         }
+        // La cabecera cambia de alto segun el ancho: la medimos en vez de fijar un numero.
+        function medirFijos() {
+            const raiz = document.documentElement;
+            const cab = document.querySelector('header');
+            const bus = document.getElementById('buscador-top');
+            if (cab) raiz.style.setProperty('--alto-header', cab.offsetHeight + 'px');
+            if (cab && bus) raiz.style.setProperty('--alto-fijo', (cab.offsetHeight + bus.offsetHeight + 8) + 'px');
+        }
+        window.addEventListener('load', medirFijos);
+        window.addEventListener('resize', medirFijos);
+
+        // Con el buscador arriba, al escribir hay que traer el catalogo a la vista.
+        function acercarCatalogo() {
+            const inp = document.getElementById('search');
+            const dest = document.getElementById('catalogo');
+            if (!inp || !dest || !inp.value) return;
+            if (dest.getBoundingClientRect().top > window.innerHeight * 0.45) {
+                dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
         function limpiarBusqueda() {
             const inp = document.getElementById('search');
             inp.value = '';
@@ -616,6 +637,7 @@
         document.getElementById('search').addEventListener('input', () => {
             actualizarClear();
             paginaProductos = loteProductos(); renderProducts();
+            acercarCatalogo();
             clearTimeout(searchTrackTimer);
             searchTrackTimer = setTimeout(() => {
                 const q = document.getElementById('search').value.trim();
@@ -1464,8 +1486,6 @@
 
             tab.style.display = 'flex';
 
-            // Primera visita del dia: se abre sola una vez.
-            if (plLeer() !== plHoy()) {
-                setTimeout(abrirPanelPromo, 1200);
-            }
+            // El panel NO se abre solo: tapaba la pantalla al entrar y la gente
+            // no encontraba donde buscar. Queda la lengueta lateral para quien quiera verlo.
         }
