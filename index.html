@@ -79,16 +79,6 @@
             </div>
         </div>
     </div>
-    <!-- Banda de la ruleta: justo debajo del buscador. Se oculta sola
-         cuando esa persona ya giro hoy, para no ofrecer algo que no puede usar. -->
-    <div class="container banda-cont">
-        <button id="ruleta-banda" class="ruleta-banda" onclick="openRuleta()" style="display:none;">
-            <span class="rb-ico">🎡</span>
-            <span class="rb-txt"><b>Gira y gana</b><small>Un giro gratis al día · el premio vale solo hoy</small></span>
-            <span class="rb-cta">Girar ›</span>
-        </button>
-    </div>
-
     <div class="container chips-top">
     <div class="search-chips">
                         <button onclick="buscarChip('gripe','Medicamentos')">🤧 Gripe</button>
@@ -494,6 +484,36 @@
         <span class="pl-tab-ico">&#127873;</span>
         PROMOS
     </button>
+    <!-- Panel propio de la ruleta. Lengueta debajo de la de PROMOS y
+         apertura automatica una vez al dia. -->
+    <button class="pl-tab rl-tab" id="rl-tab" onclick="abrirPanelRuleta()" aria-label="Ver la ruleta de premios">
+        <span class="pl-dot"></span>
+        <span class="pl-tab-ico">&#127905;</span>
+        RULETA
+    </button>
+    <div class="pl-backdrop" id="rl-backdrop" onclick="cerrarPanelRuleta()"></div>
+    <aside class="pl-panel rl-panel" id="rl-panel" role="dialog" aria-label="Ruleta de premios" aria-hidden="true">
+        <div class="pl-head rl-head">
+            <div>
+                <h3>Ruleta de premios</h3>
+                <p>Un giro gratis cada día</p>
+            </div>
+            <button class="pl-close" onclick="cerrarPanelRuleta()" aria-label="Cerrar">&#10005;</button>
+        </div>
+        <div class="rl-body">
+            <button class="rl-banner" onclick="cerrarPanelRuleta(); openRuleta();">
+                <img src="fotos/banner-ruleta.jpg" alt="Gira y gana: un giro gratis al día, solo por hoy" />
+            </button>
+            <div class="rl-estado" id="rl-estado"></div>
+            <ul class="rl-reglas">
+                <li>Un giro por día y por persona.</li>
+                <li>El premio vale solo para una compra del mismo día.</li>
+                <li>No se acumula con otros premios ni con el 10% de la App.</li>
+            </ul>
+        </div>
+        <div class="pl-foot">Compras desde S/ 99 · sujeto a disponibilidad</div>
+    </aside>
+
     <div class="pl-backdrop" id="pl-backdrop" onclick="cerrarPanelPromo()"></div>
     <aside class="pl-panel" id="pl-panel" role="dialog" aria-label="Promociones" aria-hidden="true">
         <div class="pl-head">

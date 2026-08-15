@@ -899,21 +899,47 @@
             });
             document.getElementById('ruleta-wheel').innerHTML = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;border:8px solid #0f2a4a;box-sizing:border-box;">${s}</svg>`;
         }
-        // La banda no desaparece cuando ya se giro: se apaga y avisa que vuelva
-        // manana. Si desaparece, quien entra por la tarde ni se entera del juego.
+        /* Panel lateral propio de la ruleta.
+           La lengueta RULETA queda debajo de la de PROMOS y el panel se abre
+           solo la primera vez de cada dia. Si ese dia le toca abrirse, el panel
+           de promociones no se abre: una sola interrupcion por visita. */
+        const RL_CLAVE = 'promedic_panel_ruleta';
+        function rlLeer() { try { return localStorage.getItem(RL_CLAVE); } catch (e) { return null; } }
+        function rlGuardar() { try { localStorage.setItem(RL_CLAVE, plHoy()); } catch (e) {} }
+        function rlTocaHoy() { return rlLeer() !== plHoy(); }
+
         function actualizarBandaRuleta() {
-            const b = document.getElementById('ruleta-banda');
-            if (!b) return;
+            const e = document.getElementById('rl-estado');
+            if (!e) return;
             const yaGiro = yaGiroHoy();
-            b.style.display = 'flex';
-            b.classList.toggle('usada', yaGiro);
-            const txt = b.querySelector('.rb-txt');
-            const cta = b.querySelector('.rb-cta');
-            if (txt) txt.innerHTML = yaGiro
-                ? '<b>Ya giraste hoy</b><small>Vuelve mañana por otro giro gratis</small>'
-                : '<b>Gira y gana</b><small>Un giro gratis al día · el premio vale solo hoy</small>';
-            if (cta) cta.innerHTML = yaGiro ? 'Mañana' : 'Girar &rsaquo;';
+            e.className = 'rl-estado ' + (yaGiro ? 'usada' : 'libre');
+            e.innerHTML = yaGiro
+                ? '<b>Ya giraste hoy</b>Vuelve mañana por otro giro gratis.'
+                : '<b>Te queda un giro</b>Toca el banner para girar la ruleta.';
         }
+
+        function abrirPanelRuleta() {
+            const panel = document.getElementById('rl-panel');
+            const fondo = document.getElementById('rl-backdrop');
+            if (!panel) return;
+            actualizarBandaRuleta();
+            panel.classList.add('open');
+            panel.setAttribute('aria-hidden', 'false');
+            if (fondo) fondo.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            const cerrar = panel.querySelector('.pl-close');
+            if (cerrar) cerrar.focus();
+            rlGuardar();
+        }
+
+        function cerrarPanelRuleta() {
+            const panel = document.getElementById('rl-panel');
+            const fondo = document.getElementById('rl-backdrop');
+            if (panel) { panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); }
+            if (fondo) fondo.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
         window.addEventListener('load', actualizarBandaRuleta);
 
         function openRuleta() {
@@ -1609,7 +1635,10 @@
             //   'nunca'   -> no se abre solo; queda solo la lengueta
             // Cambia esta linea para pasar de uno a otro.
             const ABRIR_PANEL = 'siempre';
-            if (ABRIR_PANEL === 'siempre' || (ABRIR_PANEL === 'diario' && plLeer() !== plHoy())) {
+            // La ruleta manda el primer dia: si le toca, promociones no se abre.
+            if (rlTocaHoy()) {
+                setTimeout(abrirPanelRuleta, 900);
+            } else if (ABRIR_PANEL === 'siempre' || (ABRIR_PANEL === 'diario' && plLeer() !== plHoy())) {
                 setTimeout(abrirPanelPromo, 900);
             }
         }
