@@ -865,15 +865,18 @@
         }
 
         // === RULETA DE PREMIOS (edita este arreglo: label corto, code, color, premio true/false, peso=probabilidad) ===
+        // Colores tomados del banner: rosa, azul, verde, naranja y morados.
+        // Las casillas sin premio van en morado apagado, no en gris: en medio de
+        // tanto color, el gris se leia como si la ruleta estuviera desactivada.
         let premios = [
-            { label: 'S/ 5 dscto', code: 'RUL-5', color: '#1565c0', premio: true, peso: 12 },
-            { label: 'Delivery gratis', code: 'RUL-DELIV', color: '#5daa28', premio: true, peso: 10 },
-            { label: '10 puntos Club', code: 'RUL-10PTS', color: '#1e78d6', premio: true, peso: 16 },
-            { label: 'Sigue participando', code: '', color: '#94a3b8', premio: false, peso: 22 },
-            { label: 'Muestra de regalo', code: 'RUL-MUESTRA', color: '#f59e0b', premio: true, peso: 10 },
-            { label: '5% extra', code: 'RUL-5PCT', color: '#0f4c9a', premio: true, peso: 12 },
-            { label: 'Casi... reintenta', code: '', color: '#cbd5e1', premio: false, peso: 14 },
-            { label: 'S/ 10 dscto', code: 'RUL-10', color: '#db2777', premio: true, peso: 4 }
+            { label: 'S/ 5 dscto', code: 'RUL-5', color: '#2563EB', premio: true, peso: 12 },
+            { label: 'Delivery gratis', code: 'RUL-DELIV', color: '#22C55E', premio: true, peso: 10 },
+            { label: '10 puntos Club', code: 'RUL-10PTS', color: '#0EA5E9', premio: true, peso: 16 },
+            { label: 'Sigue participando', code: '', color: '#5B21B6', premio: false, peso: 22 },
+            { label: 'Muestra de regalo', code: 'RUL-MUESTRA', color: '#F97316', premio: true, peso: 10 },
+            { label: '5% extra', code: 'RUL-5PCT', color: '#7C3AED', premio: true, peso: 12 },
+            { label: 'Casi... reintenta', code: '', color: '#4C1D95', premio: false, peso: 14 },
+            { label: 'S/ 10 dscto', code: 'RUL-10', color: '#EC4899', premio: true, peso: 4 }
         ];
         let ruletaRot = 0;
         let ruletaGirando = false;
@@ -888,7 +891,7 @@
                 const a0 = (i*seg - 90) * Math.PI/180, a1 = ((i+1)*seg - 90) * Math.PI/180;
                 const x0 = cx + R*Math.cos(a0), y0 = cy + R*Math.sin(a0);
                 const x1 = cx + R*Math.cos(a1), y1 = cy + R*Math.sin(a1);
-                s += `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${R},${R} 0 0,1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${p.color}" stroke="#ffffff" stroke-width="1.2"/>`;
+                s += `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${R},${R} 0 0,1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${p.color}" stroke="#FBBF24" stroke-width="1.1"/>`;
                 const am = ((i+0.5)*seg - 90) * Math.PI/180;
                 const lx = cx + (R*0.60)*Math.cos(am), ly = cy + (R*0.60)*Math.sin(am);
                 const rot = (i+0.5)*seg;
@@ -897,7 +900,21 @@
                 const tspans = lines.map((ln, k) => `<tspan x="0" dy="${k === 0 ? (lines.length>1?-3:0) : 8}">${ln}</tspan>`).join('');
                 s += `<g transform="translate(${lx.toFixed(2)},${ly.toFixed(2)}) rotate(${rot})"><text text-anchor="middle" font-size="6.5" font-weight="800" fill="#ffffff">${tspans}</text></g>`;
             });
-            document.getElementById('ruleta-wheel').innerHTML = `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;border:8px solid #0f2a4a;box-sizing:border-box;">${s}</svg>`;
+            // Aro morado con bombillas doradas, como el de la imagen del banner.
+            const aro = '<circle cx="100" cy="100" r="98" fill="none" stroke="url(#aroGrad)" stroke-width="11"/>';
+            let bombillas = '';
+            const NB = 20;
+            for (let k = 0; k < NB; k++) {
+                const ang = (k * 360 / NB - 90) * Math.PI / 180;
+                const bx = 100 + 98 * Math.cos(ang), by = 100 + 98 * Math.sin(ang);
+                bombillas += `<circle cx="${bx.toFixed(2)}" cy="${by.toFixed(2)}" r="2.6" fill="#FDE047" stroke="#F59E0B" stroke-width=".7"/>`;
+            }
+            const defs = '<defs>' +
+                '<linearGradient id="aroGrad" x1="0" y1="0" x2="0" y2="1">' +
+                '<stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#4C1D95"/></linearGradient>' +
+                '</defs>';
+            document.getElementById('ruleta-wheel').innerHTML =
+                `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;box-sizing:border-box;">${defs}<g transform="translate(100,100) scale(0.905) translate(-100,-100)">${s}</g>${aro}${bombillas}</svg>`;
         }
         /* Panel lateral propio de la ruleta.
            La lengueta RULETA queda debajo de la de PROMOS y el panel se abre
@@ -984,7 +1001,7 @@
             res.style.display = 'block';
             if (p.premio) {
                 res.classList.remove('lose');
-                res.innerHTML = `<b>🎉 ¡Ganaste: ${p.label}!</b><p>Código <b style="display:inline">${codigoDelDia(p.code)}</b> · <b style="display:inline;color:#b45309">vence hoy a medianoche</b>.<br>Válido en <b style="display:inline">una sola compra de hoy</b> desde S/ 99. <b style="display:inline">No es acumulable</b> con otros premios ni con el 10% de la App.</p><button class="btn" style="width:100%;background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,.3);" onclick="reclamarPremio('${p.label.replace(/'/g,"")}','${codigoDelDia(p.code)}')">📲 Reclamar por WhatsApp</button>`;
+                res.innerHTML = `<b>🎉 ¡Ganaste: ${p.label}!</b><p>Código <b style="display:inline">${codigoDelDia(p.code)}</b> · <b style="display:inline;color:#FCD34D">vence hoy a medianoche</b>.<br>Válido en <b style="display:inline">una sola compra de hoy</b> desde S/ 99. <b style="display:inline">No es acumulable</b> con otros premios ni con el 10% de la App.</p><button class="btn" style="width:100%;background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,.3);" onclick="reclamarPremio('${p.label.replace(/'/g,"")}','${codigoDelDia(p.code)}')">📲 Reclamar por WhatsApp</button>`;
             } else {
                 res.classList.add('lose');
                 res.innerHTML = `<b>¡Casi! 🙂</b><p>Hoy no salió premio, pero mañana tienes otro giro. ¡Vuelve!</p>`;

@@ -986,10 +986,22 @@
         /* Ruleta de premios */
         .ruleta-wrap { text-align: center; }
         .ruleta-stage { position: relative; width: 280px; max-width: 78vw; aspect-ratio: 1; margin: 6px auto 10px; }
-        .ruleta-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 24px solid #f59e0b; z-index: 3; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
-        .ruleta-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 6px 22px rgba(0,0,0,.28); transition: transform 4.6s cubic-bezier(.17,.67,.16,1); }
-        .ruleta-hub { position: absolute; top: 50%; left: 50%; width: 48px; height: 48px; transform: translate(-50%,-50%); background: #fff; border: 4px solid #0f2a4a; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-        .ruleta-girar { width: 100%; margin-top: 4px; background: linear-gradient(135deg,#f59e0b 0%,#d97706 100%); }
+        .ruleta-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 26px solid #FBBF24; z-index: 3; filter: drop-shadow(0 2px 3px rgba(76,29,149,.5)); }
+        .ruleta-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 6px 26px rgba(76,29,149,.45); transition: transform 4.6s cubic-bezier(.17,.67,.16,1); }
+        /* El modal, en la linea morada del banner */
+        #ruleta-modal .modal-content { background: linear-gradient(170deg,#3B0764 0%,#4C1D95 55%,#5B21B6 100%); }
+        #ruleta-modal h2 { color: #fff !important; }
+        #ruleta-modal .modal-content > p { color: rgba(255,255,255,.82) !important; }
+        #ruleta-modal .modal-content > p b { color: #FDE047; }
+        #ruleta-modal .ruleta-nota { color: rgba(255,255,255,.75); }
+        #ruleta-modal .ruleta-nota b { color: #fff; }
+        #ruleta-modal .ruleta-alerta { background: #FDE047; color: #3B0764; border-color: #FBBF24; }
+        #ruleta-modal .ruleta-result { background: rgba(255,255,255,.1); border-color: rgba(253,224,71,.45); }
+        #ruleta-modal .ruleta-result.lose { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+        #ruleta-modal .ruleta-result b { color: #FDE047; }
+        #ruleta-modal .ruleta-result p { color: rgba(255,255,255,.85); }
+        .ruleta-hub { position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; transform: translate(-50%,-50%); background: linear-gradient(160deg,#FDE047 0%,#F59E0B 100%); border: 4px solid #FBBF24; border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 2px 8px rgba(76,29,149,.45); }
+        .ruleta-girar { width: 100%; margin-top: 4px; background: linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%); color: #3B0764; font-weight: 800; }
         .ruleta-girar:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
         .ruleta-nota { font-size: 11px; color: #6b7280; margin-top: 8px; line-height: 1.4; }
         .ruleta-nota b { color: #374151; }
