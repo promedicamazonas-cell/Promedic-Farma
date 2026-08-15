@@ -78,7 +78,13 @@
                             })
                             .filter(p => p.stock_unidades > 0 && p.cond !== 'CONTROLADO');
                         productos.forEach((p, i) => { p._k = i; });
-                        productos.forEach(p => { p._busq = normaliza([p.nombre, p.concentracion, p.fabricante, p.categoria, p.formaFarmaceutica, p.descripcion, p.uso, p.principio].join(' ')); });
+                        productos.forEach(p => {
+                            p._busq = normaliza([p.nombre, p.concentracion, p.fabricante, p.categoria, p.formaFarmaceutica, p.descripcion, p.uso, p.principio].join(' '));
+                            // El nombre y la marca aparte: valen mucho mas que una
+                            // coincidencia perdida dentro de una descripcion.
+                            p._nom = normaliza(p.nombre);
+                            p._marca = normaliza([p.fabricante, p.principio].join(' '));
+                        });
 
                         if (!productos.length) {
                             document.getElementById('loading').innerHTML = '⚠️ No se pudieron cargar los productos en este momento. Revisa tu conexión y vuelve a cargar la página.';
@@ -337,6 +343,23 @@
             'clorzodisten': ['paracetamol', 'analgesico']
         };
 
+        /* Relevancia de una busqueda.
+           Sin esto, buscar "mat" devolvia 134 productos: "mat" esta dentro de
+           antiinflaMATorio y derMATologicos, en descripciones y categorias. El
+           unico con MAT en el nombre (Effaclar Mat) quedaba en el puesto 19 y no
+           se veia, porque en movil solo se muestran 8. Ahora el nombre manda. */
+        function relevancia(p, toks) {
+            let s = 0;
+            for (const x of toks) {
+                const nom = p._nom || '';
+                if (nom.startsWith(x.t)) s += 100;        // el nombre empieza asi
+                else if (x.re.test(nom)) s += 70;         // empieza una palabra del nombre
+                else if (nom.includes(x.t)) s += 40;      // esta dentro del nombre
+                else if ((p._marca || '').includes(x.t)) s += 15;  // marca o principio activo
+            }
+            return s;
+        }
+
         // Orden de vitrina: primero lo que se ve bien y se puede comprar de una.
         // Una tarjeta sin foto o con "requiere receta" es la que peor primera
         // impresion deja, asi que va al final. No se esconde nada, solo se ordena.
@@ -392,6 +415,7 @@
                 for (const key in sinonimos) { if (rawQ.includes(key)) synWords = synWords.concat(sinonimos[key].split(' ')); }
             }
             const tokens = rawQ ? rawQ.split(/\s+/).filter(t => t.length >= 2) : [];
+            const toks = tokens.map(t => ({ t: t, re: new RegExp('(^|[^a-z0-9])' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }));
             const filtrados = productos.filter(p => {
                 if (!(categoriaActual === 'Todas' || p.categoria === categoriaActual)) return false;
                 if (!(letraActual === '' || inicial(p.nombre) === letraActual)) return false;
@@ -409,7 +433,13 @@
                     }
                 }
                 return false;
-            }).sort(ordenVitrina);
+            }).sort((a, b) => {
+                if (toks.length) {
+                    const d = relevancia(b, toks) - relevancia(a, toks);
+                    if (d !== 0) return d;
+                }
+                return ordenVitrina(a, b);
+            });
 
             const html = filtrados.slice(0, paginaProductos).map((p) => {
                 const cardImgs = [p.imagen, p.imagen2, p.imagen3].map(x => (x || '').trim()).filter(Boolean).map(s => imgThumb(s.startsWith('http') ? normalizeImg(s) : 'fotos/' + s, 'l'));
@@ -701,7 +731,7 @@
             actualizarClear();
             // El filtro es categoria Y texto: si el catalogo abre en Dermatologicos y
             // alguien escribe "paracetamol", sin esto no encontraria nada.
-            if (document.getElementById('search').value.trim() && categoriaActual !== 'Todas') {
+            if (document.getElementById('search').value.trim() && (categoriaActual !== 'Todas' || letraActual !== '')) {
                 categoriaActual = 'Todas'; letraActual = '';
                 generarBotonesCategorias(); generarNav();
             }
