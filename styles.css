@@ -320,6 +320,14 @@
             .hero-badges span { font-size: 9px; padding: 3px 7px; }
         }
 
+        /* El carrusel se veia igual que el catalogo de abajo. Fondo propio
+           para que se lea como una seleccion aparte. */
+        .destacados-card {
+            background: linear-gradient(180deg, #eef6ff 0%, #f7fbff 100%);
+            border: 1px solid #cfe3fb;
+        }
+        .destacados-card .destacados-head h2 { color: #0f4c9a; }
+
         .card {
             background: white;
             border-radius: 12px;
@@ -1292,6 +1300,18 @@
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .pl-close:hover { background: rgba(255,255,255,.32); }
+
+.pl-diez {
+    display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+    padding: 16px 18px; color: #fff;
+    background: linear-gradient(135deg, #015BBB 0%, #0f4c9a 100%);
+    border-bottom: 3px solid #74BA1C;
+}
+.pl-diez-big { font-size: 52px; font-weight: 900; line-height: .9; letter-spacing: -2px; display: flex; align-items: baseline; }
+.pl-diez-big .pct { font-size: 28px; font-weight: 800; margin-left: 2px; letter-spacing: 0; }
+.pl-diez-txt { display: flex; flex-direction: column; }
+.pl-diez-txt b { font-size: 15px; font-weight: 800; line-height: 1.2; }
+.pl-diez-txt span { font-size: 12px; opacity: .9; margin-top: 3px; }
 
 .pl-body { flex: 1; overflow-y: auto; padding: 14px; background: #f8fafc; }
 .pl-card {

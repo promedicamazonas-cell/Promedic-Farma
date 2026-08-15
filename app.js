@@ -1603,6 +1603,13 @@
 
             tab.style.display = 'flex';
 
-            // El panel NO se abre solo: tapaba la pantalla al entrar y la gente
-            // no encontraba donde buscar. Queda la lengueta lateral para quien quiera verlo.
+            // Apertura automatica del panel.
+            //   'siempre' -> cada vez que se entra a la app
+            //   'diario'  -> solo la primera visita de cada dia
+            //   'nunca'   -> no se abre solo; queda solo la lengueta
+            // Cambia esta linea para pasar de uno a otro.
+            const ABRIR_PANEL = 'siempre';
+            if (ABRIR_PANEL === 'siempre' || (ABRIR_PANEL === 'diario' && plLeer() !== plHoy())) {
+                setTimeout(abrirPanelPromo, 900);
+            }
         }
